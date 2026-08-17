@@ -2,12 +2,12 @@
   "name": "VALO | Financial Intelligence OS",
   "short_name": "VALO",
   "description": "Ultra-fast, luxury financial intelligence and expense engine.",
-  "start_url": "/",
-  "id": "/",
+  "start_url": "/?v=1.0.15",
+  "id": "/?v=1.0.15",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "portrait",
-  "background_color": "#F8FAFC",
+  "background_color": "#090D16",
   "theme_color": "#090D16",
   "categories": ["finance", "productivity", "utilities"],
   "lang": "es",
@@ -15,13 +15,13 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/icon.svg?v=1.0.15",
       "sizes": "192x192 512x512 any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.svg",
+      "src": "/icon.svg?v=1.0.15",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
@@ -29,7 +29,7 @@
   ],
   "screenshots": [
     {
-      "src": "/icon.svg",
+      "src": "/icon.svg?v=1.0.15",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "form_factor": "narrow",

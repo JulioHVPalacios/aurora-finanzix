@@ -213,5 +213,12 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
 
+  // Accelerate hero background video to 1.65x for lively, vibrant motion
+  const videoEl = container.querySelector('.hero-bg-video');
+  if (videoEl) {
+    videoEl.playbackRate = 1.65;
+    videoEl.play().catch(() => {});
+  }
+
   createIcons({ icons });
 }

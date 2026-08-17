@@ -4,7 +4,7 @@
    Background Periodic Sync & Push Event Listeners
    ========================================================================== */
 
-const CACHE_VERSION = 'valo-finanzix-v14-video-hero-20260817';
+const CACHE_VERSION = 'valo-finanzix-v15-fast-video-20260817';
 
 const CORE_ASSETS = [
   '/',
