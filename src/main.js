@@ -4,6 +4,7 @@
 
 import { createIcons, icons } from 'lucide';
 import { storage } from './services/storage.js';
+import { t, formatCurrency } from './services/i18n.js';
 import { renderNavbar } from './components/Navbar.js';
 import { renderBottomNav } from './components/BottomNav.js';
 import { renderDashboard } from './components/DashboardView.js';
@@ -21,6 +22,7 @@ class App {
   constructor() {
     this.currentTab = 'dashboard';
     this.isExpanded = false;
+    this.swRegistration = null;
     this.init();
   }
 
@@ -42,7 +44,7 @@ class App {
         splash.classList.add('fade-out');
         setTimeout(() => splash.remove(), 800);
       }
-    }, 1400); // 1.4s of splash for premium feel
+    }, 1200);
   }
 
   setupServiceWorker() {
@@ -70,7 +72,7 @@ class App {
                   registration.periodicSync.register('check-app-updates', {
                     minInterval: 60 * 60 * 1000 // Every 1 hour
                   }).catch(() => {});
-                 }
+                }
               }).catch(() => {});
             }
 
@@ -88,7 +90,7 @@ class App {
 
                     if ('Notification' in window && Notification.permission === 'granted') {
                       registration.showNotification('✨ Aurora Finanzix Actualizada', {
-                        body: 'Se ha instalado la última versión con diseño blanco perla.',
+                        body: 'Se ha instalado la última versión.',
                         icon: '/icon.svg',
                         vibrate: [200, 100, 200],
                         data: { url: '/' }
@@ -113,9 +115,66 @@ class App {
     }
   }
 
+  async setupPushSubscription(registration) {
+    if (!('PushManager' in window) || !('Notification' in window)) return;
+
+    try {
+      if (Notification.permission === 'default') {
+        // Request permission on first user interaction or after a short delay
+        setTimeout(() => {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              this.subscribeUserToPush(registration);
+            }
+          }).catch(() => {});
+        }, 3000);
+      } else if (Notification.permission === 'granted') {
+        this.subscribeUserToPush(registration);
+      }
+    } catch (e) {
+      console.warn('Push subscription init error:', e);
+    }
+  }
+
+  async subscribeUserToPush(registration) {
+    try {
+      const publicVapidKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+      const applicationServerKey = this.urlBase64ToUint8Array(publicVapidKey);
+
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey
+        });
+      }
+
+      if (subscription) {
+        fetch('/api/push-subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(subscription)
+        }).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Unable to subscribe to push:', e);
+    }
+  }
+
+  urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
   async checkUpdates(manual = false) {
     if (manual) {
-      this.showToast('🔍 Verificando actualizaciones...', 'info');
+      this.showToast(t('update_checking'), 'info');
     }
 
     try {
@@ -134,13 +193,13 @@ class App {
         } else {
           localStorage.setItem('aurora_app_version', data.version);
           if (manual) {
-            this.showToast(`✓ Tienes la versión más reciente (v${data.version})`, 'success');
+            this.showToast(`✓ ${t('update_latest')} (v${data.version})`, 'success');
           }
         }
       }
     } catch (e) {
       if (manual) {
-        this.showToast('Listo: App sincronizada', 'success');
+        this.showToast(t('update_synced'), 'success');
       }
     }
   }
@@ -156,11 +215,11 @@ class App {
       top: 14px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(220, 225, 235, 0.95));
-      color: #0A0D14;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 243, 250, 0.98));
+      color: #0F172A;
       padding: 10px 18px;
       border-radius: 999px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.08);
       font-size: 0.84rem;
       font-weight: 600;
       display: flex;
@@ -177,19 +236,19 @@ class App {
     banner.innerHTML = `
       <span style="display: flex; align-items: center; gap: 6px;">
         <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px #10B981;"></span>
-        <span>¡Nueva versión disponible!</span>
+        <span>${t('update_banner_title')}</span>
       </span>
       <button type="button" id="btn-update-reload" style="
-        background: #0A0D14;
+        background: #0F172A;
         color: #FFFFFF;
         border: none;
-        padding: 5px 12px;
+        padding: 5px 14px;
         border-radius: 999px;
         font-size: 0.78rem;
         font-weight: 700;
         cursor: pointer;
       ">
-        Actualizar ahora
+        ${t('update_banner_btn')}
       </button>
     `;
 
@@ -246,7 +305,7 @@ class App {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.innerHTML = `
-      <span>${type === 'success' ? '✓' : '⚠️'}</span>
+      <span>${type === 'success' ? '✓' : 'ℹ️'}</span>
       <span>${message}</span>
     `;
 
@@ -263,7 +322,7 @@ class App {
     showTransactionModal({
       initialType,
       onSave: (tx) => {
-        this.showToast(`¡${tx.type === 'income' ? 'Ingreso' : 'Gasto'} de ${storage.getSettings().currencySymbol || 'S/'} ${tx.amount.toFixed(2)} registrado!`, 'success');
+        this.showToast(`¡${tx.type === 'income' ? t('modal_tx_income') : t('modal_tx_expense')} de ${formatCurrency(tx.amount)} registrado!`, 'success');
         this.render();
       }
     });

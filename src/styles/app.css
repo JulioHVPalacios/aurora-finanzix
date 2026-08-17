@@ -390,21 +390,21 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
-   VIBRANT LIQUID GLASS CARDS
+   VIBRANT LIQUID GLASS & OBSIDIAN CARDS (Ultra-Premium Fintech Aesthetic)
    -------------------------------------------------------------------------- */
-/* Hero Balance Card - Radiant Indigo/Violet Specular Finish */
+/* Hero Balance Card - Obsidian Slate Titanium Finish (Revolut / Apple Card Style) */
 .hero-balance-card,
 .card-hero-glass {
-  background: linear-gradient(135deg, #1E1B4B 0%, #3730A3 50%, #4F46E5 100%);
+  background: linear-gradient(145deg, #090D16 0%, #151D2C 100%);
   border-radius: var(--radius-lg);
   padding: 22px 20px;
   color: #FFFFFF;
   position: relative;
   overflow: hidden;
   box-shadow: 
-    0 20px 40px -10px rgba(79, 70, 229, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.25) inset;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+    0 20px 40px -10px rgba(15, 23, 42, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   animation: fadeInUp 0.35s var(--e-out) both;
   transition: transform 0.25s var(--e-spring);
 }
@@ -420,46 +420,46 @@ html, body {
   right: -20%;
   width: 260px;
   height: 260px;
-  background: radial-gradient(circle, rgba(199, 210, 254, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
   pointer-events: none;
 }
 
 .hero-user-name {
   font-size: 0.86rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.8);
   letter-spacing: 0.02em;
   margin-bottom: 4px;
 }
 
 .hero-balance-amount {
   font-family: var(--font-display);
-  font-size: 2.25rem;
+  font-size: 2.35rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #FFFFFF;
   margin-bottom: 12px;
   font-feature-settings: "tnum" 1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .hero-savings-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-pill);
   padding: 5px 12px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #A7F3D0;
+  color: #34D399;
 }
 
 /* --------------------------------------------------------------------------
-   3-Column Stat Box Cards (Mint, Rose, Blue Glass)
+   3-Column Pure White Stat Box Grid (Non-AI, Crisp High-End Finish)
    -------------------------------------------------------------------------- */
 .stats-grid {
   display: grid;
@@ -472,51 +472,28 @@ html, body {
   padding: 14px 10px;
   border-radius: var(--radius-md);
   text-align: center;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-ambient);
-  transition: all 0.22s var(--e-spring);
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  transition: all 0.2s var(--e-spring);
   cursor: pointer;
 }
 
 .stat-box-card:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
+  background: #F8FAFC;
 }
 
-/* Mint Emerald Income Card */
-.stat-box-income {
-  background: var(--color-emerald-bg);
-  border: 1.5px solid var(--color-emerald-border);
-}
 .stat-box-income .stat-amount {
-  color: var(--color-emerald-ink);
-}
-.stat-box-income .stat-label {
-  color: #047857;
+  color: #059669;
 }
 
-/* Rose Quartz Expense Card */
-.stat-box-expense {
-  background: var(--color-rose-bg);
-  border: 1.5px solid var(--color-rose-border);
-}
 .stat-box-expense .stat-amount {
-  color: var(--color-rose-ink);
-}
-.stat-box-expense .stat-label {
-  color: #BE123C;
+  color: #DC2626;
 }
 
-/* Sky Cobalt Savings Card */
-.stat-box-savings {
-  background: var(--color-blue-bg);
-  border: 1.5px solid var(--color-blue-border);
-}
 .stat-box-savings .stat-amount {
-  color: var(--color-blue-ink);
-}
-.stat-box-savings .stat-label {
-  color: #1D4ED8;
+  color: #0F172A;
 }
 
 .stat-amount {
@@ -529,14 +506,15 @@ html, body {
 }
 
 .stat-label {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
+  color: #64748B;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 /* --------------------------------------------------------------------------
-   Quick Action Buttons (Liquid Glass Pills)
+   Quick Action Buttons (Crisp White Minimalist Pills)
    -------------------------------------------------------------------------- */
 .quick-actions-row {
   display: grid;
@@ -552,52 +530,49 @@ html, body {
   justify-content: center;
   gap: 6px;
   padding: 12px 6px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: #FFFFFF;
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: var(--radius-md);
   color: var(--ink);
   font-size: 0.74rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
   transition: all 0.2s var(--e-spring);
 }
 
 .action-pill-btn:active {
   transform: scale(0.92);
-  background: #EEF2FF;
+  background: #F1F5F9;
 }
 
 .action-icon-circle {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .action-icon-expense {
-  background: #FFE4E6;
-  color: #E11D48;
+  background: #FEF2F2;
+  color: #DC2626;
 }
 
 .action-icon-income {
-  background: #D1FAE5;
+  background: #F0FDF4;
   color: #059669;
 }
 
 .action-icon-cost {
-  background: #FEF3C7;
-  color: #D97706;
+  background: #F8FAFC;
+  color: #475569;
 }
 
 .action-icon-goals {
-  background: #E0E7FF;
+  background: #EEF2FF;
   color: #4F46E5;
 }
 
@@ -1123,19 +1098,25 @@ html, body {
 /* --------------------------------------------------------------------------
    Responsive Full-Bleed Mobile Layout (100dvh Zero Black Bars)
    -------------------------------------------------------------------------- */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   html, body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    inset: 0 !important;
     background: var(--bg-stage);
   }
 
   .stage {
-    min-height: 100dvh;
-    height: 100dvh;
-    width: 100%;
-    overflow: hidden;
+    min-height: 100% !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    inset: 0 !important;
   }
 
   .desktop-banner {
@@ -1145,13 +1126,18 @@ html, body {
   .phone-container {
     max-width: 100% !important;
     width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
 
   .phone-status-bar {
@@ -1159,24 +1145,40 @@ html, body {
   }
 
   .app-navbar {
+    flex-shrink: 0 !important;
     padding: max(14px, env(safe-area-inset-top, 14px)) 16px 8px 16px !important;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    z-index: 40;
   }
 
   .app-main-content {
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
     padding-left: max(14px, env(safe-area-inset-left, 14px));
     padding-right: max(14px, env(safe-area-inset-right, 14px));
     padding-top: 14px;
-    padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px)) !important;
+    padding-bottom: 24px !important;
   }
 
   .app-bottom-nav {
-    position: fixed !important;
-    bottom: 0 !important;
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
+    padding: 8px 6px max(14px, env(safe-area-inset-bottom, 14px)) !important;
+    z-index: 50 !important;
   }
 }
 

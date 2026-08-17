@@ -1,5 +1,5 @@
 {
-  "version": "1.0.10",
-  "buildTime": 1787007200000,
-  "description": "Corrección de layout bottom nav en móviles, logotipos reales SimpleIcons, y traducción 100% de la interfaz"
+  "version": "1.0.12",
+  "buildTime": 1787007500000,
+  "description": "Obsidian Titanium finish, 100% full English/Spanish translations, non-AI styling, zero bottom-nav overflow"
 }
