@@ -1,6 +1,6 @@
 /* ==========================================================================
    AURORA FINANZIX - DASHBOARD VIEW
-   Clean Vector Icons & Profile Hero / 3-Column Stats Grid
+   Pearl White & Vibrant Liquid Glass with Pure Precision Vector Icons
    ========================================================================== */
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
@@ -19,165 +19,169 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   const budgetSpentPct = Math.min(100, Math.round((metrics.totalExpense / monthlyBudget) * 100));
 
   container.innerHTML = `
-    <!-- Mobile Profile Hero Video Section (Prompt 3 Reference) -->
-    <div class="mobile-profile-hero">
-      <video autoplay muted loop playsinline>
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260506_081238_406ed0e3-5d83-436e-a512-0bbff7ec5b95.mp4" type="video/mp4" />
-      </video>
-      <div class="mobile-profile-hero-fade"></div>
-
-      <div class="mobile-identity-row">
-        <div class="mobile-user-name">${settings.userName || 'Mi Espacio'}</div>
-        <div class="mobile-user-sub">Balance: <strong style="color: #FFFFFF; font-family: var(--font-mono);">${symbol}${metrics.netBalance.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</strong></div>
-        <div class="trophy-pill">
+    <!-- Hero Balance Card (Deep Electric Sapphire Liquid Glass) -->
+    <div class="hero-balance-card">
+      <div class="hero-user-name">${settings.userName || 'Mi Espacio'}</div>
+      <div class="hero-balance-amount">${symbol}${metrics.netBalance.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</div>
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div class="hero-savings-chip">
           <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #10B981;"></i>
           <span>${metrics.savingsRate}% Tasa de Ahorro</span>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.7);">
+          Presupuesto: <strong>${symbol}${monthlyBudget}</strong>
         </div>
       </div>
     </div>
 
-    <!-- 3-Column Stats Grid (Prompt 3 Reference) -->
-    <div class="stats-3col-grid">
-      <div class="stat-box">
-        <span class="stat-box-num" style="color: #6EE7B7;">+${symbol}${metrics.totalIncome.toFixed(0)}</span>
-        <span class="stat-box-lbl">Ingresos</span>
+    <!-- 3-Column Vibrant Stat Box Grid (Mint, Rose, Sky Glass) -->
+    <div class="stats-grid">
+      <div class="stat-box-card stat-box-income">
+        <div class="stat-amount">+${symbol}${metrics.totalIncome.toFixed(0)}</div>
+        <div class="stat-label">Ingresos</div>
       </div>
-      <div class="stat-box">
-        <span class="stat-box-num" style="color: #FDA4AF;">-${symbol}${metrics.totalExpense.toFixed(0)}</span>
-        <span class="stat-box-lbl">Gastos</span>
+      <div class="stat-box-card stat-box-expense">
+        <div class="stat-amount">-${symbol}${metrics.totalExpense.toFixed(0)}</div>
+        <div class="stat-label">Gastos</div>
       </div>
-      <div class="stat-box">
-        <span class="stat-box-num" style="color: #BAE6FD;">${metrics.savingsRate}%</span>
-        <span class="stat-box-lbl">Ahorro</span>
+      <div class="stat-box-card stat-box-savings">
+        <div class="stat-amount">${metrics.savingsRate}%</div>
+        <div class="stat-label">Ahorro</div>
       </div>
     </div>
 
-    <!-- Quick Action Buttons Grid -->
-    <div class="quick-actions-grid">
-      <button class="aurora-action-btn" id="btn-quick-expense">
-        <i data-lucide="minus" style="width: 16px; height: 16px; color: #FDA4AF;"></i>
+    <!-- Quick Action Pill Buttons -->
+    <div class="quick-actions-row">
+      <button type="button" class="action-pill-btn" id="btn-quick-expense">
+        <div class="action-icon-circle action-icon-expense">
+          <i data-lucide="minus" style="width: 16px; height: 16px;"></i>
+        </div>
         <span>Gasto</span>
       </button>
-      <button class="aurora-action-btn" id="btn-quick-income">
-        <i data-lucide="plus" style="width: 16px; height: 16px; color: #6EE7B7;"></i>
+
+      <button type="button" class="action-pill-btn" id="btn-quick-income">
+        <div class="action-icon-circle action-icon-income">
+          <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+        </div>
         <span>Ingreso</span>
       </button>
-      <button class="aurora-action-btn" id="btn-quick-cost">
-        <i data-lucide="calculator" style="width: 16px; height: 16px; color: #FDE68A;"></i>
+
+      <button type="button" class="action-pill-btn" id="btn-quick-cost">
+        <div class="action-icon-circle action-icon-cost">
+          <i data-lucide="calculator" style="width: 16px; height: 16px;"></i>
+        </div>
         <span>Costos</span>
       </button>
-      <button class="aurora-action-btn" id="btn-quick-budget">
-        <i data-lucide="target" style="width: 16px; height: 16px; color: #BAE6FD;"></i>
+
+      <button type="button" class="action-pill-btn" id="btn-quick-budget">
+        <div class="action-icon-circle action-icon-goals">
+          <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+        </div>
         <span>Metas</span>
       </button>
     </div>
 
-    <!-- Central Jakarta Liquid Wave Chart -->
-    <div class="aurora-card">
-      <div class="card-header" style="margin-bottom: 2px;">
-        <span class="card-title">
-          <i data-lucide="activity" style="width: 16px; height: 16px; color: #10B981;"></i>
-          Tendencia de Liquidez
-        </span>
-        <span style="font-size: 0.72rem; color: var(--ink-40); font-family: var(--font-mono);">Flujo Mensual</span>
+    <!-- Liquidity Wave Chart (Vibrant Liquid Glass) -->
+    <div class="chart-card-glass">
+      <div class="chart-card-header">
+        <div class="chart-title-left">
+          <i data-lucide="activity" style="width: 17px; height: 17px; color: #4F46E5;"></i>
+          <span>Tendencia de Liquidez</span>
+        </div>
+        <span class="chart-title-sub">Flujo Mensual</span>
       </div>
 
-      <div class="svg-wave-container">
-        <svg class="svg-wave" viewBox="0 0 400 100" preserveAspectRatio="none">
+      <div style="width: 100%; height: 90px; position: relative;">
+        <svg viewBox="0 0 400 90" preserveAspectRatio="none" style="width: 100%; height: 100%;">
           <defs>
-            <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+            <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.0"/>
             </linearGradient>
           </defs>
-          <path d="M0,75 Q50,30 100,50 T200,35 T300,70 T400,20 L400,100 L0,100 Z" fill="url(#waveFill)" />
-          <path class="wline" d="M0,75 Q50,30 100,50 T200,35 T300,70 T400,20" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" pathLength="1" />
+          <path d="M0,65 Q60,25 120,45 T240,30 T320,60 T400,15 L400,90 L0,90 Z" fill="url(#waveGradient)" />
+          <path d="M0,65 Q60,25 120,45 T240,30 T320,60 T400,15" fill="none" stroke="#4F46E5" stroke-width="2.8" stroke-linecap="round" />
         </svg>
       </div>
 
-      <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--ink-40);">
+      <div class="chart-legend-row">
         <span>Sem 1</span>
         <span>Sem 2</span>
         <span>Sem 3</span>
-        <span style="color: #FFFFFF; font-weight: 600;">Sem 4 (Actual)</span>
+        <span class="chart-legend-active">Sem 4 (Actual)</span>
       </div>
     </div>
 
-    <!-- Monthly Budget Progress -->
-    <div class="aurora-card" style="padding: 14px 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <span style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;">
-          Presupuesto Mensual
-        </span>
-        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: ${budgetSpentPct > 85 ? '#FDA4AF' : 'var(--ink-60)'};">
-          ${symbol}${metrics.totalExpense.toFixed(0)} / ${symbol}${monthlyBudget} (${budgetSpentPct}%)
-        </span>
-      </div>
-      <div style="width: 100%; height: 7px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
-        <div style="width: ${budgetSpentPct}%; height: 100%; background: ${budgetSpentPct > 90 ? 'var(--rose-pure)' : '#FFFFFF'}; border-radius: 99px; transition: width 0.5s var(--e-out);"></div>
-      </div>
-    </div>
-
-    <!-- Active Savings Goal -->
-    ${activeGoal ? `
-      <div class="aurora-card" style="padding: 14px 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <i data-lucide="${activeGoal.icon || 'shield'}" style="width: 16px; height: 16px; color: #10B981;"></i>
-            <div style="font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; color: #FFFFFF;">${activeGoal.title}</div>
-          </div>
-          <span style="font-family: var(--font-mono); font-size: 0.88rem; font-weight: 800; color: #FFFFFF;">
-            ${Math.round((activeGoal.currentAmount / activeGoal.targetAmount) * 100)}%
-          </span>
+    <!-- Monthly Budget Progress Card -->
+    <div class="budget-card-glass">
+      <div class="budget-header-row">
+        <div class="budget-title">Presupuesto Mensual</div>
+        <div class="budget-values">
+          ${symbol}${metrics.totalExpense.toFixed(0)} / ${symbol}${monthlyBudget} <span style="color: #6366F1;">(${budgetSpentPct}%)</span>
         </div>
-        <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
-          <div style="width: ${Math.min(100, Math.round((activeGoal.currentAmount / activeGoal.targetAmount) * 100))}%; height: 100%; background: #FFFFFF; border-radius: 99px;"></div>
+      </div>
+      <div class="budget-progress-track">
+        <div class="budget-progress-bar" style="width: ${budgetSpentPct}%;"></div>
+      </div>
+    </div>
+
+    <!-- Active Savings Goal Card (if any) -->
+    ${activeGoal ? `
+      <div class="budget-card-glass" style="background: linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(245, 243, 255, 0.9)); border-color: rgba(99, 102, 241, 0.25);">
+        <div class="budget-header-row">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="target" style="width: 16px; height: 16px; color: #4F46E5;"></i>
+            <span class="budget-title">${activeGoal.name}</span>
+          </div>
+          <div class="budget-values" style="color: #4338CA;">
+            ${symbol}${activeGoal.current.toFixed(0)} / ${symbol}${activeGoal.target.toFixed(0)}
+          </div>
+        </div>
+        <div class="budget-progress-track" style="background: rgba(99, 102, 241, 0.1);">
+          <div class="budget-progress-bar" style="width: ${Math.min(100, Math.round((activeGoal.current / activeGoal.target) * 100))}%; background: linear-gradient(90deg, #4F46E5, #7C3AED);"></div>
         </div>
       </div>
     ` : ''}
 
-    <!-- Recent Activity Ledger -->
-    <div class="aurora-card">
-      <div class="card-header">
-        <span class="card-title">Últimos Movimientos</span>
-        <a class="card-action-link" id="btn-view-all-txs">Ver Todos</a>
+    <!-- Recent Transactions Section -->
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-family: var(--font-display); font-weight: 800; font-size: 0.96rem; color: var(--ink);">Últimos Movimientos</span>
+        <button type="button" id="btn-view-all-tx" style="background: transparent; border: none; font-size: 0.78rem; font-weight: 700; color: #4F46E5; cursor: pointer;">
+          Ver todos →
+        </button>
       </div>
 
-      <div class="tx-list">
+      <div class="transactions-list-glass">
         ${transactions.length === 0 ? `
-          <div style="text-align: center; padding: 18px 0; color: var(--ink-40); font-size: 0.82rem;">
-            Sin movimientos registrados.<br/>Presiona <strong>+</strong> para registrar uno.
+          <div style="padding: 24px; text-align: center; color: var(--ink-60); font-size: 0.84rem; background: rgba(255, 255, 255, 0.7); border-radius: 16px;">
+            <i data-lucide="receipt" style="width: 28px; height: 28px; margin: 0 auto 8px; color: var(--ink-40); display: block;"></i>
+            No tienes transacciones registradas aún.
           </div>
         ` : transactions.map(tx => {
-          const cat = categories.find(c => c.id === tx.category) || { name: 'General', icon: 'receipt' };
+          const cat = categories.find(c => c.id === tx.categoryId) || { name: 'General', color: '#6366F1', icon: 'receipt' };
           const pm = PAYMENT_METHODS.find(p => p.id === tx.paymentMethod) || { name: 'Efectivo', icon: 'banknote' };
           const isIncome = tx.type === 'income';
 
           return `
-            <div class="tx-item" data-id="${tx.id}">
-              <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                <div class="tx-icon-badge">
-                  <i data-lucide="${cat.icon || 'receipt'}" style="width: 16px; height: 16px;"></i>
+            <div class="tx-item-card">
+              <div class="tx-left">
+                <div class="tx-icon-box" style="background: ${isIncome ? '#ECFDF5' : '#FFF1F2'}; color: ${isIncome ? '#059669' : '#E11D48'};">
+                  <i data-lucide="${cat.icon || 'receipt'}" style="width: 18px; height: 18px;"></i>
                 </div>
                 <div class="tx-details">
-                  <span class="tx-title">${tx.title}</span>
-                  <div class="tx-meta-info">
+                  <span class="tx-title">${tx.description || cat.name}</span>
+                  <div class="tx-meta">
                     <span>${cat.name}</span>
                     <span>•</span>
-                    <span class="tx-payment-method">
-                      <i data-lucide="${pm.icon || 'credit-card'}" style="width: 11px; height: 11px;"></i>
-                      ${pm.name}
-                    </span>
-                    ${tx.isFixed ? '<span style="color: #FDE68A; font-weight: 700;">[Fijo]</span>' : ''}
+                    <span>${new Date(tx.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}</span>
                   </div>
                 </div>
               </div>
 
-              <div style="display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; margin-left: 8px;">
-                <span class="tx-amount ${isIncome ? 'income' : 'expense'}">
-                  ${isIncome ? '+' : '-'}${symbol}${Number(tx.amount).toFixed(2)}
-                </span>
-                <span style="font-size: 0.68rem; color: var(--ink-40);">${tx.date}</span>
+              <div class="tx-amount ${isIncome ? 'income' : 'expense'}">
+                ${isIncome ? '+' : '-'}${symbol}${tx.amount.toFixed(2)}
               </div>
             </div>
           `;
@@ -186,10 +190,10 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
     </div>
   `;
 
-  // Bind Events
-  container.querySelector('#btn-quick-expense')?.addEventListener('click', () => onAddTransaction('expense'));
-  container.querySelector('#btn-quick-income')?.addEventListener('click', () => onAddTransaction('income'));
-  container.querySelector('#btn-quick-cost')?.addEventListener('click', () => onNavigate('costs'));
-  container.querySelector('#btn-quick-budget')?.addEventListener('click', () => onNavigate('budgets'));
-  container.querySelector('#btn-view-all-txs')?.addEventListener('click', () => onNavigate('transactions'));
+  // Bind Quick Actions
+  container.querySelector('#btn-quick-expense')?.addEventListener('click', () => onAddTransaction?.('expense'));
+  container.querySelector('#btn-quick-income')?.addEventListener('click', () => onAddTransaction?.('income'));
+  container.querySelector('#btn-quick-cost')?.addEventListener('click', () => onNavigate?.('costs'));
+  container.querySelector('#btn-quick-budget')?.addEventListener('click', () => onNavigate?.('budgets'));
+  container.querySelector('#btn-view-all-tx')?.addEventListener('click', () => onNavigate?.('transactions'));
 }

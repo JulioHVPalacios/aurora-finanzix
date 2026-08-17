@@ -1,48 +1,88 @@
 /* ==========================================================================
-   AURORA MASTER DESIGN TOKENS - PEARL SILVER & TACTILE GRAIN
+   AURORA FINANZIX - PEARL WHITE & VIBRANT LIQUID GLASS DESIGN TOKENS
+   Pure Luxury, High-Legibility, Vibrant Jewel Accents & Tactile Noise
    ========================================================================== */
 
 :root {
-  /* Typography */
+  /* ------------------------------------------------------------------------
+     Base Pearl Canvas & Futuristic Grain Gradients
+     ------------------------------------------------------------------------ */
+  --bg-stage: #F8FAFC;
+  --bg-silver-gradient: radial-gradient(ellipse 130% 100% at 50% 0%, #FFFFFF 0%, #F1F5F9 40%, #E2E8F0 80%, #CBD5E1 100%);
+  --bg-phone-chassis: #FFFFFF;
+  
+  /* Deep Obsidian & Slate Typography */
+  --ink: #0F172A;
+  --ink-90: #1E293B;
+  --ink-75: #334155;
+  --ink-60: #64748B;
+  --ink-40: #94A3B8;
+  --ink-20: #CBD5E1;
+  --ink-10: #F1F5F9;
+
+  /* ------------------------------------------------------------------------
+     Vibrant Jewel Tone Accents (Liquid Glass Effects)
+     ------------------------------------------------------------------------ */
+  /* Emerald Mint (Income & Positive Flows) */
+  --color-emerald-bg: linear-gradient(135deg, rgba(236, 253, 245, 0.95) 0%, rgba(209, 250, 229, 0.85) 100%);
+  --color-emerald-border: rgba(16, 185, 129, 0.35);
+  --color-emerald-ink: #065F46;
+  --color-emerald-accent: #10B981;
+
+  /* Rose Quartz (Expenses & Outflows) */
+  --color-rose-bg: linear-gradient(135deg, rgba(255, 241, 242, 0.95) 0%, rgba(254, 226, 226, 0.85) 100%);
+  --color-rose-border: rgba(244, 63, 94, 0.35);
+  --color-rose-ink: #9F1239;
+  --color-rose-accent: #F43F5E;
+
+  /* Royal Cobalt & Sapphire (Liquidity & Growth) */
+  --color-blue-bg: linear-gradient(135deg, rgba(239, 246, 255, 0.95) 0%, rgba(219, 234, 254, 0.85) 100%);
+  --color-blue-border: rgba(59, 130, 246, 0.35);
+  --color-blue-ink: #1E40AF;
+  --color-blue-accent: #2563EB;
+
+  /* Electric Violet / Amethyst (Hero Gradient) */
+  --color-violet-bg: linear-gradient(135deg, rgba(245, 243, 255, 0.95) 0%, rgba(237, 233, 254, 0.85) 100%);
+  --color-violet-border: rgba(139, 92, 246, 0.35);
+  --color-violet-ink: #5B21B6;
+  --color-violet-accent: #7C3AED;
+
+  /* Amber Topaz (Budgets & Cost Engine) */
+  --color-amber-bg: linear-gradient(135deg, rgba(255, 251, 235, 0.95) 0%, rgba(254, 243, 199, 0.85) 100%);
+  --color-amber-border: rgba(245, 158, 11, 0.35);
+  --color-amber-ink: #92400E;
+  --color-amber-accent: #D97706;
+
+  /* ------------------------------------------------------------------------
+     Frosted Glass Surfaces & Specular Reflections
+     ------------------------------------------------------------------------ */
+  --glass-surface: rgba(255, 255, 255, 0.8);
+  --glass-surface-hover: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-border-subtle: rgba(15, 23, 42, 0.08);
+  
+  --shadow-ambient: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  --shadow-floating: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8);
+  --shadow-glass-glow: 0 8px 24px rgba(79, 70, 229, 0.15);
+
+  /* ------------------------------------------------------------------------
+     Typography Tokens
+     ------------------------------------------------------------------------ */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Inter Tight', 'Inter', sans-serif;
+  --font-display: 'Inter Tight', 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Noticeable Silver/Gray Gradient & Film Grain Palette */
-  --bg-stage: #182232;
-  --bg-silver-gradient: radial-gradient(ellipse 90% 70% at 50% 0%, #4B5E7D 0%, #263347 40%, #131A26 80%, #0B0F17 100%);
-  --bg-phone-chassis: linear-gradient(180deg, #37465F 0%, #1F2A3D 45%, #101724 100%);
-  
-  --color-brand-gray: rgba(22, 30, 46, 0.90);
-  --color-brand-gray-light: rgba(36, 48, 71, 0.95);
-
-  /* Inks & Text */
-  --ink: #FFFFFF;
-  --ink-90: rgba(255, 255, 255, 0.90);
-  --ink-60: rgba(255, 255, 255, 0.65);
-  --ink-40: rgba(255, 255, 255, 0.45);
-  --ink-20: rgba(255, 255, 255, 0.20);
-  --ink-10: rgba(255, 255, 255, 0.10);
-
-  /* Accents */
-  --emerald-pure: #10B981;
-  --emerald-subtle: rgba(16, 185, 129, 0.15);
-  --rose-pure: #F43F5E;
-  --rose-subtle: rgba(244, 63, 94, 0.15);
-  --amber-pure: #F59E0B;
-  --cyan-pure: #0EA5E9;
-
-  /* Glass Borders */
-  --glass-border: 1px solid rgba(255, 255, 255, 0.16);
-  --glass-border-top: 1.5px solid rgba(255, 255, 255, 0.45);
-
-  /* Motion & Radius */
-  --e-out: cubic-bezier(.16, 1, .3, 1);
-  --e-soft: cubic-bezier(.22, .61, .36, 1);
-  --e-pen: cubic-bezier(.37, .01, .2, 1);
-
-  --radius-phone: 44px;
-  --radius-card: 22px;
-  --radius-element: 14px;
+  /* ------------------------------------------------------------------------
+     Radii & Animations
+     ------------------------------------------------------------------------ */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-pill: 9999px;
+  --radius-phone: 44px;
+
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

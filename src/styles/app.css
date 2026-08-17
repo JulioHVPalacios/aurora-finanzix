@@ -1,6 +1,6 @@
 /* ==========================================================================
-   AURORA FINANZIX - PEARL SILVER GRADIENT & TACTILE GRAIN EDITION
-   Clean, Elegant, High-Contrast & Zero-Overflow
+   AURORA FINANZIX - PEARL WHITE & VIBRANT LIQUID GLASS EDITION
+   Futuristic Gradient, Subtle Grain Noise, Vibrant Jewel Cards & Glassmorphism
    ========================================================================== */
 
 * {
@@ -23,19 +23,22 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(15, 23, 42, 0.15);
   border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.3);
 }
 
 /* --------------------------------------------------------------------------
-   Stage & Silver Gradient with Noticeable Film Grain Texture (Granulado)
+   Stage & Futuristic Pearl Gradient with Tactile Film Grain (Granulado)
    -------------------------------------------------------------------------- */
 .stage {
   min-height: 100vh;
@@ -47,14 +50,14 @@ body {
   position: relative;
 }
 
-/* Authentic Film Grain Noise Layer */
+/* Noticeable Futuristic Matte Film Grain Layer */
 .stage::before {
   content: "";
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.11'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 1;
 }
@@ -69,7 +72,7 @@ body {
   z-index: 2;
 }
 
-/* Desktop Top Banner */
+/* Desktop Top Header Bar */
 .desktop-banner {
   width: 100%;
   max-width: 1200px;
@@ -77,9 +80,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(24, 34, 50, 0.85);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -101,31 +105,32 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #FFFFFF;
-  color: #000000;
+  background: #0F172A;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
 }
 
 .brand-name {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.15rem;
   letter-spacing: -0.02em;
-  color: #FFFFFF;
+  color: #0F172A;
 }
 
 .brand-name span {
   font-size: 0.65rem;
   font-weight: 800;
-  padding: 2px 7px;
-  background: rgba(255, 255, 255, 0.25);
+  padding: 3px 8px;
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
   color: #FFFFFF;
-  border-radius: 5px;
+  border-radius: 6px;
   margin-left: 6px;
   vertical-align: middle;
+  letter-spacing: 0.05em;
 }
 
 .desktop-banner-right {
@@ -139,49 +144,53 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: #0F172A;
   border-radius: 12px;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: all 0.2s var(--e-out);
 }
 
 .btn-banner-action:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
 }
 
 .btn-banner-accent {
-  background: #FFFFFF;
-  color: #000000;
+  background: #0F172A;
+  color: #FFFFFF;
   border: none;
   font-weight: 700;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
 }
 
 .btn-banner-accent:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: #1E293B;
+  color: #FFFFFF;
 }
 
 /* --------------------------------------------------------------------------
-   Phone Container Chassis (Pearl Silver-Slate with Grain)
+   Phone Chassis (Pearl White Liquid Glass Frame)
    -------------------------------------------------------------------------- */
 .phone-container {
   width: 100%;
   max-width: 420px;
   min-height: 844px;
   height: 92vh;
-  margin: 12px auto 20px;
-  background: var(--bg-phone-chassis);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top: 2.5px solid rgba(255, 255, 255, 0.5);
+  margin: 14px auto 24px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
   border-radius: var(--radius-phone);
   box-shadow: 
-    0 35px 90px -10px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.15);
+    0 30px 80px -15px rgba(15, 23, 42, 0.15),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -191,10 +200,10 @@ body {
 
 .phone-container.mode-expanded {
   max-width: 960px;
-  border-radius: 26px;
+  border-radius: 28px;
 }
 
-/* Status Bar */
+/* Simulated Status Bar (Desktop Only) */
 .phone-status-bar {
   display: flex;
   align-items: center;
@@ -217,10 +226,10 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.08);
   padding: 3px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(15, 23, 42, 0.05);
 }
 
 .camera-lens {
@@ -233,7 +242,7 @@ body {
 .speaker-grille {
   width: 32px;
   height: 3px;
-  background: #475569;
+  background: #94A3B8;
   border-radius: 2px;
 }
 
@@ -252,7 +261,7 @@ body {
    App Navbar Header
    -------------------------------------------------------------------------- */
 .app-navbar {
-  padding: 42px 16px 10px;
+  padding: 40px 18px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -269,19 +278,19 @@ body {
 
 .user-avatar-circle,
 .user-avatar-glass {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  border: 2px solid #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   color: #FFFFFF;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .greeting-sub {
@@ -295,603 +304,606 @@ body {
 
 .greeting-main {
   font-family: var(--font-display);
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--ink);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  gap: 8px;
 }
 
-.chip-currency {
+.chip-glass {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: var(--ink);
   border-radius: var(--radius-pill);
-  font-size: 0.78rem;
-  font-family: var(--font-mono);
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #6EE7B7;
-  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s var(--e-out);
 }
 
-.tool-circle-btn {
+.chip-glass:hover {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.tool-circle-glass {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: var(--ink-75);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: all 0.2s var(--e-out);
-  flex-shrink: 0;
 }
 
-.tool-circle-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+.tool-circle-glass:hover {
+  background: #FFFFFF;
+  color: #0F172A;
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------------------------------------
-   Scrollable Main Content Area
+   Main Scrollable Container
    -------------------------------------------------------------------------- */
 .app-main-content {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 6px 14px 84px;
+  padding: 10px 16px 85px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* --------------------------------------------------------------------------
-   Cards with Silver/Platinum Depth
+   VIBRANT LIQUID GLASS CARDS
    -------------------------------------------------------------------------- */
-.aurora-card {
-  background: linear-gradient(180deg, rgba(38, 51, 75, 0.75) 0%, rgba(22, 30, 46, 0.9) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-card);
-  padding: 16px;
-  position: relative;
-  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(16px);
-  animation: riseIn 0.5s var(--e-out) both;
-}
-
-@keyframes riseIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  gap: 8px;
-}
-
-.card-title {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+/* Hero Balance Card - Deep Electric Sapphire Glass */
+.hero-balance-card,
+.card-hero-glass {
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
   color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-action-link {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6EE7B7;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.card-action-link:hover {
-  text-decoration: underline;
-}
-
-/* --------------------------------------------------------------------------
-   Mobile Identity & Hero Card
-   -------------------------------------------------------------------------- */
-.mobile-profile-hero {
   position: relative;
-  width: 100%;
-  min-height: 190px;
-  border-radius: 22px;
   overflow: hidden;
-  background: #111A29;
+  box-shadow: 
+    0 20px 40px -10px rgba(67, 56, 202, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
 }
 
-.mobile-profile-hero video {
+.hero-balance-card::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
+  top: -50%;
+  right: -30%;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.35) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.mobile-profile-hero-fade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(17, 26, 41, 0.15) 30%, rgba(17, 26, 41, 0.88) 75%, #111A29 100%);
-  pointer-events: none;
+.hero-user-name {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.02em;
+  margin-bottom: 4px;
 }
 
-.mobile-identity-row {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  padding-top: 45px;
-  padding-bottom: 14px;
-}
-
-.mobile-user-name {
+.hero-balance-amount {
   font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: #FFFFFF;
+  margin-bottom: 12px;
+  font-feature-settings: "tnum" 1;
 }
 
-.mobile-user-sub {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 2px;
-}
-
-.trophy-pill {
+.hero-savings-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-pill);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #FFFFFF;
-  margin-top: 8px;
-  backdrop-filter: blur(10px);
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #A7F3D0;
 }
 
-/* 3-Column Stats Grid */
-.stats-3col-grid {
+/* --------------------------------------------------------------------------
+   3-Column Stat Box Cards (Mint, Rose, Blue Glass)
+   -------------------------------------------------------------------------- */
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-box-card {
+  padding: 14px 10px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-ambient);
+  transition: transform 0.2s var(--e-out);
+}
+
+.stat-box-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Mint Emerald Income Card */
+.stat-box-income {
+  background: var(--color-emerald-bg);
+  border: 1.5px solid var(--color-emerald-border);
+}
+.stat-box-income .stat-amount {
+  color: var(--color-emerald-ink);
+}
+.stat-box-income .stat-label {
+  color: #047857;
+}
+
+/* Rose Quartz Expense Card */
+.stat-box-expense {
+  background: var(--color-rose-bg);
+  border: 1.5px solid var(--color-rose-border);
+}
+.stat-box-expense .stat-amount {
+  color: var(--color-rose-ink);
+}
+.stat-box-expense .stat-label {
+  color: #BE123C;
+}
+
+/* Sky Cobalt Savings Card */
+.stat-box-savings {
+  background: var(--color-blue-bg);
+  border: 1.5px solid var(--color-blue-border);
+}
+.stat-box-savings .stat-amount {
+  color: var(--color-blue-ink);
+}
+.stat-box-savings .stat-label {
+  color: #1D4ED8;
+}
+
+.stat-amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+  font-feature-settings: "tnum" 1;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------------
+   Quick Action Buttons (Liquid Glass Pills)
+   -------------------------------------------------------------------------- */
+.quick-actions-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
-.stat-box {
-  background: linear-gradient(180deg, rgba(38, 51, 75, 0.7) 0%, rgba(22, 30, 46, 0.85) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.35);
-  border-radius: 16px;
-  padding: 10px 6px;
-  text-align: center;
+.action-pill-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  backdrop-filter: blur(12px);
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s var(--e-out);
 }
 
-.stat-box-num {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
+.action-pill-btn:hover {
+  background: #FFFFFF;
+  border-color: rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+}
+
+.action-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 800;
-  color: #FFFFFF;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  font-size: 1.1rem;
 }
 
-.stat-box-lbl {
-  font-size: 0.64rem;
+.action-icon-expense {
+  background: #FFE4E6;
+  color: #E11D48;
+}
+
+.action-icon-income {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.action-icon-cost {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.action-icon-goals {
+  background: #E0E7FF;
+  color: #4F46E5;
+}
+
+/* --------------------------------------------------------------------------
+   Liquidity Wave Chart Card (Vibrant Glass)
+   -------------------------------------------------------------------------- */
+.chart-card-glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-ambient);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.chart-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.94rem;
+  color: var(--ink);
+}
+
+.chart-title-sub {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
   color: var(--ink-60);
   font-weight: 600;
 }
 
-/* --------------------------------------------------------------------------
-   Quick Action Buttons Grid
-   -------------------------------------------------------------------------- */
-.quick-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.aurora-action-btn {
+.chart-legend-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(180deg, rgba(38, 51, 75, 0.7) 0%, rgba(22, 30, 46, 0.85) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.35);
-  border-radius: 16px;
-  padding: 10px 4px;
-  cursor: pointer;
-  transition: all 0.2s var(--e-out);
-  color: #FFFFFF;
-  backdrop-filter: blur(12px);
-}
-
-.aurora-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.45);
-  transform: translateY(-2px);
-}
-
-.aurora-action-btn:active {
-  transform: scale(0.96);
-}
-
-.aurora-action-btn span {
+  justify-content: space-between;
+  margin-top: 10px;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
+  color: var(--ink-60);
   font-weight: 600;
-  white-space: nowrap;
+}
+
+.chart-legend-active {
+  color: #4F46E5;
+  font-weight: 800;
 }
 
 /* --------------------------------------------------------------------------
-   SVG Wave Trend Chart
+   Monthly Budget Progress Card (Amber / Violet Glass)
    -------------------------------------------------------------------------- */
-.svg-wave-container {
-  width: 100%;
-  height: 90px;
-  position: relative;
-  margin: 4px 0;
+.budget-card-glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-ambient);
 }
 
-.svg-wave {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.wline {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: drawLine 1.4s var(--e-pen) 0.2s forwards;
-}
-
-@keyframes drawLine {
-  to { stroke-dashoffset: 0; }
-}
-
-/* --------------------------------------------------------------------------
-   Transactions List
-   -------------------------------------------------------------------------- */
-.tx-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tx-item {
+.budget-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: var(--radius-element);
+  margin-bottom: 10px;
+}
+
+.budget-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.budget-values {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-75);
+}
+
+.budget-progress-track {
+  width: 100%;
+  height: 10px;
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.budget-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981 0%, #F59E0B 70%, #EF4444 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.5s var(--e-out);
+}
+
+/* --------------------------------------------------------------------------
+   Recent Transactions List Cards
+   -------------------------------------------------------------------------- */
+.transactions-list-glass {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
   transition: all 0.2s var(--e-out);
-  cursor: pointer;
-  gap: 10px;
 }
 
-.tx-item:hover {
-  background: rgba(255, 255, 255, 0.12);
+.tx-item-card:hover {
   transform: translateY(-1px);
+  background: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
-.tx-icon-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+.tx-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.tx-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.1rem;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tx-details {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  flex: 1;
-  overflow: hidden;
 }
 
 .tx-title {
+  font-weight: 700;
   font-size: 0.88rem;
-  font-weight: 600;
-  color: #FFFFFF;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tx-meta-info {
+.tx-meta {
+  font-size: 0.72rem;
+  color: var(--ink-60);
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.7rem;
-  color: var(--ink-60);
-  margin-top: 1px;
-}
-
-.tx-payment-method {
-  padding: 1px 6px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .tx-amount {
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.96rem;
   white-space: nowrap;
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .tx-amount.income {
-  color: #6EE7B7;
+  color: #059669;
 }
 
 .tx-amount.expense {
-  color: #FDA4AF;
+  color: #E11D48;
 }
 
 /* --------------------------------------------------------------------------
-   Bottom Dock Navigation
+   Floating Bottom Dock Navigation (Pearl Liquid Glass)
    -------------------------------------------------------------------------- */
 .app-bottom-nav {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 68px;
-  background: rgba(17, 26, 41, 0.95);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 8px;
   z-index: 50;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.05);
 }
 
-.nav-item {
+.nav-item-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  background: none;
+  gap: 4px;
+  background: transparent;
   border: none;
-  color: var(--ink-40);
+  color: var(--ink-60);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s var(--e-out);
-  flex: 1;
 }
 
-.nav-item i {
-  width: 18px;
-  height: 18px;
+.nav-item-btn:hover {
+  color: #4F46E5;
 }
 
-.nav-item.active {
-  color: #FFFFFF;
+.nav-item-btn.active {
+  color: #4F46E5;
 }
 
+.nav-item-btn.active svg {
+  stroke: #4F46E5;
+  stroke-width: 2.5;
+}
+
+/* Floating Center Add (+) Action Button */
 .nav-fab-btn {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #FFFFFF;
-  color: #000000;
-  border: none;
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: #FFFFFF;
+  border: 3px solid #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 300;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-  margin-top: -22px;
-  flex-shrink: 0;
-  transition: all 0.2s var(--e-out);
+  box-shadow: 
+    0 10px 24px rgba(79, 70, 229, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-12px);
+  transition: all 0.25s var(--e-spring);
 }
 
 .nav-fab-btn:hover {
-  transform: scale(1.06);
+  transform: translateY(-15px) scale(1.06);
+  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.5);
 }
 
 /* --------------------------------------------------------------------------
-   Inputs & Form Controls
+   Universal Buttons & Modal Sheets
    -------------------------------------------------------------------------- */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 12px;
-}
-
-.form-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--ink-60);
-  display: flex;
-  justify-content: space-between;
-}
-
-.input-control {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(17, 26, 41, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 12px;
-  color: #FFFFFF;
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.2s var(--e-out);
-}
-
-.input-control:focus {
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-}
-
-.input-control-mono {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-}
-
-.segmented-control {
-  display: flex;
-  background: rgba(17, 26, 41, 0.85);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  gap: 4px;
-}
-
-.segment-btn {
-  flex: 1;
-  padding: 7px 10px;
-  border-radius: 8px;
-  background: transparent;
-  border: none;
-  color: var(--ink-40);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.78rem;
-  cursor: pointer;
-  transition: all 0.2s var(--e-out);
-}
-
-.segment-btn.active {
-  background: #FFFFFF;
-  color: #000000;
-  font-weight: 700;
-}
-
-/* Solid Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 600;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
-  border: none;
   transition: all 0.2s var(--e-out);
+  border: none;
 }
 
 .btn-primary {
-  background: #FFFFFF;
-  color: #000000;
-  font-weight: 700;
+  background: #0F172A;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
 }
 
 .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: #1E293B;
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--ink);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.btn-danger {
-  background: rgba(244, 63, 94, 0.2);
-  color: #FDA4AF;
-  border: 1px solid rgba(244, 63, 94, 0.35);
+  background: rgba(15, 23, 42, 0.12);
 }
 
 .btn-block {
   width: 100%;
 }
 
-/* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(16px);
-  z-index: 1000;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  z-index: 1000;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s var(--e-out);
+  transition: opacity 0.28s var(--e-out);
 }
 
 .modal-overlay.active {
   opacity: 1;
-  pointer-events: auto;
 }
 
 .bottom-sheet {
   width: 100%;
-  max-width: 430px;
-  background: #182232;
+  max-width: 440px;
+  background: #FFFFFF;
   border-radius: 28px 28px 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.45);
-  padding: 12px 18px 28px;
-  max-height: 88vh;
-  overflow-y: auto;
+  padding: 20px 20px 30px;
+  box-shadow: 0 -20px 50px rgba(15, 23, 42, 0.2);
   transform: translateY(100%);
-  transition: transform 0.3s var(--e-out);
+  transition: transform 0.32s var(--e-spring);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-overlay.active .bottom-sheet {
@@ -899,73 +911,72 @@ body {
 }
 
 .sheet-handle {
-  width: 36px;
+  width: 38px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 99px;
-  margin: 0 auto 14px;
+  background: #CBD5E1;
+  border-radius: var(--radius-pill);
+  margin: 0 auto 16px;
 }
 
 .sheet-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .sheet-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .sheet-close-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: var(--ink-60);
-  width: 30px;
-  height: 30px;
+  background: rgba(15, 23, 42, 0.06);
+  border: none;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  color: var(--ink-75);
+  font-size: 1rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 
-/* Category Grid */
+/* Category Picker Grid */
 .category-picker-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  max-height: 180px;
-  overflow-y: auto;
-  padding: 2px;
+  gap: 10px;
+  margin: 14px 0;
 }
 
 .cat-picker-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  gap: 6px;
+  padding: 10px 4px;
+  background: #F8FAFC;
+  border: 1.5px solid rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s var(--e-out);
 }
 
-.cat-picker-item:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
 .cat-picker-item.selected {
-  border-color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.24);
+  background: #EEF2FF;
+  border-color: #4F46E5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
 }
 
-.cat-picker-icon {
+.cat-picker-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -973,9 +984,9 @@ body {
 }
 
 .cat-picker-label {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--ink-90);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-75);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -984,14 +995,14 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   Responsive Layout: Android, iOS, Tablets & Desktops
+   Responsive Full-Bleed Mobile Layout (100dvh Zero Black Bars)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: var(--bg-silver-gradient);
+    background: var(--bg-stage);
   }
 
   .stage {
@@ -1023,17 +1034,17 @@ body {
 
   .app-navbar {
     padding: max(14px, env(safe-area-inset-top, 14px)) 16px 8px 16px !important;
-    background: rgba(26, 35, 50, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
   }
 
   .app-main-content {
     padding-left: max(14px, env(safe-area-inset-left, 14px));
     padding-right: max(14px, env(safe-area-inset-right, 14px));
     padding-top: 14px;
-    padding-bottom: calc(74px + env(safe-area-inset-bottom, 12px)) !important;
+    padding-bottom: calc(78px + env(safe-area-inset-bottom, 12px)) !important;
   }
 
   .app-bottom-nav {

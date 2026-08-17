@@ -4,7 +4,7 @@
    Cache-First with Background Sync for Assets (100% Offline Capability)
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v2';
+const CACHE_VERSION = 'aurora-finanzix-v3-pearl-glass';
 
 const CORE_ASSETS = [
   '/',
