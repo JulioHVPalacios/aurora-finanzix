@@ -4,7 +4,7 @@
    Background Periodic Sync & Push Event Listeners
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v9-liquid-glass-20260817';
+const CACHE_VERSION = 'aurora-finanzix-v10-fixes-20260817';
 
 const CORE_ASSETS = [
   '/',

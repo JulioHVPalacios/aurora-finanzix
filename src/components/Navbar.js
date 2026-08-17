@@ -3,6 +3,7 @@
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
+import { t } from '../services/i18n.js';
 
 export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, onCurrencyChange, onCheckUpdates }) {
   const settings = storage.getSettings() || {};
@@ -14,7 +15,7 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
       </div>
       <div>
         <div class="greeting-sub">Aurora Liquid OS</div>
-        <div class="greeting-main">${settings.userName || 'Mi Espacio'}</div>
+        <div class="greeting-main">${settings.userName || t('nav_my_space')}</div>
       </div>
     </div>
 

@@ -2,6 +2,8 @@
    AURORA FINANZIX - BOTTOM NAVIGATION COMPONENT (CENTERED FAB DOCK)
    ========================================================================== */
 
+import { t } from '../services/i18n.js';
+
 export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
   const isReportsActive = ['analytics', 'budgets', 'tools'].includes(activeTab);
 
@@ -9,18 +11,18 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
     <!-- Slot 1: Inicio -->
     <button class="nav-item ${activeTab === 'dashboard' ? 'active' : ''}" data-tab="dashboard">
       <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
-      <span>Inicio</span>
+      <span>${t('nav_dashboard')}</span>
     </button>
 
     <!-- Slot 2: Gastos -->
     <button class="nav-item ${activeTab === 'transactions' ? 'active' : ''}" data-tab="transactions">
       <i data-lucide="receipt" style="width: 20px; height: 20px;"></i>
-      <span>Gastos</span>
+      <span>${t('nav_transactions')}</span>
     </button>
 
     <!-- Slot 3: Center Floating Action Button (Exact Math Center) -->
     <div class="nav-fab-wrap">
-      <button class="nav-fab-btn" id="btn-nav-fab" title="Nuevo Movimiento">
+      <button class="nav-fab-btn" id="btn-nav-fab" title="${t('tx_new')}">
         <i data-lucide="plus" style="width: 26px; height: 26px;"></i>
       </button>
     </div>
@@ -28,13 +30,13 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
     <!-- Slot 4: Suscripciones -->
     <button class="nav-item ${activeTab === 'subscriptions' ? 'active' : ''}" data-tab="subscriptions">
       <i data-lucide="calendar-clock" style="width: 20px; height: 20px;"></i>
-      <span>Pagos Fijos</span>
+      <span>${t('nav_subscriptions')}</span>
     </button>
 
     <!-- Slot 5: Metas & Más -->
     <button class="nav-item ${isReportsActive ? 'active' : ''}" data-tab="analytics">
       <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
-      <span>Reportes</span>
+      <span>${t('nav_reports')}</span>
     </button>
   `;
 

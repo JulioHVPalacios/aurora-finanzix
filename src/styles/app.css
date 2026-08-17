@@ -1174,6 +1174,8 @@ html, body {
   }
 
   .app-bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
     padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
   }
 }

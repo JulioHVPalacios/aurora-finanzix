@@ -59,28 +59,28 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
           <div class="action-icon-circle action-icon-expense">
             <i data-lucide="minus" style="width: 16px; height: 16px;"></i>
           </div>
-          <span>Gasto</span>
+          <span>${t('qa_expense')}</span>
         </button>
 
         <button type="button" class="action-pill-btn" id="btn-quick-income">
           <div class="action-icon-circle action-icon-income">
             <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
           </div>
-          <span>Ingreso</span>
+          <span>${t('qa_income')}</span>
         </button>
 
         <button type="button" class="action-pill-btn" id="btn-quick-cost">
           <div class="action-icon-circle action-icon-cost">
             <i data-lucide="calculator" style="width: 16px; height: 16px;"></i>
           </div>
-          <span>Costos</span>
+          <span>${t('qa_costs')}</span>
         </button>
 
         <button type="button" class="action-pill-btn" id="btn-quick-budget">
           <div class="action-icon-circle action-icon-goals">
             <i data-lucide="target" style="width: 16px; height: 16px;"></i>
           </div>
-          <span>Metas</span>
+          <span>${t('qa_goals')}</span>
         </button>
       </div>
 
