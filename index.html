@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Aurora Finanzix | Financial Intelligence & Expense Engine" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>Aurora Finanzix | Intelligence OS</title>
+  
+  <!-- Inter & Inter Tight Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/src/styles/design-tokens.css" />
+  <link rel="stylesheet" href="/src/styles/app.css" />
+</head>
+<body>
+  <div class="stage">
+    <!-- Desktop Banner -->
+    <header class="desktop-banner" id="desktop-banner">
+      <div class="desktop-banner-left">
+        <div class="logo-badge">
+          <div class="logo-circle-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v8M8 12h8"/>
+            </svg>
+          </div>
+          <span class="brand-name">Aurora <span>FINANZIX</span></span>
+        </div>
+      </div>
+
+      <div class="desktop-banner-right">
+        <button id="btn-device-toggle" class="btn-banner-action" title="Cambiar tamaño">
+          <i data-lucide="smartphone" style="width: 15px; height: 15px;"></i>
+          <span id="device-toggle-text">Vista Expandida</span>
+        </button>
+        <button id="btn-open-mobile-qr" class="btn-banner-action btn-banner-accent" title="Abrir en celular">
+          <i data-lucide="qr-code" style="width: 15px; height: 15px;"></i>
+          <span>Abrir en mi Celular</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Mobile & Desktop App Chassis (Single Canonical Container - Zero Duplicates) -->
+    <div id="phone-container" class="phone-container">
+      <div class="phone-status-bar" id="phone-status-bar">
+        <span class="status-time" id="status-clock">12:00</span>
+        <div class="status-notch">
+          <span class="camera-lens"></span>
+          <span class="speaker-grille"></span>
+        </div>
+        <div class="status-icons">
+          <i data-lucide="signal" class="status-icon"></i>
+          <i data-lucide="wifi" class="status-icon"></i>
+          <i data-lucide="battery-charging" class="status-icon"></i>
+        </div>
+      </div>
+
+      <!-- App Header Navbar -->
+      <header id="app-navbar" class="app-navbar"></header>
+
+      <!-- Main Scrollable App View -->
+      <main id="app-main-content" class="app-main-content"></main>
+
+      <!-- Bottom Dock Navigation -->
+      <nav id="app-bottom-nav" class="app-bottom-nav"></nav>
+    </div>
+  </div>
+
+  <!-- Dynamic Modals Container -->
+  <div id="modal-portal"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

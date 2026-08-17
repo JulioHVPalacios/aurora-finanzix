@@ -1,0 +1,48 @@
+/* ==========================================================================
+   AURORA MASTER DESIGN TOKENS - PEARL SILVER & TACTILE GRAIN
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter Tight', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Noticeable Silver/Gray Gradient & Film Grain Palette */
+  --bg-stage: #182232;
+  --bg-silver-gradient: radial-gradient(ellipse 90% 70% at 50% 0%, #4B5E7D 0%, #263347 40%, #131A26 80%, #0B0F17 100%);
+  --bg-phone-chassis: linear-gradient(180deg, #37465F 0%, #1F2A3D 45%, #101724 100%);
+  
+  --color-brand-gray: rgba(22, 30, 46, 0.90);
+  --color-brand-gray-light: rgba(36, 48, 71, 0.95);
+
+  /* Inks & Text */
+  --ink: #FFFFFF;
+  --ink-90: rgba(255, 255, 255, 0.90);
+  --ink-60: rgba(255, 255, 255, 0.65);
+  --ink-40: rgba(255, 255, 255, 0.45);
+  --ink-20: rgba(255, 255, 255, 0.20);
+  --ink-10: rgba(255, 255, 255, 0.10);
+
+  /* Accents */
+  --emerald-pure: #10B981;
+  --emerald-subtle: rgba(16, 185, 129, 0.15);
+  --rose-pure: #F43F5E;
+  --rose-subtle: rgba(244, 63, 94, 0.15);
+  --amber-pure: #F59E0B;
+  --cyan-pure: #0EA5E9;
+
+  /* Glass Borders */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.16);
+  --glass-border-top: 1.5px solid rgba(255, 255, 255, 0.45);
+
+  /* Motion & Radius */
+  --e-out: cubic-bezier(.16, 1, .3, 1);
+  --e-soft: cubic-bezier(.22, .61, .36, 1);
+  --e-pen: cubic-bezier(.37, .01, .2, 1);
+
+  --radius-phone: 44px;
+  --radius-card: 22px;
+  --radius-element: 14px;
+  --radius-pill: 9999px;
+}

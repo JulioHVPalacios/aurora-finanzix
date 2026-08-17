@@ -1,0 +1,39 @@
+{
+  "name": "Aurora Finanzix",
+  "short_name": "Finanzix",
+  "description": "Aplicativo profesional de gestión de gastos, calculadora de costos de productos y metas de ahorro.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "orientation": "portrait",
+  "background_color": "#111A29",
+  "theme_color": "#111A29",
+  "categories": ["finance", "productivity", "utilities"],
+  "lang": "es",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512 any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Aurora Finanzix Mobile Dashboard"
+    }
+  ]
+}
