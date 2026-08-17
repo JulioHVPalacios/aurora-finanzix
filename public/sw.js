@@ -1,13 +1,15 @@
 /* ==========================================================================
    AURORA FINANZIX - AUTO-UPDATE & ANDROID SYSTEM PUSH NOTIFICATIONS
+   Version: 1.0.6 (2026-08-17)
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v5-fluid-ultra';
+const CACHE_VERSION = 'aurora-finanzix-v6-pearl-clarity-20260817-1728';
 
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/version.json',
   '/icon.svg'
 ];
 
@@ -21,7 +23,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: Clean old caches and claim clients immediately
+// Activate: Clean old caches, claim clients, and send native Android notification
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -38,11 +40,11 @@ self.addEventListener('activate', (event) => {
       // Send Native Notification to Android Status Bar if permission is granted
       if (self.Notification && self.Notification.permission === 'granted') {
         self.registration.showNotification('✨ Aurora Finanzix Actualizada', {
-          body: 'Se ha instalado la versión más reciente con efectos fluidos y cards de cristal.',
+          body: 'Se ha instalado la última versión con diseño blanco perla y alta legibilidad.',
           icon: '/icon.svg',
           badge: '/icon.svg',
-          vibrate: [150, 80, 150],
-          tag: 'finanzix-update',
+          vibrate: [200, 100, 200],
+          tag: 'finanzix-auto-update',
           renotify: true,
           data: { url: '/' }
         });
@@ -68,16 +70,21 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Network-First for HTML/Manifest, Stale-While-Revalidate for other assets
+// Network-First for HTML, Manifest & Version.json; Stale-While-Revalidate for other assets
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // HTML and Manifest: Network-First
-  if (event.request.headers.get('accept')?.includes('text/html') || url.pathname.endsWith('manifest.json')) {
+  // HTML, Manifest and Version: Always Network-First
+  if (
+    event.request.headers.get('accept')?.includes('text/html') ||
+    url.pathname.endsWith('manifest.json') ||
+    url.pathname.endsWith('version.json') ||
+    url.pathname === '/sw.js'
+  ) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-cache' })
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const copy = networkResponse.clone();

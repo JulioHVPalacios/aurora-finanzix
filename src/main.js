@@ -40,27 +40,39 @@ class App {
       if ('Notification' in window && Notification.permission === 'default') {
         setTimeout(() => {
           Notification.requestPermission().catch(() => {});
-        }, 1500);
+        }, 1200);
       }
 
       navigator.serviceWorker.register('/sw.js').then((registration) => {
-        // Check for updates periodically every 15 minutes
+        this.swRegistration = registration;
+        // Check for updates immediately
+        registration.update().catch(() => {});
+
+        // Check for updates whenever the user returns to the app
+        window.addEventListener('focus', () => registration.update().catch(() => {}));
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') {
+            registration.update().catch(() => {});
+          }
+        });
+
+        // Periodic check every 5 minutes
         setInterval(() => {
           registration.update().catch(() => {});
-        }, 15 * 60 * 1000);
+        }, 5 * 60 * 1000);
 
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (newWorker.state === 'installed') {
                 this.showUpdateBanner();
 
-                if (Notification.permission === 'granted') {
+                if ('Notification' in window && Notification.permission === 'granted') {
                   registration.showNotification('✨ Aurora Finanzix Actualizada', {
-                    body: 'Nueva versión disponible con efectos fluidos y cards de cristal líquido.',
+                    body: 'Se ha instalado la última versión con diseño blanco perla.',
                     icon: '/icon.svg',
-                    vibrate: [150, 80, 150],
+                    vibrate: [200, 100, 200],
                     data: { url: '/' }
                   }).catch(() => {});
                 }
@@ -79,6 +91,38 @@ class App {
           window.location.reload();
         }
       });
+    }
+  }
+
+  async checkUpdates(manual = false) {
+    if (manual) {
+      this.showToast('🔍 Verificando actualizaciones...', 'info');
+    }
+
+    try {
+      if (this.swRegistration) {
+        await this.swRegistration.update();
+      }
+
+      const res = await fetch(`/version.json?t=${Date.now()}`, { cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        const storedVersion = localStorage.getItem('aurora_app_version');
+
+        if (storedVersion && storedVersion !== data.version) {
+          localStorage.setItem('aurora_app_version', data.version);
+          this.showUpdateBanner();
+        } else {
+          localStorage.setItem('aurora_app_version', data.version);
+          if (manual) {
+            this.showToast(`✓ Tienes la versión más reciente (v${data.version})`, 'success');
+          }
+        }
+      }
+    } catch (e) {
+      if (manual) {
+        this.showToast('Listo: App sincronizada', 'success');
+      }
     }
   }
 
@@ -211,6 +255,7 @@ class App {
     if (navEl) {
       renderNavbar(navEl, {
         onOpenMobileQR: () => showConnectMobileModal(),
+        onCheckUpdates: () => this.checkUpdates(true),
         onOpenExportImport: () => showExportImportModal({
           onDataReload: () => this.render(),
           onShowToast: (msg, type) => this.showToast(msg, type)
