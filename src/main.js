@@ -36,15 +36,6 @@ class App {
       this.renderCurrentView();
       this.refreshNavbar();
     });
-
-    // Premium Splash Screen Fade-out
-    setTimeout(() => {
-      const splash = document.getElementById('app-splash');
-      if (splash) {
-        splash.classList.add('fade-out');
-        setTimeout(() => splash.remove(), 800);
-      }
-    }, 1200);
   }
 
   setupServiceWorker() {
