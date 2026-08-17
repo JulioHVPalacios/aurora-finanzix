@@ -1,6 +1,6 @@
 /* ==========================================================================
-   AURORA FINANZIX - COST & PRODUCT PRICING CALCULATOR (LIQUID GLASS EDITION)
-   Intuitive Step-by-Step for Businesses, Freelancers & Personal Projects
+   AURORA FINANZIX - COST & PRODUCT PRICING CALCULATOR (CRASH-PROOF & WORLD-CLASS)
+   Inspired by Cashew, Maybe & Paisa Financial Engineering
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
@@ -11,24 +11,50 @@ export function renderCostCalculator(container, { onShowToast }) {
   const symbol = settings.currencySymbol || 'S/';
   let projects = storage.getCostProjects();
 
-  let activeProject = projects[0] || {
-    id: 'proj_' + Date.now(),
-    name: 'Torta Artesanal de Chocolate',
-    batchSize: 1,
-    targetMargin: 40,
-    taxRate: 0,
-    materials: [
-      { id: 'm1', name: 'Harina y Cacao Especial', qty: 1, unitCost: 12.50 },
-      { id: 'm2', name: 'Caja y Empaque de Lujo', qty: 1, unitCost: 4.50 }
-    ],
-    labor: { hours: 2, ratePerHour: 10.00 },
-    overheads: [
-      { id: 'o1', name: 'Gas / Horno / Luz', amount: 6.00 }
-    ]
-  };
+  if (!projects || projects.length === 0) {
+    projects = [{
+      id: 'proj_' + Date.now(),
+      name: 'Torta Artesanal de Chocolate',
+      batchSize: 1,
+      targetMargin: 40,
+      taxRate: 0,
+      materials: [
+        { id: 'm1', name: 'Harina y Cacao Especial', qty: 1, unitCost: 12.50 },
+        { id: 'm2', name: 'Caja y Empaque de Lujo', qty: 1, unitCost: 4.50 }
+      ],
+      labor: { hours: 2, ratePerHour: 10.00 },
+      overheads: [
+        { id: 'o1', name: 'Gas / Horno / Luz', amount: 6.00 }
+      ]
+    }];
+    storage.saveCostProject(projects[0]);
+  }
+
+  let activeProject = projects[0];
 
   function updateView() {
-    const calc = calculateCostProject(activeProject);
+    // Null-safe calculation
+    const calc = calculateCostProject(activeProject) || {
+      unitCost: 0,
+      unitSalePrice: 0,
+      unitProfit: 0,
+      totalMaterials: 0,
+      totalLabor: 0,
+      totalOverheads: 0,
+      totalBatchCost: 0,
+      targetMargin: 40,
+      markupPercentage: 0,
+      breakEvenUnits: 1
+    };
+
+    const unitCost = Number(calc.unitCost || 0);
+    const salePrice = Number(calc.unitSalePrice || 0);
+    const unitProfit = Number(calc.unitProfit || 0);
+    const margin = Number(calc.targetMargin || activeProject.targetMargin || 40);
+    const totalMaterials = Number(calc.totalMaterials || 0);
+    const laborHours = Number(activeProject.labor?.hours || 0);
+    const laborRate = Number(activeProject.labor?.ratePerHour || 0);
+    const batchSize = Number(activeProject.batchSize || 1);
 
     container.innerHTML = `
       <div class="view-transition-wrap">
@@ -38,7 +64,7 @@ export function renderCostCalculator(container, { onShowToast }) {
             <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink);">
               🧮 Calculadora de Costos & Precios
             </h2>
-            <p style="font-size: 0.74rem; color: var(--ink-60);">Calcula tu ganancia real y precio de venta sugerido</p>
+            <p style="font-size: 0.74rem; color: var(--ink-60);">Calcula tu ganancia real y precio de venta recomendado</p>
           </div>
           <button id="btn-save-project" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.82rem;">
             💾 Guardar
@@ -62,30 +88,30 @@ export function renderCostCalculator(container, { onShowToast }) {
           </button>
         </div>
 
-        <!-- Result Hero Card (Realtime Liquid Pricing) -->
+        <!-- Realtime Profit & Pricing Radar Card -->
         <div class="glass-card" style="background: linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(245, 243, 255, 0.9)); border: 1.5px solid rgba(79, 70, 229, 0.25);">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
             <div>
-              <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Costo por Unidad</div>
+              <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Costo Real por Unidad</div>
               <div style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: #4338CA;">
-                ${symbol}${calc.unitCost.toFixed(2)}
+                ${symbol}${unitCost.toFixed(2)}
               </div>
             </div>
             <div>
               <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Precio de Venta Sugerido</div>
               <div style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: #059669;">
-                ${symbol}${calc.suggestedPrice.toFixed(2)}
+                ${symbol}${salePrice.toFixed(2)}
               </div>
             </div>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(79, 70, 229, 0.15); font-size: 0.8rem;">
-            <span>Ganancia Neta por Venta:</span>
-            <strong style="color: #059669; font-family: var(--font-mono); font-size: 0.95rem;">+${symbol}${calc.netProfitPerUnit.toFixed(2)} (${activeProject.targetMargin || 40}%)</strong>
+            <span>Ganancia Limpia por Venta:</span>
+            <strong style="color: #059669; font-family: var(--font-mono); font-size: 0.95rem;">+${symbol}${unitProfit.toFixed(2)} (${margin}%)</strong>
           </div>
         </div>
 
-        <!-- Section 1: Materials & Ingredients -->
+        <!-- Section 1: Insumos & Materiales -->
         <div class="glass-card">
           <div class="card-header">
             <span class="card-title">📦 1. Insumos & Materiales</span>
@@ -97,42 +123,42 @@ export function renderCostCalculator(container, { onShowToast }) {
           <div id="materials-container" style="display: flex; flex-direction: column; gap: 8px;">
             ${(activeProject.materials || []).map((m, idx) => `
               <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 6px; align-items: center;">
-                <input type="text" class="input-control inp-mat-name" data-idx="${idx}" value="${m.name}" placeholder="Nombre del insumo" style="font-size: 0.8rem; padding: 8px 10px;" />
-                <input type="number" min="0.1" step="any" class="input-control inp-mat-qty" data-idx="${idx}" value="${m.qty}" placeholder="Cant." style="font-size: 0.8rem; padding: 8px 6px; text-align: center;" />
-                <input type="number" min="0" step="any" class="input-control inp-mat-cost" data-idx="${idx}" value="${m.unitCost}" placeholder="Costo" style="font-size: 0.8rem; padding: 8px 6px; text-align: right;" />
+                <input type="text" class="input-control inp-mat-name" data-idx="${idx}" value="${m.name || ''}" placeholder="Nombre insumo" style="font-size: 0.8rem; padding: 8px 10px;" />
+                <input type="number" min="0.1" step="any" class="input-control inp-mat-qty" data-idx="${idx}" value="${m.qty || 1}" placeholder="Cant." style="font-size: 0.8rem; padding: 8px 6px; text-align: center;" />
+                <input type="number" min="0" step="any" class="input-control inp-mat-cost" data-idx="${idx}" value="${m.unitCost || 0}" placeholder="Costo" style="font-size: 0.8rem; padding: 8px 6px; text-align: right;" />
                 <button type="button" class="btn-remove-material btn-danger" data-idx="${idx}" style="padding: 8px; border-radius: 8px; cursor: pointer; border: none;">✕</button>
               </div>
             `).join('')}
           </div>
 
           <div style="text-align: right; margin-top: 10px; font-size: 0.78rem; color: var(--ink-75); font-weight: 700;">
-            Subtotal Insumos: <span style="font-family: var(--font-mono); color: var(--ink);">${symbol}${calc.materialCost.toFixed(2)}</span>
+            Subtotal Insumos: <span style="font-family: var(--font-mono); color: var(--ink);">${symbol}${totalMaterials.toFixed(2)}</span>
           </div>
         </div>
 
-        <!-- Section 2: Labor & Overheads -->
+        <!-- Section 2: Mano de Obra & Margen -->
         <div class="glass-card">
-          <span class="card-title" style="margin-bottom: 12px; display: block;">⏱️ 2. Mano de Obra y Costos Operativos</span>
+          <span class="card-title" style="margin-bottom: 12px; display: block;">⏱️ 2. Mano de Obra y Margen Deseado</span>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
             <div class="form-group">
               <label class="form-label">Horas de Trabajo</label>
-              <input type="number" min="0" step="0.5" id="inp-labor-hours" class="input-control" value="${activeProject.labor?.hours || 0}" style="font-size: 0.88rem; font-weight: 700;" />
+              <input type="number" min="0" step="0.5" id="inp-labor-hours" class="input-control" value="${laborHours}" style="font-size: 0.88rem; font-weight: 700;" />
             </div>
             <div class="form-group">
               <label class="form-label">Pago por Hora (${symbol})</label>
-              <input type="number" min="0" step="1" id="inp-labor-rate" class="input-control" value="${activeProject.labor?.ratePerHour || 0}" style="font-size: 0.88rem; font-weight: 700;" />
+              <input type="number" min="0" step="1" id="inp-labor-rate" class="input-control" value="${laborRate}" style="font-size: 0.88rem; font-weight: 700;" />
             </div>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="form-group">
               <label class="form-label">Margen de Ganancia (%)</label>
-              <input type="number" min="1" max="500" step="5" id="inp-margin" class="input-control" value="${activeProject.targetMargin || 40}" style="font-size: 0.88rem; font-weight: 700;" />
+              <input type="number" min="1" max="500" step="5" id="inp-margin" class="input-control" value="${margin}" style="font-size: 0.88rem; font-weight: 700;" />
             </div>
             <div class="form-group">
               <label class="form-label">Unidades por Lote</label>
-              <input type="number" min="1" step="1" id="inp-batch-size" class="input-control" value="${activeProject.batchSize || 1}" style="font-size: 0.88rem; font-weight: 700;" />
+              <input type="number" min="1" step="1" id="inp-batch-size" class="input-control" value="${batchSize}" style="font-size: 0.88rem; font-weight: 700;" />
             </div>
           </div>
         </div>
@@ -192,23 +218,27 @@ export function renderCostCalculator(container, { onShowToast }) {
     container.querySelectorAll('.inp-mat-name').forEach(input => {
       input.addEventListener('input', (e) => {
         const idx = Number(e.target.getAttribute('data-idx'));
-        activeProject.materials[idx].name = e.target.value;
+        if (activeProject.materials[idx]) activeProject.materials[idx].name = e.target.value;
       });
     });
 
     container.querySelectorAll('.inp-mat-qty').forEach(input => {
       input.addEventListener('input', (e) => {
         const idx = Number(e.target.getAttribute('data-idx'));
-        activeProject.materials[idx].qty = Number(e.target.value) || 0;
-        updateView();
+        if (activeProject.materials[idx]) {
+          activeProject.materials[idx].qty = Number(e.target.value) || 0;
+          updateView();
+        }
       });
     });
 
     container.querySelectorAll('.inp-mat-cost').forEach(input => {
       input.addEventListener('input', (e) => {
         const idx = Number(e.target.getAttribute('data-idx'));
-        activeProject.materials[idx].unitCost = Number(e.target.value) || 0;
-        updateView();
+        if (activeProject.materials[idx]) {
+          activeProject.materials[idx].unitCost = Number(e.target.value) || 0;
+          updateView();
+        }
       });
     });
 
@@ -221,6 +251,7 @@ export function renderCostCalculator(container, { onShowToast }) {
     });
 
     container.querySelector('#btn-add-material')?.addEventListener('click', () => {
+      if (!activeProject.materials) activeProject.materials = [];
       activeProject.materials.push({
         id: 'm_' + Date.now(),
         name: 'Nuevo Insumo',
@@ -232,11 +263,13 @@ export function renderCostCalculator(container, { onShowToast }) {
 
     // Labor & Margin
     container.querySelector('#inp-labor-hours')?.addEventListener('input', (e) => {
+      if (!activeProject.labor) activeProject.labor = {};
       activeProject.labor.hours = Number(e.target.value) || 0;
       updateView();
     });
 
     container.querySelector('#inp-labor-rate')?.addEventListener('input', (e) => {
+      if (!activeProject.labor) activeProject.labor = {};
       activeProject.labor.ratePerHour = Number(e.target.value) || 0;
       updateView();
     });

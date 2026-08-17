@@ -1,37 +1,40 @@
 /* ==========================================================================
-   FINANZIX PRO - BOTTOM NAVIGATION COMPONENT
+   AURORA FINANZIX - BOTTOM NAVIGATION COMPONENT (CENTERED FAB DOCK)
    ========================================================================== */
 
 export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
+  const isReportsActive = ['analytics', 'budgets', 'tools'].includes(activeTab);
+
   container.innerHTML = `
+    <!-- Slot 1: Inicio -->
     <button class="nav-item ${activeTab === 'dashboard' ? 'active' : ''}" data-tab="dashboard">
-      <i data-lucide="layout-dashboard"></i>
+      <i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i>
       <span>Inicio</span>
     </button>
 
+    <!-- Slot 2: Gastos -->
     <button class="nav-item ${activeTab === 'transactions' ? 'active' : ''}" data-tab="transactions">
-      <i data-lucide="receipt"></i>
+      <i data-lucide="receipt" style="width: 20px; height: 20px;"></i>
       <span>Gastos</span>
     </button>
 
-    <!-- Center Floating Action Button -->
-    <button class="nav-fab-btn" id="btn-nav-fab" title="Nuevo Registro">
-      <i data-lucide="plus"></i>
-    </button>
+    <!-- Slot 3: Center Floating Action Button (Exact Math Center) -->
+    <div class="nav-fab-wrap">
+      <button class="nav-fab-btn" id="btn-nav-fab" title="Nuevo Movimiento">
+        <i data-lucide="plus" style="width: 26px; height: 26px;"></i>
+      </button>
+    </div>
 
+    <!-- Slot 4: Costos -->
     <button class="nav-item ${activeTab === 'costs' ? 'active' : ''}" data-tab="costs">
-      <i data-lucide="calculator"></i>
+      <i data-lucide="calculator" style="width: 20px; height: 20px;"></i>
       <span>Costos</span>
     </button>
 
-    <button class="nav-item ${activeTab === 'analytics' ? 'active' : ''}" data-tab="analytics">
-      <i data-lucide="pie-chart"></i>
+    <!-- Slot 5: Reportes & Más -->
+    <button class="nav-item ${isReportsActive ? 'active' : ''}" data-tab="analytics">
+      <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
       <span>Reportes</span>
-    </button>
-
-    <button class="nav-item ${activeTab === 'tools' ? 'active' : ''}" data-tab="tools">
-      <i data-lucide="wrench"></i>
-      <span>Utilidades</span>
     </button>
   `;
 

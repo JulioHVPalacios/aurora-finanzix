@@ -3,7 +3,7 @@
    Version: 1.0.6 (2026-08-17)
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v6-pearl-clarity-20260817-1728';
+const CACHE_VERSION = 'aurora-finanzix-v7-centered-fab-20260817';
 
 const CORE_ASSETS = [
   '/',
