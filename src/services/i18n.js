@@ -8,8 +8,8 @@ import { storage } from './storage.js';
 export const DICTIONARIES = {
   es: {
     // Brand & Header
-    app_title: "Aurora Finanzix",
-    app_subtitle: "Aurora Liquid OS",
+    app_title: "VALO",
+    app_subtitle: "VALO OS",
     nav_my_space: "Mi Espacio",
     lang_btn: "ES",
     currency_title: "Cambiar Moneda",
@@ -186,8 +186,8 @@ export const DICTIONARIES = {
   },
   en: {
     // Brand & Header
-    app_title: "Aurora Finanzix",
-    app_subtitle: "Aurora Liquid OS",
+    app_title: "VALO",
+    app_subtitle: "VALO OS",
     nav_my_space: "My Space",
     lang_btn: "EN",
     currency_title: "Change Currency",

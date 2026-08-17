@@ -4,7 +4,7 @@
    Background Periodic Sync & Push Event Listeners
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v12-obsidian-20260817';
+const CACHE_VERSION = 'valo-finanzix-v13-20260817';
 
 const CORE_ASSETS = [
   '/',

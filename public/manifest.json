@@ -1,14 +1,14 @@
 {
-  "name": "Aurora Finanzix",
-  "short_name": "Finanzix",
-  "description": "Aplicativo profesional de gestión de gastos, calculadora de costos de productos y metas de ahorro.",
+  "name": "VALO | Financial Intelligence OS",
+  "short_name": "VALO",
+  "description": "Ultra-fast, luxury financial intelligence and expense engine.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "portrait",
   "background_color": "#F8FAFC",
-  "theme_color": "#FFFFFF",
+  "theme_color": "#090D16",
   "categories": ["finance", "productivity", "utilities"],
   "lang": "es",
   "dir": "ltr",
@@ -33,7 +33,7 @@
       "sizes": "512x512",
       "type": "image/svg+xml",
       "form_factor": "narrow",
-      "label": "Aurora Finanzix Mobile Dashboard"
+      "label": "VALO Mobile Dashboard"
     }
   ]
 }
