@@ -1,35 +1,35 @@
 /* ==========================================================================
-   AURORA FINANZIX - DASHBOARD VIEW
-   Pearl White & Vibrant Liquid Glass with Pure Precision Vector Icons
+   AURORA FINANZIX - DASHBOARD VIEW (PEARL WHITE & VIBRANT LIQUID GLASS)
+   Clean Vector Icons & Zero Runtime Errors
    ========================================================================== */
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { getFinancialMetrics } from '../services/analytics.js';
 
 export function renderDashboard(container, { onNavigate, onAddTransaction, onShowToast }) {
-  const metrics = getFinancialMetrics();
-  const settings = storage.getSettings();
+  const metrics = getFinancialMetrics() || { netBalance: 0, totalIncome: 0, totalExpense: 0, savingsRate: 0 };
+  const settings = storage.getSettings() || {};
   const symbol = settings.currencySymbol || 'S/';
-  const transactions = storage.getTransactions().slice(0, 5);
-  const categories = storage.getCategories();
-  const savingsGoals = storage.getSavingsGoals();
+  const transactions = (storage.getTransactions() || []).slice(0, 5);
+  const categories = storage.getCategories() || [];
+  const savingsGoals = storage.getSavingsGoals() || [];
   const activeGoal = savingsGoals[0] || null;
 
   const monthlyBudget = settings.monthlyBudget || 2500;
-  const budgetSpentPct = Math.min(100, Math.round((metrics.totalExpense / monthlyBudget) * 100));
+  const budgetSpentPct = Math.min(100, Math.round(((metrics.totalExpense || 0) / (monthlyBudget || 1)) * 100));
 
   container.innerHTML = `
     <!-- Hero Balance Card (Deep Electric Sapphire Liquid Glass) -->
     <div class="hero-balance-card">
       <div class="hero-user-name">${settings.userName || 'Mi Espacio'}</div>
-      <div class="hero-balance-amount">${symbol}${metrics.netBalance.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</div>
+      <div class="hero-balance-amount">${symbol}${(metrics.netBalance || 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}</div>
       
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
         <div class="hero-savings-chip">
           <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #10B981;"></i>
-          <span>${metrics.savingsRate}% Tasa de Ahorro</span>
+          <span>${metrics.savingsRate || 0}% Tasa de Ahorro</span>
         </div>
-        <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.7);">
+        <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.85);">
           Presupuesto: <strong>${symbol}${monthlyBudget}</strong>
         </div>
       </div>
@@ -38,15 +38,15 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
     <!-- 3-Column Vibrant Stat Box Grid (Mint, Rose, Sky Glass) -->
     <div class="stats-grid">
       <div class="stat-box-card stat-box-income">
-        <div class="stat-amount">+${symbol}${metrics.totalIncome.toFixed(0)}</div>
+        <div class="stat-amount">+${symbol}${(metrics.totalIncome || 0).toFixed(0)}</div>
         <div class="stat-label">Ingresos</div>
       </div>
       <div class="stat-box-card stat-box-expense">
-        <div class="stat-amount">-${symbol}${metrics.totalExpense.toFixed(0)}</div>
+        <div class="stat-amount">-${symbol}${(metrics.totalExpense || 0).toFixed(0)}</div>
         <div class="stat-label">Gastos</div>
       </div>
       <div class="stat-box-card stat-box-savings">
-        <div class="stat-amount">${metrics.savingsRate}%</div>
+        <div class="stat-amount">${metrics.savingsRate || 0}%</div>
         <div class="stat-label">Ahorro</div>
       </div>
     </div>
@@ -118,7 +118,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
       <div class="budget-header-row">
         <div class="budget-title">Presupuesto Mensual</div>
         <div class="budget-values">
-          ${symbol}${metrics.totalExpense.toFixed(0)} / ${symbol}${monthlyBudget} <span style="color: #6366F1;">(${budgetSpentPct}%)</span>
+          ${symbol}${(metrics.totalExpense || 0).toFixed(0)} / ${symbol}${monthlyBudget} <span style="color: #6366F1;">(${budgetSpentPct}%)</span>
         </div>
       </div>
       <div class="budget-progress-track">
@@ -132,14 +132,14 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         <div class="budget-header-row">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i data-lucide="target" style="width: 16px; height: 16px; color: #4F46E5;"></i>
-            <span class="budget-title">${activeGoal.name}</span>
+            <span class="budget-title">${activeGoal.title || activeGoal.name || 'Meta'}</span>
           </div>
           <div class="budget-values" style="color: #4338CA;">
-            ${symbol}${activeGoal.current.toFixed(0)} / ${symbol}${activeGoal.target.toFixed(0)}
+            ${symbol}${(activeGoal.currentAmount || activeGoal.current || 0).toFixed(0)} / ${symbol}${(activeGoal.targetAmount || activeGoal.target || 0).toFixed(0)}
           </div>
         </div>
         <div class="budget-progress-track" style="background: rgba(99, 102, 241, 0.1);">
-          <div class="budget-progress-bar" style="width: ${Math.min(100, Math.round((activeGoal.current / activeGoal.target) * 100))}%; background: linear-gradient(90deg, #4F46E5, #7C3AED);"></div>
+          <div class="budget-progress-bar" style="width: ${Math.min(100, Math.round(((activeGoal.currentAmount || activeGoal.current || 0) / (activeGoal.targetAmount || activeGoal.target || 1)) * 100))}%; background: linear-gradient(90deg, #4F46E5, #7C3AED);"></div>
         </div>
       </div>
     ` : ''}
@@ -160,8 +160,8 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
             No tienes transacciones registradas aún.
           </div>
         ` : transactions.map(tx => {
-          const cat = categories.find(c => c.id === tx.categoryId) || { name: 'General', color: '#6366F1', icon: 'receipt' };
-          const pm = PAYMENT_METHODS.find(p => p.id === tx.paymentMethod) || { name: 'Efectivo', icon: 'banknote' };
+          const categoryId = tx.category || tx.categoryId;
+          const cat = categories.find(c => c.id === categoryId) || { name: 'General', color: '#6366F1', icon: 'receipt' };
           const isIncome = tx.type === 'income';
 
           return `
@@ -171,17 +171,17 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
                   <i data-lucide="${cat.icon || 'receipt'}" style="width: 18px; height: 18px;"></i>
                 </div>
                 <div class="tx-details">
-                  <span class="tx-title">${tx.description || cat.name}</span>
+                  <span class="tx-title">${tx.title || tx.description || cat.name}</span>
                   <div class="tx-meta">
                     <span>${cat.name}</span>
                     <span>•</span>
-                    <span>${new Date(tx.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })}</span>
+                    <span>${tx.date ? new Date(tx.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' }) : 'Hoy'}</span>
                   </div>
                 </div>
               </div>
 
               <div class="tx-amount ${isIncome ? 'income' : 'expense'}">
-                ${isIncome ? '+' : '-'}${symbol}${tx.amount.toFixed(2)}
+                ${isIncome ? '+' : '-'}${symbol}${Number(tx.amount || 0).toFixed(2)}
               </div>
             </div>
           `;
