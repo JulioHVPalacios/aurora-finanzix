@@ -37,10 +37,95 @@ class App {
 
   setupServiceWorker() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => {
+      navigator.serviceWorker.register('/sw.js').then((registration) => {
+        // Check for updates periodically every 15 minutes
+        setInterval(() => {
+          registration.update().catch(() => {});
+        }, 15 * 60 * 1000);
+
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                this.showUpdateBanner();
+              }
+            });
+          }
+        });
+      }).catch(err => {
         console.warn('SW registration skipped:', err);
       });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     }
+  }
+
+  showUpdateBanner() {
+    const existing = document.getElementById('app-update-banner');
+    if (existing) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'app-update-banner';
+    banner.style.cssText = `
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(220, 225, 235, 0.95));
+      color: #0A0D14;
+      padding: 10px 18px;
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.8);
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 99999;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      max-width: 90vw;
+    `;
+
+    banner.innerHTML = `
+      <span style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px #10B981;"></span>
+        <span>¡Nueva versión disponible!</span>
+      </span>
+      <button type="button" id="btn-update-reload" style="
+        background: #0A0D14;
+        color: #FFFFFF;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+      ">
+        Actualizar ahora
+      </button>
+    `;
+
+    document.body.appendChild(banner);
+
+    requestAnimationFrame(() => {
+      banner.style.transform = 'translateX(-50%) translateY(0)';
+      banner.style.opacity = '1';
+    });
+
+    banner.querySelector('#btn-update-reload')?.addEventListener('click', () => {
+      banner.style.opacity = '0';
+      window.location.reload();
+    });
   }
 
   setupClock() {
