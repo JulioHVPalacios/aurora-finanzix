@@ -28,18 +28,18 @@ export function renderAnalytics(container) {
         </div>
 
         <!-- Segmented Navigation Pills -->
-        <div class="segmented-control" id="analytics-segmented-control">
-          <button class="segment-btn ${activeSubTab === 'charts' ? 'active' : ''}" data-tab="charts">
+        <div class="segmented-control" id="analytics-segmented-control" style="margin-top: 10px;">
+          <button type="button" class="segment-btn ${activeSubTab === 'charts' ? 'active' : ''}" data-tab="charts">
             <i data-lucide="bar-chart-3" style="width: 14px; height: 14px; margin-right: 4px;"></i>
-            ${t('reports_tab_charts')}
+            <span>${t('reports_tab_charts')}</span>
           </button>
-          <button class="segment-btn ${activeSubTab === 'budgets' ? 'active' : ''}" data-tab="budgets">
+          <button type="button" class="segment-btn ${activeSubTab === 'budgets' ? 'active' : ''}" data-tab="budgets">
             <i data-lucide="target" style="width: 14px; height: 14px; margin-right: 4px;"></i>
-            ${t('reports_tab_budgets')}
+            <span>${t('reports_tab_budgets')}</span>
           </button>
-          <button class="segment-btn ${activeSubTab === 'tools' ? 'active' : ''}" data-tab="tools">
+          <button type="button" class="segment-btn ${activeSubTab === 'tools' ? 'active' : ''}" data-tab="tools">
             <i data-lucide="wrench" style="width: 14px; height: 14px; margin-right: 4px;"></i>
-            ${t('reports_tab_tools')}
+            <span>${t('reports_tab_tools')}</span>
           </button>
         </div>
 
@@ -49,12 +49,12 @@ export function renderAnalytics(container) {
     `;
 
     // Attach Tab listeners
-    container.querySelectorAll('.segment-btn').forEach(btn => {
+    container.querySelectorAll('#analytics-segmented-control .segment-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tab = btn.getAttribute('data-tab');
         if (tab && tab !== activeSubTab) {
           activeSubTab = tab;
-          container.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+          container.querySelectorAll('#analytics-segmented-control .segment-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           renderActiveSubView();
         }
@@ -86,7 +86,14 @@ export function renderAnalytics(container) {
 // --------------------------------------------------------------------------
 function renderChartsTab(container) {
   const metrics = getFinancialMetrics() || { netBalance: 0, totalIncome: 0, totalExpense: 0, savingsRate: 0, fixedExpense: 0, variableExpense: 0 };
-  const breakdownData = getCategoryBreakdown('expense');
+  
+  // Safely extract category breakdown data
+  const breakdownObj = getCategoryBreakdown('expense') || { total: 0, breakdown: [] };
+  const breakdownItems = Array.isArray(breakdownObj.breakdown) ? breakdownObj.breakdown : [];
+  
+  const labels = breakdownItems.map(item => item.name || 'General');
+  const data = breakdownItems.map(item => Number(item.amount || 0));
+  const colors = breakdownItems.map(item => item.color || '#4F46E5');
 
   let diagText = t('reports_diag_deficit');
   let diagColor = '#DC2626';
@@ -142,7 +149,7 @@ function renderChartsTab(container) {
       </div>
 
       <div style="position: relative; height: 190px; width: 100%; display: flex; align-items: center; justify-content: center;">
-        ${breakdownData.labels.length > 0 ? `
+        ${breakdownItems.length > 0 ? `
           <canvas id="categoryDonutChart"></canvas>
         ` : `
           <div style="color: var(--ink-40); font-size: 0.82rem; text-align: center;">
@@ -153,15 +160,15 @@ function renderChartsTab(container) {
       </div>
 
       <!-- Legend List -->
-      ${breakdownData.labels.length > 0 ? `
+      ${breakdownItems.length > 0 ? `
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px; border-top: 1px solid rgba(15, 23, 42, 0.06); padding-top: 10px;">
-          ${breakdownData.labels.map((label, idx) => `
+          ${breakdownItems.map((item, idx) => `
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
               <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: ${breakdownData.colors[idx] || '#6366F1'};"></span>
-                <span style="color: var(--ink); font-weight: 600;">${label}</span>
+                <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: ${colors[idx] || '#6366F1'};"></span>
+                <span style="color: var(--ink); font-weight: 600;">${item.name}</span>
               </div>
-              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--ink-75);">${formatCurrency(breakdownData.data[idx])}</span>
+              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--ink-75);">${formatCurrency(item.amount)}</span>
             </div>
           `).join('')}
         </div>
@@ -171,18 +178,20 @@ function renderChartsTab(container) {
 
   createIcons({ icons, nameAttr: 'data-lucide', root: container });
 
-  if (breakdownData.labels.length > 0) {
+  if (breakdownItems.length > 0) {
     const canvas = container.querySelector('#categoryDonutChart');
     if (canvas) {
-      if (doughnutChartInstance) doughnutChartInstance.destroy();
+      if (doughnutChartInstance) {
+        try { doughnutChartInstance.destroy(); } catch (e) {}
+      }
 
       doughnutChartInstance = new Chart(canvas, {
         type: 'doughnut',
         data: {
-          labels: breakdownData.labels,
+          labels,
           datasets: [{
-            data: breakdownData.data,
-            backgroundColor: breakdownData.colors,
+            data,
+            backgroundColor: colors,
             borderWidth: 2,
             borderColor: '#FFFFFF'
           }]
@@ -225,7 +234,7 @@ function renderBudgetsTab(container) {
     <div class="glass-card" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); margin-top: 10px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);">
       <div class="card-header">
         <span class="card-title">${t('goals_active_title')}</span>
-        <button id="btn-add-goal-sub" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.76rem;">
+        <button type="button" id="btn-add-goal-sub" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.76rem;">
           ${t('goals_new_btn')}
         </button>
       </div>

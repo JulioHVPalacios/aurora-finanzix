@@ -1,8 +1,10 @@
 /* ==========================================================================
-   AURORA FINANZIX - BOTTOM NAVIGATION COMPONENT (CENTERED FAB DOCK)
+   VALO OS - BOTTOM NAVIGATION COMPONENT (CENTERED FAB DOCK)
+   Always Renders Lucide Icons on Every Tab Switch
    ========================================================================== */
 
 import { t } from '../services/i18n.js';
+import { createIcons, icons } from 'lucide';
 
 export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
   const isReportsActive = ['analytics', 'budgets', 'tools'].includes(activeTab);
@@ -27,22 +29,22 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
       </button>
     </div>
 
-    <!-- Slot 4: Suscripciones -->
+    <!-- Slot 4: Suscripciones / Pagos Fijos -->
     <button class="nav-item ${activeTab === 'subscriptions' ? 'active' : ''}" data-tab="subscriptions">
       <i data-lucide="calendar-clock" style="width: 20px; height: 20px;"></i>
       <span>${t('nav_subscriptions')}</span>
     </button>
 
-    <!-- Slot 5: Metas & Más -->
+    <!-- Slot 5: Reportes & Inteligencia -->
     <button class="nav-item ${isReportsActive ? 'active' : ''}" data-tab="analytics">
       <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
       <span>${t('nav_reports')}</span>
     </button>
   `;
 
-  // Attach events
+  // Attach tab events
   container.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       const tab = btn.getAttribute('data-tab');
       if (tab) onTabSelect(tab);
     });
@@ -50,4 +52,7 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
 
   const fab = container.querySelector('#btn-nav-fab');
   fab?.addEventListener('click', onFabClick);
+
+  // Render SVG icons immediately inside bottom nav
+  createIcons({ icons, nameAttr: 'data-lucide', root: container });
 }
