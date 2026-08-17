@@ -1,5 +1,6 @@
 /* ==========================================================================
-   AURORA LIQUID GLASS - ANALYTICS & STATISTICAL REPORTS
+   AURORA FINANZIX - ANALYTICS & STATISTICAL REPORTS (LIQUID GLASS EDITION)
+   Clean Doughnut Distributions, Cashflow Trends & Financial Health Analysis
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
@@ -7,169 +8,114 @@ import { getFinancialMetrics, getCategoryBreakdown, getMonthlyHistory } from '..
 import Chart from 'chart.js/auto';
 
 let doughnutChartInstance = null;
-let barChartInstance = null;
 
 export function renderAnalytics(container) {
-  const metrics = getFinancialMetrics();
-  const settings = storage.getSettings();
+  const metrics = getFinancialMetrics() || { netBalance: 0, totalIncome: 0, totalExpense: 0, savingsRate: 0, fixedExpense: 0, variableExpense: 0 };
+  const settings = storage.getSettings() || {};
   const symbol = settings.currencySymbol || 'S/';
   const breakdownData = getCategoryBreakdown('expense');
-  const monthlyData = getMonthlyHistory(6);
 
   container.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-        📊 Análisis y Estadísticas
-      </h2>
-    </div>
-
-    <!-- Health Summary Card -->
-    <div class="glass-card" style="border-left: 4px solid #10B981;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <div>
-          <span style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 600;">Tasa de Ahorro</span>
-          <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 800; color: #6EE7B7;">
-            ${metrics.savingsRate}%
-          </div>
-        </div>
-        <div style="text-align: right;">
-          <span style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 600;">Diagnóstico</span>
-          <div style="font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: #FFFFFF;">
-            ${metrics.savingsRate >= 30 ? '🌟 Excelente' : metrics.savingsRate >= 15 ? '👍 Saludable' : metrics.savingsRate > 0 ? '⚠️ Moderado' : '🚨 En Déficit'}
-          </div>
-        </div>
+    <div class="view-transition-wrap">
+      <!-- Header -->
+      <div>
+        <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink);">
+          📊 Reportes & Inteligencia Financiera
+        </h2>
+        <p style="font-size: 0.74rem; color: var(--ink-60);">Análisis visual de tus patrones de consumo y ahorro</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.78rem;">
-        <div>
-          <span style="color: var(--ink-40);">Gastos Fijos:</span>
-          <strong style="font-family: var(--font-mono); display: block; color: #FFFFFF;">${symbol}${metrics.fixedExpense.toFixed(2)}</strong>
-        </div>
-        <div>
-          <span style="color: var(--ink-40);">Gastos Variables:</span>
-          <strong style="font-family: var(--font-mono); display: block; color: #FFFFFF;">${symbol}${metrics.variableExpense.toFixed(2)}</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- 1. Category Breakdown Donut -->
-    <div class="glass-card">
-      <div class="card-header">
-        <span class="card-title">🍩 Distribución de Gastos</span>
-      </div>
-
-      ${breakdownData.breakdown.length === 0 ? `
-        <div style="text-align: center; padding: 24px; color: var(--ink-40); font-size: 0.85rem;">
-          No hay gastos registrados aún.
-        </div>
-      ` : `
-        <div style="position: relative; height: 210px; width: 100%; margin: 8px 0;">
-          <canvas id="chart-doughnut-categories"></canvas>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 12px;">
-          ${breakdownData.breakdown.map(item => `
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: ${item.color};"></span>
-                <span>${item.icon} ${item.name}</span>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <span style="color: var(--ink-40); font-size: 0.72rem;">(${item.percentage}%)</span>
-                <span style="font-family: var(--font-mono); font-weight: 700;">${symbol}${item.amount.toFixed(2)}</span>
-              </div>
+      <!-- Financial Health Diagnostic Card -->
+      <div class="glass-card" style="background: linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(245, 243, 255, 0.9)); border: 1.5px solid rgba(79, 70, 229, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div>
+            <span style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Tasa de Ahorro</span>
+            <div style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: #4F46E5;">
+              ${metrics.savingsRate || 0}%
             </div>
-          `).join('')}
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Diagnóstico</span>
+            <div style="font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: ${metrics.savingsRate >= 30 ? '#059669' : metrics.savingsRate >= 15 ? '#2563EB' : '#D97706'};">
+              ${metrics.savingsRate >= 30 ? '🌟 Excelente Ahorro' : metrics.savingsRate >= 15 ? '👍 Flujo Saludable' : metrics.savingsRate > 0 ? '⚠️ Ahorro Moderado' : '🚨 En Déficit'}
+            </div>
+          </div>
         </div>
-      `}
-    </div>
 
-    <!-- 2. Monthly Trend Bar Chart -->
-    <div class="glass-card">
-      <div class="card-header">
-        <span class="card-title">📈 Histórico Mensual</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(79, 70, 229, 0.12); font-size: 0.8rem;">
+          <div>
+            <span style="color: var(--ink-60);">Gastos Fijos (Renta/Luz):</span>
+            <strong style="font-family: var(--font-mono); display: block; color: var(--ink); margin-top: 2px;">${symbol}${(metrics.fixedExpense || 0).toFixed(2)}</strong>
+          </div>
+          <div>
+            <span style="color: var(--ink-60);">Gastos Variables (Ocio/Compras):</span>
+            <strong style="font-family: var(--font-mono); display: block; color: var(--ink); margin-top: 2px;">${symbol}${(metrics.variableExpense || 0).toFixed(2)}</strong>
+          </div>
+        </div>
       </div>
-      <div style="position: relative; height: 210px; width: 100%; margin: 8px 0;">
-        <canvas id="chart-bar-monthly"></canvas>
+
+      <!-- Expense Distribution Doughnut Chart -->
+      <div class="glass-card">
+        <div class="card-header">
+          <span class="card-title">🍩 ¿En qué se va tu dinero?</span>
+        </div>
+
+        ${(!breakdownData.breakdown || breakdownData.breakdown.length === 0) ? `
+          <div style="text-align: center; padding: 24px; color: var(--ink-60); font-size: 0.84rem; background: #F8FAFC; border-radius: 16px;">
+            No hay gastos registrados para analizar este mes.
+          </div>
+        ` : `
+          <div style="position: relative; height: 210px; width: 100%; margin: 8px 0;">
+            <canvas id="chart-doughnut-categories"></canvas>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+            ${breakdownData.breakdown.slice(0, 5).map(item => `
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #F8FAFC; border-radius: 10px; font-size: 0.82rem;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: ${item.color || '#4F46E5'};"></span>
+                  <span style="font-weight: 700; color: var(--ink);">${item.name}</span>
+                </div>
+                <div>
+                  <strong style="font-family: var(--font-mono); color: var(--ink);">${symbol}${item.amount.toFixed(2)}</strong>
+                  <span style="color: var(--ink-60); font-size: 0.74rem; margin-left: 4px;">(${item.percentage}%)</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `}
       </div>
     </div>
   `;
 
-  setTimeout(() => {
-    const doughnutCanvas = container.querySelector('#chart-doughnut-categories');
-    if (doughnutCanvas && breakdownData.breakdown.length > 0) {
+  // Initialize Chart.js
+  if (breakdownData.breakdown && breakdownData.breakdown.length > 0) {
+    const ctx = container.querySelector('#chart-doughnut-categories')?.getContext('2d');
+    if (ctx) {
       if (doughnutChartInstance) doughnutChartInstance.destroy();
 
-      doughnutChartInstance = new Chart(doughnutCanvas, {
+      doughnutChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: breakdownData.breakdown.map(b => `${b.icon} ${b.name}`),
+          labels: breakdownData.breakdown.map(b => b.name),
           datasets: [{
             data: breakdownData.breakdown.map(b => b.amount),
-            backgroundColor: ['#10B981', '#0EA5E9', '#F59E0B', '#8B5CF6', '#EC4899', '#F43F5E', '#3B82F6', '#14B8A6'],
-            borderWidth: 2,
-            borderColor: '#040911'
+            backgroundColor: [
+              '#4F46E5', '#10B981', '#F43F5E', '#F59E0B', '#06B6D4', '#8B5CF6', '#EC4899', '#64748B'
+            ],
+            borderWidth: 3,
+            borderColor: '#FFFFFF'
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => ` ${symbol}${Number(ctx.raw).toFixed(2)}`
-              }
-            }
+            legend: { display: false }
           },
-          cutout: '72%'
+          cutout: '70%'
         }
       });
     }
-
-    const barCanvas = container.querySelector('#chart-bar-monthly');
-    if (barCanvas) {
-      if (barChartInstance) barChartInstance.destroy();
-
-      barChartInstance = new Chart(barCanvas, {
-        type: 'bar',
-        data: {
-          labels: monthlyData.map(m => m.label),
-          datasets: [
-            {
-              label: 'Ingresos',
-              data: monthlyData.map(m => m.income),
-              backgroundColor: '#10B981',
-              borderRadius: 6
-            },
-            {
-              label: 'Gastos',
-              data: monthlyData.map(m => m.expense),
-              backgroundColor: '#F43F5E',
-              borderRadius: 6
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#94A3B8', font: { size: 10 } }
-            },
-            y: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#94A3B8', font: { size: 10 } }
-            }
-          },
-          plugins: {
-            legend: {
-              labels: { color: '#FFFFFF', font: { size: 11, weight: 'bold' } }
-            }
-          }
-        }
-      });
-    }
-  }, 50);
+  }
 }

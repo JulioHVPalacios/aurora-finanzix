@@ -52,15 +52,15 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
               <span>Monto (${symbol})</span>
             </label>
             <div style="position: relative; display: flex; align-items: center;">
-              <span style="position: absolute; left: 14px; font-weight: 800; font-size: 1.3rem; color: ${currentType === 'income' ? '#6EE7B7' : '#FDA4AF'};">${symbol}</span>
-              <input type="number" step="0.01" min="0.01" required id="tx-amount" class="input-control input-control-mono" style="padding-left: 48px; font-size: 1.3rem; font-weight: 800;" placeholder="0.00" autofocus />
+              <span style="position: absolute; left: 14px; font-weight: 800; font-size: 1.3rem; color: ${currentType === 'income' ? '#059669' : '#DC2626'};">${symbol}</span>
+              <input type="number" step="0.01" min="0.01" required id="tx-amount" class="input-control" style="padding-left: 48px; font-size: 1.4rem; font-weight: 800; color: ${currentType === 'income' ? '#059669' : '#DC2626'};" placeholder="0.00" autofocus />
             </div>
           </div>
 
           <!-- Description Input -->
           <div class="form-group">
             <label class="form-label">Concepto / Descripción</label>
-            <input type="text" required id="tx-title" class="input-control" placeholder="Ej. Almuerzo, Yape taxi, Sueldo..." maxlength="60" />
+            <input type="text" required id="tx-title" class="input-control" placeholder="Ej. Almuerzo, Yape taxi, Sueldo..." maxlength="60" style="font-weight: 600;" />
           </div>
 
           <!-- Category Grid Picker -->
@@ -69,8 +69,8 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
             <div class="category-picker-grid" id="cat-picker-container">
               ${filteredCategories.map(cat => `
                 <div class="cat-picker-item ${cat.id === selectedCategory ? 'selected' : ''}" data-cat-id="${cat.id}">
-                  <div class="cat-picker-icon">
-                    <i data-lucide="${cat.icon || 'receipt'}" style="width: 16px; height: 16px;"></i>
+                  <div class="cat-picker-icon-wrap" style="background: ${cat.color || '#4F46E5'};">
+                    <i data-lucide="${cat.icon || 'receipt'}" style="width: 17px; height: 17px;"></i>
                   </div>
                   <span class="cat-picker-label">${cat.name}</span>
                 </div>

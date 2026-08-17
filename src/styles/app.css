@@ -648,9 +648,59 @@ html, body {
   font-weight: 600;
 }
 
-.chart-legend-active {
-  color: #4F46E5;
+/* --------------------------------------------------------------------------
+   Universal Glass Cards & Form Elements (Pearl White Theme)
+   -------------------------------------------------------------------------- */
+.glass-card,
+.aurora-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-ambient);
+  animation: fadeInUp 0.35s var(--e-out) both;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
   font-weight: 800;
+  font-size: 0.96rem;
+  color: var(--ink);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.form-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--ink-75);
+}
+
+.btn-danger {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.btn-danger:hover {
+  background: #FECDD3;
 }
 
 /* --------------------------------------------------------------------------

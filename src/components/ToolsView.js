@@ -1,38 +1,42 @@
 /* ==========================================================================
-   AURORA LIQUID GLASS - QUICK FINANCIAL TOOLS
+   AURORA FINANZIX - QUICK FINANCIAL TOOLS (LIQUID GLASS EDITION)
+   Split Bill, Loan Amortization & Live Currency Converter
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
 import { calculateSplitBill, calculateLoanAmortization } from '../services/costCalculator.js';
 
 export function renderTools(container) {
-  const settings = storage.getSettings();
+  const settings = storage.getSettings() || {};
   const symbol = settings.currencySymbol || 'S/';
 
   let activeSubTab = 'split';
 
   function updateView() {
     container.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;">
-          🛠️ Utilidades & Calculadoras
-        </h2>
-      </div>
+      <div class="view-transition-wrap">
+        <div>
+          <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink);">
+            🛠️ Utilidades & Calculadoras Rápidas
+          </h2>
+          <p style="font-size: 0.74rem; color: var(--ink-60);">Herramientas prácticas para tus finanzas del día a día</p>
+        </div>
 
-      <!-- Segmented Sub Tabs -->
-      <div class="segmented-control">
-        <button class="segment-btn ${activeSubTab === 'split' ? 'active' : ''}" data-sub="split">
-          🍕 Dividir Cuenta
-        </button>
-        <button class="segment-btn ${activeSubTab === 'loan' ? 'active' : ''}" data-sub="loan">
-          🏦 Simulador Cuotas
-        </button>
-        <button class="segment-btn ${activeSubTab === 'fx' ? 'active' : ''}" data-sub="fx">
-          💱 Conversor Monedas
-        </button>
-      </div>
+        <!-- Segmented Sub Tabs -->
+        <div class="segmented-control">
+          <button class="segment-btn ${activeSubTab === 'split' ? 'active' : ''}" data-sub="split">
+            🍕 Dividir Cuenta
+          </button>
+          <button class="segment-btn ${activeSubTab === 'loan' ? 'active' : ''}" data-sub="loan">
+            🏦 Cuotas / Préstamo
+          </button>
+          <button class="segment-btn ${activeSubTab === 'fx' ? 'active' : ''}" data-sub="fx">
+            💱 Conversor Monedas
+          </button>
+        </div>
 
-      <div id="sub-tool-content"></div>
+        <div id="sub-tool-content"></div>
+      </div>
     `;
 
     const subContainer = container.querySelector('#sub-tool-content');
@@ -66,34 +70,35 @@ function renderSplitBillTool(container, symbol) {
           <span class="card-title">🍕 Dividir Cuenta entre Amigos</span>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-element); padding: 18px; text-align: center; margin-bottom: 14px;">
-          <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 600;">Cada uno paga</div>
-          <div style="font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: #BAE6FD; margin: 4px 0;">
+        <!-- Result Box -->
+        <div style="background: linear-gradient(135deg, rgba(238, 242, 255, 0.95), rgba(245, 243, 255, 0.9)); border: 1.5px solid rgba(79, 70, 229, 0.2); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
+          <div style="font-size: 0.74rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700;">Cada persona paga</div>
+          <div style="font-family: var(--font-display); font-size: 2.3rem; font-weight: 800; color: #4F46E5; margin: 4px 0;">
             ${symbol}${res.perPerson.toFixed(2)}
           </div>
-          <div style="font-size: 0.75rem; color: var(--ink-60);">
-            Total: <strong>${symbol}${res.grandTotal.toFixed(2)}</strong> (Propina: ${symbol}${res.tipAmount.toFixed(2)})
+          <div style="font-size: 0.78rem; color: var(--ink-75);">
+            Total con propina: <strong>${symbol}${res.grandTotal.toFixed(2)}</strong> (Propina: ${symbol}${res.tipAmount.toFixed(2)})
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Total de la Cuenta (${symbol})</label>
-          <input type="number" min="1" step="0.5" id="inp-split-total" class="input-control input-control-mono" value="${state.totalAmount}" style="font-size: 1.1rem; font-weight: 700;" />
+          <input type="number" min="1" step="0.5" id="inp-split-total" class="input-control" value="${state.totalAmount}" style="font-size: 1.1rem; font-weight: 700;" />
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
             <label class="form-label">N° de Personas</label>
-            <input type="number" min="1" max="50" id="inp-split-people" class="input-control input-control-mono" value="${state.numPeople}" />
+            <input type="number" min="1" max="50" id="inp-split-people" class="input-control" value="${state.numPeople}" style="font-weight: 700;" />
           </div>
 
           <div class="form-group">
             <label class="form-label">Propina (%)</label>
-            <select id="inp-split-tip" class="input-control">
-              <option value="0" ${state.tipPercentage === 0 ? 'selected' : ''}>0%</option>
+            <select id="inp-split-tip" class="input-control" style="font-weight: 700;">
+              <option value="0" ${state.tipPercentage === 0 ? 'selected' : ''}>0% (Sin propina)</option>
               <option value="5" ${state.tipPercentage === 5 ? 'selected' : ''}>5%</option>
-              <option value="10" ${state.tipPercentage === 10 ? 'selected' : ''}>10%</option>
-              <option value="15" ${state.tipPercentage === 15 ? 'selected' : ''}>15%</option>
+              <option value="10" ${state.tipPercentage === 10 ? 'selected' : ''}>10% (Recomendado)</option>
+              <option value="15" ${state.tipPercentage === 15 ? 'selected' : ''}>15% (Excelente servicio)</option>
             </select>
           </div>
         </div>
@@ -130,30 +135,30 @@ function renderLoanTool(container, symbol) {
           <span class="card-title">🏦 Simulador de Préstamos y Cuotas</span>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-element); padding: 18px; text-align: center; margin-bottom: 14px;">
-          <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 600;">Cuota Mensual Fija</div>
-          <div style="font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: #FDE68A; margin: 4px 0;">
+        <div style="background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(255, 251, 235, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
+          <div style="font-size: 0.74rem; color: #92400E; text-transform: uppercase; font-weight: 700;">Cuota Mensual Estimada</div>
+          <div style="font-family: var(--font-display); font-size: 2.3rem; font-weight: 800; color: #B45309; margin: 4px 0;">
             ${symbol}${res.monthlyPayment.toFixed(2)}
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; font-size: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
-            <div>Intereses: <strong style="color: #FDA4AF;">${symbol}${res.totalInterest.toFixed(2)}</strong></div>
-            <div>Total a Pagar: <strong>${symbol}${res.totalPaid.toFixed(2)}</strong></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; font-size: 0.78rem; border-top: 1px solid rgba(245, 158, 11, 0.2); padding-top: 8px;">
+            <div>Intereses: <strong style="color: #DC2626;">${symbol}${res.totalInterest.toFixed(2)}</strong></div>
+            <div>Total a Devolver: <strong style="color: var(--ink);">${symbol}${res.totalPaid.toFixed(2)}</strong></div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Monto del Préstamo (${symbol})</label>
-          <input type="number" min="100" step="100" id="inp-loan-principal" class="input-control input-control-mono" value="${state.principal}" />
+          <input type="number" min="100" step="100" id="inp-loan-principal" class="input-control" value="${state.principal}" style="font-weight: 700; font-size: 1.05rem;" />
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
-            <label class="form-label">TEA (%)</label>
-            <input type="number" min="0.1" step="0.5" id="inp-loan-rate" class="input-control input-control-mono" value="${state.annualRate}" />
+            <label class="form-label">Tasa Anual - TEA (%)</label>
+            <input type="number" min="0.1" step="0.5" id="inp-loan-rate" class="input-control" value="${state.annualRate}" style="font-weight: 700;" />
           </div>
           <div class="form-group">
             <label class="form-label">Plazo (Meses)</label>
-            <input type="number" min="1" max="120" id="inp-loan-months" class="input-control input-control-mono" value="${state.months}" />
+            <input type="number" min="1" max="120" id="inp-loan-months" class="input-control" value="${state.months}" style="font-weight: 700;" />
           </div>
         </div>
       </div>
@@ -190,25 +195,25 @@ function renderFxTool(container, currentSymbol) {
           <span class="card-title">💱 Conversor Rápido de Moneda</span>
         </div>
 
-        <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-element); padding: 18px; text-align: center; margin-bottom: 14px;">
-          <div style="font-size: 0.72rem; color: var(--ink-60);">Monto Convertido</div>
-          <div style="font-family: var(--font-mono); font-size: 2.1rem; font-weight: 800; color: #6EE7B7; margin: 4px 0;">
+        <div style="background: linear-gradient(135deg, rgba(209, 250, 229, 0.95), rgba(236, 253, 245, 0.9)); border: 1.5px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
+          <div style="font-size: 0.74rem; color: #065F46; text-transform: uppercase; font-weight: 700;">Resultado Convertido</div>
+          <div style="font-family: var(--font-display); font-size: 2.3rem; font-weight: 800; color: #047857; margin: 4px 0;">
             ${toCurrency === 'PEN' ? 'S/' : toCurrency === 'USD' ? '$' : '€'}${converted.toFixed(2)}
           </div>
-          <div style="font-size: 0.72rem; color: var(--ink-40);">
+          <div style="font-size: 0.74rem; color: #065F46;">
             1 ${fromCurrency} = ${fxRate} ${toCurrency}
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Monto</label>
-          <input type="number" min="1" step="any" id="inp-fx-amount" class="input-control input-control-mono" value="${amount}" />
+          <label class="form-label">Monto a Convertir</label>
+          <input type="number" min="1" step="any" id="inp-fx-amount" class="input-control" value="${amount}" style="font-weight: 700; font-size: 1.05rem;" />
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="form-group">
             <label class="form-label">De Moneda</label>
-            <select id="sel-fx-from" class="input-control">
+            <select id="sel-fx-from" class="input-control" style="font-weight: 700;">
               <option value="USD" ${fromCurrency === 'USD' ? 'selected' : ''}>USD ($ Dólar)</option>
               <option value="PEN" ${fromCurrency === 'PEN' ? 'selected' : ''}>PEN (S/ Sol)</option>
               <option value="EUR" ${fromCurrency === 'EUR' ? 'selected' : ''}>EUR (€ Euro)</option>
@@ -216,7 +221,7 @@ function renderFxTool(container, currentSymbol) {
           </div>
           <div class="form-group">
             <label class="form-label">A Moneda</label>
-            <select id="sel-fx-to" class="input-control">
+            <select id="sel-fx-to" class="input-control" style="font-weight: 700;">
               <option value="PEN" ${toCurrency === 'PEN' ? 'selected' : ''}>PEN (S/ Sol)</option>
               <option value="USD" ${toCurrency === 'USD' ? 'selected' : ''}>USD ($ Dólar)</option>
               <option value="EUR" ${toCurrency === 'EUR' ? 'selected' : ''}>EUR (€ Euro)</option>
@@ -225,8 +230,8 @@ function renderFxTool(container, currentSymbol) {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tipo de Cambio</label>
-          <input type="number" min="0.01" step="0.001" id="inp-fx-rate" class="input-control input-control-mono" value="${fxRate}" />
+          <label class="form-label">Tipo de Cambio (Editable)</label>
+          <input type="number" min="0.01" step="0.001" id="inp-fx-rate" class="input-control" value="${fxRate}" style="font-weight: 700;" />
         </div>
       </div>
     `;
