@@ -267,12 +267,13 @@ body {
   min-width: 0;
 }
 
-.user-avatar-circle {
-  width: 38px;
-  height: 38px;
+.user-avatar-circle,
+.user-avatar-glass {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -982,27 +983,60 @@ body {
   max-width: 100%;
 }
 
-/* Native Android Full Screen */
-@media (max-width: 600px) {
+/* --------------------------------------------------------------------------
+   Responsive Layout: Android, iOS, Tablets & Desktops
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg-silver-gradient);
+  }
+
+  .stage {
+    min-height: 100dvh;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+  }
+
   .desktop-banner {
     display: none !important;
   }
   
   .phone-container {
     max-width: 100% !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+    background: transparent !important;
   }
 
   .phone-status-bar {
-    display: none;
+    display: none !important;
+  }
+
+  .app-navbar {
+    padding: max(14px, env(safe-area-inset-top, 14px)) 16px 8px 16px !important;
+    background: rgba(26, 35, 50, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .app-main-content {
-    padding-bottom: 80px;
+    padding-left: max(14px, env(safe-area-inset-left, 14px));
+    padding-right: max(14px, env(safe-area-inset-right, 14px));
+    padding-top: 14px;
+    padding-bottom: calc(74px + env(safe-area-inset-bottom, 12px)) !important;
+  }
+
+  .app-bottom-nav {
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
   }
 }
