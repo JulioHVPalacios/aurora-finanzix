@@ -56,6 +56,17 @@ class App {
           }
         });
 
+        // Register Periodic Background Sync if supported (Android Chrome)
+        if ('periodicSync' in registration) {
+          navigator.permissions?.query({ name: 'periodic-background-sync' }).then((status) => {
+            if (status.state === 'granted') {
+              registration.periodicSync.register('check-app-updates', {
+                minInterval: 60 * 60 * 1000 // Every 1 hour
+              }).catch(() => {});
+            }
+          }).catch(() => {});
+        }
+
         // Periodic check every 5 minutes
         setInterval(() => {
           registration.update().catch(() => {});

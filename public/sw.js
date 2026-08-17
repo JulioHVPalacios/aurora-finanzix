@@ -1,9 +1,10 @@
 /* ==========================================================================
    AURORA FINANZIX - AUTO-UPDATE & ANDROID SYSTEM PUSH NOTIFICATIONS
-   Version: 1.0.6 (2026-08-17)
+   Version: 1.0.7 (2026-08-17)
+   Background Periodic Sync & Push Event Listeners
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v7-centered-fab-20260817';
+const CACHE_VERSION = 'aurora-finanzix-v8-clean-zero-state-20260817';
 
 const CORE_ASSETS = [
   '/',
@@ -40,7 +41,7 @@ self.addEventListener('activate', (event) => {
       // Send Native Notification to Android Status Bar if permission is granted
       if (self.Notification && self.Notification.permission === 'granted') {
         self.registration.showNotification('✨ Aurora Finanzix Actualizada', {
-          body: 'Se ha instalado la última versión con diseño blanco perla y alta legibilidad.',
+          body: 'Se ha instalado la última versión con diseño blanco perla y botón central (+).',
           icon: '/icon.svg',
           badge: '/icon.svg',
           vibrate: [200, 100, 200],
@@ -69,6 +70,55 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+
+// Background Periodic Sync (checks for updates in Android background without opening app)
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'check-app-updates') {
+    event.waitUntil(checkBackgroundUpdate());
+  }
+});
+
+// Push Notification Listener (triggered via WebPush / Firebase Push)
+self.addEventListener('push', (event) => {
+  let payload = { title: '🚀 Aurora Finanzix Actualizada', body: 'Hay una nueva versión disponible. Toca para abrir.' };
+  try {
+    if (event.data) payload = event.data.json();
+  } catch (e) {
+    if (event.data) payload.body = event.data.text();
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: '/icon.svg',
+      badge: '/icon.svg',
+      vibrate: [200, 100, 200],
+      tag: 'finanzix-push-update',
+      renotify: true,
+      data: { url: payload.url || '/' }
+    })
+  );
+});
+
+async function checkBackgroundUpdate() {
+  try {
+    const res = await fetch('/version.json?t=' + Date.now(), { cache: 'no-cache' });
+    if (res.ok) {
+      const data = await res.json();
+      if (self.Notification && self.Notification.permission === 'granted') {
+        self.registration.showNotification('🚀 Nueva Actualización de Aurora Finanzix', {
+          body: `Versión v${data.version} lista con nuevas mejoras visuales.`,
+          icon: '/icon.svg',
+          badge: '/icon.svg',
+          vibrate: [200, 100, 200],
+          tag: 'finanzix-version-alert',
+          renotify: true,
+          data: { url: '/' }
+        });
+      }
+    }
+  } catch (e) {}
+}
 
 // Network-First for HTML, Manifest & Version.json; Stale-While-Revalidate for other assets
 self.addEventListener('fetch', (event) => {

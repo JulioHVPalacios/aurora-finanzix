@@ -1,15 +1,15 @@
 /* ==========================================================================
-   AURORA FINANZIX - STORAGE & DATA SERVICE
-   Clean Vector Icon Mapping (Zero Emoji / Zero AI Templates)
+   AURORA FINANZIX - STORAGE & DATA SERVICE (CLEAN ZERO-STATE PRODUCTION)
+   All Initial Balances at S/ 0.00 Ready for Real User Data
    ========================================================================== */
 
 const STORAGE_KEYS = {
-  TRANSACTIONS: 'finanzix_transactions_v1',
-  CATEGORIES: 'finanzix_categories_v1',
-  SETTINGS: 'finanzix_settings_v1',
-  COST_PROJECTS: 'finanzix_cost_projects_v1',
-  BUDGETS: 'finanzix_budgets_v1',
-  SAVINGS_GOALS: 'finanzix_savings_goals_v1',
+  TRANSACTIONS: 'finanzix_transactions_v2_clean',
+  CATEGORIES: 'finanzix_categories_v2_clean',
+  SETTINGS: 'finanzix_settings_v2_clean',
+  COST_PROJECTS: 'finanzix_cost_projects_v2_clean',
+  BUDGETS: 'finanzix_budgets_v2_clean',
+  SAVINGS_GOALS: 'finanzix_savings_goals_v2_clean',
 };
 
 // Clean Vector Lucide Categories
@@ -42,112 +42,30 @@ export const PAYMENT_METHODS = [
   { id: 'transfer', name: 'Transferencia', icon: 'building-2' },
 ];
 
-const SEED_TRANSACTIONS = [
-  {
-    id: 'tx_1',
-    type: 'income',
-    title: 'Sueldo Mensual',
-    amount: 3200,
-    category: 'salary',
-    paymentMethod: 'transfer',
-    isFixed: true,
-    date: new Date(Date.now() - 4 * 86400000).toISOString().split('T')[0],
-    note: 'Pago quincenal'
-  },
-  {
-    id: 'tx_2',
-    type: 'expense',
-    title: 'Supermercado Mensual',
-    amount: 420.50,
-    category: 'food',
-    paymentMethod: 'debit',
-    isFixed: false,
-    date: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-    note: 'Despensa del hogar'
-  },
-  {
-    id: 'tx_3',
-    type: 'expense',
-    title: 'Alquiler Residencia',
-    amount: 850,
-    category: 'home',
-    paymentMethod: 'transfer',
-    isFixed: true,
-    date: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-    note: 'Renta fija'
-  },
-  {
-    id: 'tx_4',
-    type: 'income',
-    title: 'Venta de Pedido #104',
-    amount: 580,
-    category: 'sales',
-    paymentMethod: 'yape',
-    isFixed: false,
-    date: new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0],
-    note: 'Cliente directo'
-  },
-  {
-    id: 'tx_5',
-    type: 'expense',
-    title: 'Cena Restaurante',
-    amount: 85,
-    category: 'entertainment',
-    paymentMethod: 'plin',
-    isFixed: false,
-    date: new Date().toISOString().split('T')[0],
-    note: 'Salida fin de semana'
-  }
-];
+// Clean Zero State - No mock transactions or seeded money
+const SEED_TRANSACTIONS = [];
 
 const SEED_COST_PROJECTS = [
   {
-    id: 'proj_1',
-    name: 'Torta Artesanal de Chocolate',
+    id: 'proj_default',
+    name: 'Mi Primer Producto / Servicio',
     batchSize: 1,
     targetMargin: 40,
     taxRate: 0,
     materials: [
-      { id: 'm1', name: 'Harina preparada (500g)', qty: 1, unitCost: 4.50 },
-      { id: 'm2', name: 'Cacao en polvo (200g)', qty: 1, unitCost: 8.00 },
-      { id: 'm3', name: 'Huevos (6 unidades)', qty: 6, unitCost: 0.60 },
-      { id: 'm4', name: 'Mantequilla y leche', qty: 1, unitCost: 7.50 },
-      { id: 'm5', name: 'Caja y empaque premium', qty: 1, unitCost: 5.00 },
+      { id: 'm1', name: 'Insumo principal', qty: 1, unitCost: 0 }
     ],
-    labor: { hours: 2, ratePerHour: 10.00 },
+    labor: { hours: 1, ratePerHour: 0 },
     overheads: [
-      { id: 'o1', name: 'Gas y Electricidad del horno', amount: 6.00 },
-      { id: 'o2', name: 'Desgaste de moldes y agua', amount: 2.50 }
+      { id: 'o1', name: 'Servicios / Empaque', amount: 0 }
     ],
     updatedAt: new Date().toISOString()
   }
 ];
 
-const SEED_SAVINGS_GOALS = [
-  {
-    id: 'goal_1',
-    title: 'Fondo de Emergencia',
-    targetAmount: 5000,
-    currentAmount: 2400,
-    deadline: '2026-12-31',
-    icon: 'shield'
-  },
-  {
-    id: 'goal_2',
-    title: 'Nuevo Terminal Android',
-    targetAmount: 1800,
-    currentAmount: 1250,
-    deadline: '2026-10-15',
-    icon: 'smartphone'
-  }
-];
+const SEED_SAVINGS_GOALS = [];
 
-const SEED_BUDGETS = {
-  food: 900,
-  entertainment: 300,
-  transport: 250,
-  services: 200,
-};
+const SEED_BUDGETS = {};
 
 class StorageService {
   constructor() {
@@ -158,7 +76,7 @@ class StorageService {
     if (!localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) {
       this.save(STORAGE_KEYS.TRANSACTIONS, SEED_TRANSACTIONS);
     }
-    // Always sync categories to ensure vector icons
+    // Always sync clean categories
     this.save(STORAGE_KEYS.CATEGORIES, DEFAULT_CATEGORIES);
 
     if (!localStorage.getItem(STORAGE_KEYS.COST_PROJECTS)) {
@@ -174,148 +92,182 @@ class StorageService {
       this.save(STORAGE_KEYS.SETTINGS, {
         currency: 'PEN',
         currencySymbol: 'S/',
-        userName: 'Usuario',
-        theme: 'dark',
-        monthlyBudget: 2500
+        userName: 'Mi Espacio',
+        monthlyBudget: 0
       });
     }
   }
 
-  get(key, fallback = []) {
+  get(key) {
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : fallback;
+      return data ? JSON.parse(data) : null;
     } catch (e) {
-      console.error('Error reading localStorage:', e);
-      return fallback;
+      console.error(`Error reading ${key} from localStorage`, e);
+      return null;
     }
   }
 
   save(key, data) {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-      window.dispatchEvent(new CustomEvent('finanzix:data-changed', { detail: { key } }));
+      window.dispatchEvent(new CustomEvent('finanzix:data-changed', { detail: { key, data } }));
     } catch (e) {
-      console.error('Error saving localStorage:', e);
+      console.error(`Error saving ${key} to localStorage`, e);
     }
   }
 
+  // Transactions
   getTransactions() {
-    return this.get(STORAGE_KEYS.TRANSACTIONS, []);
+    return this.get(STORAGE_KEYS.TRANSACTIONS) || [];
   }
 
-  addTransaction(tx) {
+  saveTransactions(transactions) {
+    this.save(STORAGE_KEYS.TRANSACTIONS, transactions);
+  }
+
+  addTransaction(transaction) {
     const transactions = this.getTransactions();
     const newTx = {
       id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      date: new Date().toISOString().split('T')[0],
       createdAt: new Date().toISOString(),
-      ...tx
+      ...transaction
     };
     transactions.unshift(newTx);
-    this.save(STORAGE_KEYS.TRANSACTIONS, transactions);
+    this.saveTransactions(transactions);
     return newTx;
   }
 
   deleteTransaction(id) {
-    let transactions = this.getTransactions();
-    transactions = transactions.filter(t => t.id !== id);
-    this.save(STORAGE_KEYS.TRANSACTIONS, transactions);
+    const transactions = this.getTransactions().filter(t => t.id !== id);
+    this.saveTransactions(transactions);
   }
 
+  updateTransaction(id, updatedData) {
+    const transactions = this.getTransactions().map(t => {
+      if (t.id === id) {
+        return { ...t, ...updatedData, updatedAt: new Date().toISOString() };
+      }
+      return t;
+    });
+    this.saveTransactions(transactions);
+  }
+
+  // Categories
   getCategories() {
-    return this.get(STORAGE_KEYS.CATEGORIES, DEFAULT_CATEGORIES);
+    return this.get(STORAGE_KEYS.CATEGORIES) || DEFAULT_CATEGORIES;
   }
 
-  getCategoryById(id) {
+  saveCategories(categories) {
+    this.save(STORAGE_KEYS.CATEGORIES, categories);
+  }
+
+  addCategory(category) {
     const categories = this.getCategories();
-    return categories.find(c => c.id === id) || { id: 'other', name: 'General', icon: 'receipt', color: '#64748B' };
+    const newCat = {
+      id: 'cat_' + Date.now(),
+      ...category
+    };
+    categories.push(newCat);
+    this.saveCategories(categories);
+    return newCat;
   }
 
+  // Cost Projects
   getCostProjects() {
-    return this.get(STORAGE_KEYS.COST_PROJECTS, []);
+    return this.get(STORAGE_KEYS.COST_PROJECTS) || SEED_COST_PROJECTS;
   }
 
   saveCostProject(project) {
-    const projects = this.getCostProjects();
-    const existingIndex = projects.findIndex(p => p.id === project.id);
-    if (existingIndex !== -1) {
-      projects[existingIndex] = { ...project, updatedAt: new Date().toISOString() };
+    let projects = this.getCostProjects();
+    const index = projects.findIndex(p => p.id === project.id);
+    if (index >= 0) {
+      projects[index] = { ...project, updatedAt: new Date().toISOString() };
     } else {
-      projects.unshift({
-        id: 'proj_' + Date.now(),
-        ...project,
-        updatedAt: new Date().toISOString()
-      });
+      projects.push({ ...project, id: project.id || 'proj_' + Date.now(), updatedAt: new Date().toISOString() });
     }
     this.save(STORAGE_KEYS.COST_PROJECTS, projects);
   }
 
   deleteCostProject(id) {
-    let projects = this.getCostProjects();
-    projects = projects.filter(p => p.id !== id);
-    this.save(STORAGE_KEYS.COST_PROJECTS, projects);
+    const projects = this.getCostProjects().filter(p => p.id !== id);
+    this.save(STORAGE_KEYS.COST_PROJECTS, projects.length > 0 ? projects : SEED_COST_PROJECTS);
   }
 
+  // Savings Goals
   getSavingsGoals() {
-    return this.get(STORAGE_KEYS.SAVINGS_GOALS, []);
+    return this.get(STORAGE_KEYS.SAVINGS_GOALS) || [];
   }
 
   saveSavingsGoal(goal) {
-    const goals = this.getSavingsGoals();
+    let goals = this.getSavingsGoals();
     const index = goals.findIndex(g => g.id === goal.id);
-    if (index !== -1) {
+    if (index >= 0) {
       goals[index] = goal;
     } else {
-      goals.push({ id: 'goal_' + Date.now(), ...goal });
+      goals.push(goal);
     }
     this.save(STORAGE_KEYS.SAVINGS_GOALS, goals);
   }
 
   deleteSavingsGoal(id) {
-    let goals = this.getSavingsGoals();
-    goals = goals.filter(g => g.id !== id);
+    const goals = this.getSavingsGoals().filter(g => g.id !== id);
     this.save(STORAGE_KEYS.SAVINGS_GOALS, goals);
   }
 
+  // Budgets
   getBudgets() {
-    return this.get(STORAGE_KEYS.BUDGETS, {});
+    return this.get(STORAGE_KEYS.BUDGETS) || {};
   }
 
-  saveBudget(categoryId, amount) {
+  saveBudget(categoryId, limitAmount) {
     const budgets = this.getBudgets();
-    budgets[categoryId] = Number(amount);
+    budgets[categoryId] = Number(limitAmount);
     this.save(STORAGE_KEYS.BUDGETS, budgets);
   }
 
+  // Settings
   getSettings() {
-    return this.get(STORAGE_KEYS.SETTINGS, {
+    return this.get(STORAGE_KEYS.SETTINGS) || {
       currency: 'PEN',
       currencySymbol: 'S/',
-      userName: 'Usuario',
-      theme: 'dark'
-    });
+      userName: 'Mi Espacio',
+      monthlyBudget: 0
+    };
   }
 
   updateSettings(newSettings) {
-    const settings = { ...this.getSettings(), ...newSettings };
-    this.save(STORAGE_KEYS.SETTINGS, settings);
-    return settings;
+    const current = this.getSettings();
+    this.save(STORAGE_KEYS.SETTINGS, { ...current, ...newSettings });
   }
 
-  exportBackupJSON() {
-    const backup = {
+  // Reset Everything to Absolute Zero
+  resetAllData() {
+    localStorage.removeItem(STORAGE_KEYS.TRANSACTIONS);
+    localStorage.removeItem(STORAGE_KEYS.COST_PROJECTS);
+    localStorage.removeItem(STORAGE_KEYS.SAVINGS_GOALS);
+    localStorage.removeItem(STORAGE_KEYS.BUDGETS);
+    this.init();
+    window.location.reload();
+  }
+
+  // Export all data as JSON
+  exportDataJSON() {
+    return JSON.stringify({
+      version: '2.0.0',
+      exportedAt: new Date().toISOString(),
       transactions: this.getTransactions(),
       categories: this.getCategories(),
       costProjects: this.getCostProjects(),
       savingsGoals: this.getSavingsGoals(),
       budgets: this.getBudgets(),
       settings: this.getSettings(),
-      exportedAt: new Date().toISOString()
-    };
-    return JSON.stringify(backup, null, 2);
+    }, null, 2);
   }
 
-  importBackupJSON(jsonString) {
+  // Import JSON backup
+  importDataJSON(jsonString) {
     try {
       const data = JSON.parse(jsonString);
       if (data.transactions) this.save(STORAGE_KEYS.TRANSACTIONS, data.transactions);
@@ -324,21 +276,10 @@ class StorageService {
       if (data.savingsGoals) this.save(STORAGE_KEYS.SAVINGS_GOALS, data.savingsGoals);
       if (data.budgets) this.save(STORAGE_KEYS.BUDGETS, data.budgets);
       if (data.settings) this.save(STORAGE_KEYS.SETTINGS, data.settings);
-      return { success: true, message: '¡Datos restaurados con éxito!' };
+      return { success: true };
     } catch (e) {
-      return { success: false, message: 'Archivo JSON inválido o corrupto.' };
+      return { success: false, error: e.message };
     }
-  }
-
-  exportCSV() {
-    const txs = this.getTransactions();
-    const categories = this.getCategories();
-    let csv = 'ID,Fecha,Tipo,Titulo,Monto,Categoria,MetodoPago,Fijo,Nota\n';
-    txs.forEach(t => {
-      const cat = categories.find(c => c.id === t.category)?.name || t.category;
-      csv += `"${t.id}","${t.date}","${t.type}","${t.title.replace(/"/g, '""')}","${t.amount}","${cat}","${t.paymentMethod}","${t.isFixed ? 'SI' : 'NO'}","${(t.note || '').replace(/"/g, '""')}"\n`;
-    });
-    return csv;
   }
 }
 

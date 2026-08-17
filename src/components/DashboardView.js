@@ -156,9 +156,15 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
         <div class="transactions-list-glass">
           ${transactions.length === 0 ? `
-            <div style="padding: 24px; text-align: center; color: var(--ink-60); font-size: 0.84rem; background: rgba(255, 255, 255, 0.7); border-radius: 16px;">
-              <i data-lucide="receipt" style="width: 28px; height: 28px; margin: 0 auto 8px; color: var(--ink-40); display: block;"></i>
-              No tienes transacciones registradas aún.
+            <div style="padding: 28px 16px; text-align: center; color: var(--ink-60); font-size: 0.84rem; background: #FFFFFF; border-radius: 16px; border: 1.5px dashed rgba(15, 23, 42, 0.1);">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+                <i data-lucide="sparkles" style="width: 22px; height: 22px;"></i>
+              </div>
+              <div style="font-weight: 800; font-size: 0.94rem; color: var(--ink); margin-bottom: 2px;">¡Bienvenido a Aurora Finanzix!</div>
+              <div style="font-size: 0.76rem; color: var(--ink-60); margin-bottom: 14px;">Tu balance está en S/ 0.00. Comienza registrando tu primer ingreso o gasto.</div>
+              <button type="button" id="btn-empty-add-tx" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.82rem;">
+                + Registrar Primer Movimiento
+              </button>
             </div>
           ` : transactions.map(tx => {
             const categoryId = tx.category || tx.categoryId;
@@ -198,6 +204,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#btn-quick-cost')?.addEventListener('click', () => onNavigate?.('costs'));
   container.querySelector('#btn-quick-budget')?.addEventListener('click', () => onNavigate?.('budgets'));
   container.querySelector('#btn-view-all-tx')?.addEventListener('click', () => onNavigate?.('transactions'));
+  container.querySelector('#btn-empty-add-tx')?.addEventListener('click', () => onAddTransaction?.('income'));
 
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction?.('income'));
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction?.('expense'));
