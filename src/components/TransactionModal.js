@@ -5,7 +5,7 @@
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { createIcons, icons } from 'lucide';
-import { t, formatCurrency } from '../services/i18n.js';
+import { t, formatCurrency, getCategoryName, getPaymentMethodName } from '../services/i18n.js';
 
 export function showTransactionModal({ initialType = 'expense', onSave, onClose }) {
   const portal = document.getElementById('modal-portal');
@@ -93,7 +93,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
                   <div class="cat-picker-icon-wrap" style="background: #0F172A; color: #FFFFFF;">
                     <i data-lucide="${cat.icon || 'receipt'}" style="width: 17px; height: 17px;"></i>
                   </div>
-                  <span class="cat-picker-label">${cat.name}</span>
+                  <span class="cat-picker-label">${getCategoryName(cat)}</span>
                 </div>
               `).join('')}
             </div>
@@ -105,7 +105,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
             <select id="tx-payment-method" class="input-control">
               ${PAYMENT_METHODS.map(pm => `
                 <option value="${pm.id}" ${pm.id === selectedPaymentMethod ? 'selected' : ''}>
-                  ${pm.name}
+                  ${getPaymentMethodName(pm)}
                 </option>
               `).join('')}
             </select>

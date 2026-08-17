@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
-import { t, formatCurrency } from '../services/i18n.js';
+import { t, formatCurrency, getCategoryName, getPaymentMethodName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
 
 export function renderTransactions(container, { onAddTransaction, onShowToast }) {
@@ -28,7 +28,7 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
 
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        const cat = categories.find(c => c.id === categoryId)?.name.toLowerCase() || '';
+        const cat = getCategoryName(categoryId).toLowerCase();
         const matchTitle = (tx.title || tx.description || '').toLowerCase().includes(q);
         const matchCat = cat.includes(q);
         const matchNote = (tx.note || '').toLowerCase().includes(q);
@@ -72,6 +72,8 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
       const categoryId = tx.category || tx.categoryId;
       const cat = categories.find(c => c.id === categoryId) || { name: 'General', icon: 'receipt' };
       const pm = PAYMENT_METHODS.find(p => p.id === tx.paymentMethod) || { name: 'Efectivo', icon: 'banknote' };
+      const catDisplayName = getCategoryName(categoryId || cat);
+      const pmDisplayName = getPaymentMethodName(tx.paymentMethod || pm);
       const isIncome = tx.type === 'income';
 
       return `
@@ -81,13 +83,13 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
               <i data-lucide="${cat.icon || (isIncome ? 'arrow-down-left' : 'arrow-up-right')}" style="width: 17px; height: 17px;"></i>
             </div>
             <div class="tx-details">
-              <span class="tx-title">${tx.title || tx.description || cat.name}</span>
+              <span class="tx-title">${tx.title || tx.description || catDisplayName}</span>
               <div class="tx-meta-info">
-                <span>${cat.name}</span>
+                <span>${catDisplayName}</span>
                 <span>•</span>
                 <span class="tx-payment-method">
                   <i data-lucide="${pm.icon || 'credit-card'}" style="width: 11px; height: 11px;"></i>
-                  ${pm.name}
+                  ${pmDisplayName}
                 </span>
                 ${tx.isFixed ? `<span style="color: #D97706; font-weight: 800;">[${t('tx_fixed_tag')}]</span>` : ''}
               </div>
@@ -116,7 +118,7 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
         const id = btn.getAttribute('data-id');
         if (confirm(t('tx_delete_confirm'))) {
           storage.deleteTransaction(id);
-          allTransactions = storage.getTransactions();
+          allTransactions = storage.getTransactions() || [];
           renderList();
           onShowToast?.(t('tx_delete_success'), 'success');
         }
@@ -131,12 +133,14 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
       <!-- Header -->
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-          <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink);">
+          <h2 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--ink);">
             ${t('tx_ledger_title')}
           </h2>
-          <p style="font-size: 0.74rem; color: var(--ink-60);">${t('tx_ledger_sub')}</p>
+          <p style="font-size: 0.75rem; color: var(--ink-60); margin-top: 2px;">
+            ${t('tx_ledger_sub')}
+          </p>
         </div>
-        <button id="btn-add-tx-direct" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.82rem;">
+        <button type="button" class="btn btn-primary" id="btn-header-add-tx" style="font-size: 0.78rem; padding: 8px 14px;">
           ${t('tx_new_btn')}
         </button>
       </div>
@@ -160,7 +164,7 @@ export function renderTransactions(container, { onAddTransaction, onShowToast })
       <!-- Category Dropdown Filter -->
       <select id="tx-category-filter" class="input-control" style="font-size: 0.85rem; font-weight: 600;">
         <option value="all">${t('tx_cat_all')}</option>
-        ${categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        ${categories.map(c => `<option value="${c.id}">${getCategoryName(c)}</option>`).join('')}
       </select>
 
       <!-- Filter Summary Bar -->

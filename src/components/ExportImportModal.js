@@ -1,8 +1,11 @@
 /* ==========================================================================
-   FINANZIX PRO - BACKUP, EXPORT & RESTORE MODAL
+   VALO OS - BACKUP, EXPORT & RESTORE MODAL
+   100% Bilingual (ES / EN) with Vector Lucide Icons
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
+import { t } from '../services/i18n.js';
+import { createIcons, icons } from 'lucide';
 
 export function showExportImportModal({ onDataReload, onShowToast }) {
   const portal = document.getElementById('modal-portal');
@@ -15,129 +18,168 @@ export function showExportImportModal({ onDataReload, onShowToast }) {
     <div class="bottom-sheet">
       <div class="sheet-handle"></div>
       <div class="sheet-header">
-        <h3 class="sheet-title">📦 Respaldos y Exportación</h3>
-        <button type="button" class="sheet-close-btn" id="btn-export-close">✕</button>
+        <h3 class="sheet-title">${t('modal_export_title')}</h3>
+        <button type="button" class="sheet-close-btn" id="btn-export-close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
       </div>
 
-      <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 16px;">
-        Tus datos son 100% privados y se guardan en tu dispositivo. Puedes descargarlos o exportarlos a Excel cuando quieras.
+      <p style="font-size: 0.78rem; color: var(--ink-60); margin-bottom: 16px;">
+        ${t('modal_export_desc')}
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <!-- Export to CSV / Excel -->
-        <button type="button" id="btn-download-csv" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px;">
-          <span style="font-size: 1.3rem;">📊</span>
+        <button type="button" id="btn-download-csv" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="file-spreadsheet" style="width: 18px; height: 18px;"></i>
+          </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.85rem; font-weight: 700;">Descargar reporte en Excel (.CSV)</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Tabla de todos tus movimientos y gastos</div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: var(--ink);">${t('modal_export_csv_title')}</div>
+            <div style="font-size: 0.7rem; color: var(--ink-60);">${t('modal_export_csv_desc')}</div>
           </div>
         </button>
 
         <!-- Export JSON Backup -->
-        <button type="button" id="btn-download-json" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px;">
-          <span style="font-size: 1.3rem;">💾</span>
+        <button type="button" id="btn-download-json" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i>
+          </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.85rem; font-weight: 700;">Crear Respaldo Completo (.JSON)</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Copia de seguridad de gastos, costos y presupuestos</div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: var(--ink);">${t('modal_export_json_title')}</div>
+            <div style="font-size: 0.7rem; color: var(--ink-60);">${t('modal_export_json_desc')}</div>
           </div>
         </button>
 
         <!-- Import JSON Backup -->
         <div style="position: relative;">
           <input type="file" id="inp-import-file" accept=".json" style="display: none;" />
-          <button type="button" id="btn-trigger-import" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px;">
-            <span style="font-size: 1.3rem;">📂</span>
+          <button type="button" id="btn-trigger-import" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px; gap: 12px;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #FFFBEB; color: #D97706; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <i data-lucide="folder-open" style="width: 18px; height: 18px;"></i>
+            </div>
             <div style="text-align: left;">
-              <div style="font-size: 0.85rem; font-weight: 700;">Restaurar Respaldo (.JSON)</div>
-              <div style="font-size: 0.7rem; color: var(--text-muted);">Cargar datos guardados previamente</div>
+              <div style="font-size: 0.85rem; font-weight: 800; color: var(--ink);">${t('modal_import_json_title')}</div>
+              <div style="font-size: 0.7rem; color: var(--ink-60);">${t('modal_import_json_desc')}</div>
             </div>
           </button>
         </div>
 
         <!-- Print / PDF Summary -->
-        <button type="button" id="btn-print-summary" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px;">
-          <span style="font-size: 1.3rem;">🖨️</span>
+        <button type="button" id="btn-print-summary" class="btn btn-secondary btn-block" style="justify-content: flex-start; padding: 12px 16px; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #F8FAFC; color: #0F172A; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="printer" style="width: 18px; height: 18px;"></i>
+          </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.85rem; font-weight: 700;">Imprimir / Guardar en PDF</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Vista lista para imprimir o guardar reporte PDF</div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: var(--ink);">${t('modal_print_title')}</div>
+            <div style="font-size: 0.7rem; color: var(--ink-60);">${t('modal_print_desc')}</div>
           </div>
         </button>
       </div>
-
-      <button type="button" class="btn btn-primary btn-block" id="btn-close-export-bottom" style="margin-top: 18px;">
-        Cerrar
-      </button>
     </div>
   `;
+
+  createIcons({ icons, nameAttr: 'data-lucide', root: overlay });
 
   function close() {
     overlay.classList.remove('active');
     setTimeout(() => overlay.remove(), 280);
   }
 
-  portal.appendChild(overlay);
+  overlay.querySelector('#btn-export-close')?.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
 
-  // Download CSV
+  // CSV Export
   overlay.querySelector('#btn-download-csv')?.addEventListener('click', () => {
-    const csvContent = storage.exportCSV();
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `finanzix_reporte_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    onShowToast?.('Reporte CSV descargado con éxito', 'success');
+    const txs = storage.getTransactions() || [];
+    if (txs.length === 0) {
+      onShowToast?.('No hay transacciones registradas para exportar');
+      return;
+    }
+
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += 'Fecha,Tipo,Concepto,Categoria,Monto,Metodo,Fijo,Nota\n';
+
+    txs.forEach(t => {
+      const row = [
+        t.date || '',
+        t.type || 'expense',
+        `"${(t.title || '').replace(/"/g, '""')}"`,
+        t.category || '',
+        t.amount || 0,
+        t.paymentMethod || 'cash',
+        t.isFixed ? 'SI' : 'NO',
+        `"${(t.note || '').replace(/"/g, '""')}"`
+      ].join(',');
+      csvContent += row + '\n';
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `VALO_Reporte_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    onShowToast?.('Reporte CSV descargado con éxito');
+    close();
   });
 
-  // Download JSON Backup
+  // JSON Export
   overlay.querySelector('#btn-download-json')?.addEventListener('click', () => {
-    const jsonContent = storage.exportBackupJSON();
-    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `finanzix_backup_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    onShowToast?.('Copia de respaldo JSON descargada', 'success');
+    const backupData = storage.exportAllData();
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
+    const link = document.createElement('a');
+    link.setAttribute('href', dataStr);
+    link.setAttribute('download', `VALO_Backup_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    onShowToast?.('Respaldo JSON descargado con éxito');
+    close();
   });
 
-  // Import JSON File
+  // JSON Import
   const fileInput = overlay.querySelector('#inp-import-file');
   overlay.querySelector('#btn-trigger-import')?.addEventListener('click', () => {
     fileInput?.click();
   });
 
   fileInput?.addEventListener('change', (e) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const content = event.target?.result;
-      const res = storage.importBackupJSON(content);
-      if (res.success) {
-        onShowToast?.(res.message, 'success');
-        close();
-        onDataReload?.();
-      } else {
-        onShowToast?.(res.message, 'error');
+      try {
+        const parsed = JSON.parse(event.target.result);
+        const success = storage.importAllData(parsed);
+        if (success) {
+          onShowToast?.('Respaldo restaurado con éxito');
+          onDataReload?.();
+          close();
+        } else {
+          onShowToast?.('Error al validar el archivo de respaldo');
+        }
+      } catch (err) {
+        onShowToast?.('Formato de archivo inválido');
       }
     };
     reader.readAsText(file);
   });
 
-  // Print summary
+  // Print Summary
   overlay.querySelector('#btn-print-summary')?.addEventListener('click', () => {
     window.print();
+    close();
   });
 
-  overlay.querySelector('#btn-export-close')?.addEventListener('click', close);
-  overlay.querySelector('#btn-close-export-bottom')?.addEventListener('click', close);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) close();
+  portal.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.classList.add('active');
   });
-
-  requestAnimationFrame(() => overlay.classList.add('active'));
 }

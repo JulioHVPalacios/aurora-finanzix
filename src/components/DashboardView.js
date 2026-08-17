@@ -3,9 +3,9 @@
    High-Contrast Luxury Obsidian Hero Card, Clean White Stat Boxes & Minimalist Wave
    ========================================================================== */
 
-import { storage, PAYMENT_METHODS } from '../services/storage.js';
+import { storage } from '../services/storage.js';
 import { getFinancialMetrics } from '../services/analytics.js';
-import { t, formatCurrency } from '../services/i18n.js';
+import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
 
 export function renderDashboard(container, { onNavigate, onAddTransaction, onShowToast }) {
@@ -178,6 +178,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
           ` : transactions.map(tx => {
             const categoryId = tx.category || tx.categoryId;
             const cat = categories.find(c => c.id === categoryId) || { name: 'General', icon: 'receipt' };
+            const catDisplayName = getCategoryName(categoryId || cat);
             const isIncome = tx.type === 'income';
 
             return `
@@ -187,8 +188,8 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
                     <i data-lucide="${cat.icon || (isIncome ? 'arrow-down-left' : 'arrow-up-right')}" style="width: 17px; height: 17px;"></i>
                   </div>
                   <div class="tx-details">
-                    <span class="tx-title">${tx.title || tx.description || cat.name}</span>
-                    <span class="tx-meta-info">${cat.name} • ${tx.date || t('tx_today')}</span>
+                    <span class="tx-title">${tx.title || tx.description || catDisplayName}</span>
+                    <span class="tx-meta-info">${catDisplayName} • ${tx.date || t('tx_today')}</span>
                   </div>
                 </div>
                 <div class="tx-amount ${isIncome ? 'income' : 'expense'}" style="color: ${isIncome ? '#059669' : '#DC2626'}; font-weight: 800; font-family: var(--font-mono);">

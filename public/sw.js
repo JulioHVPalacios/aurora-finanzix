@@ -1,51 +1,71 @@
 /* ==========================================================================
-   AURORA FINANZIX - AUTO-UPDATE & ANDROID SYSTEM PUSH NOTIFICATIONS
-   Version: 1.0.7 (2026-08-17)
-   Background Periodic Sync & Push Event Listeners
+   VALO OS - SERVICE WORKER (v1.0.18 PRODUCTION)
+   Ultra-Fast Offline Cache, Instant Background Notifications & Updates
    ========================================================================== */
 
-const CACHE_VERSION = 'valo-finanzix-v17-subtabs-and-nav-20260817';
+const CACHE_VERSION = 'valo-os-v18-production-20260817';
 
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/version.json',
-  '/icon.svg'
+  '/icon.svg',
+  '/src/main.js',
+  '/src/styles/design-tokens.css',
+  '/src/styles/app.css',
+  '/src/services/storage.js',
+  '/src/services/i18n.js',
+  '/src/services/analytics.js',
+  '/src/services/costCalculator.js',
+  '/src/components/Navbar.js',
+  '/src/components/BottomNav.js',
+  '/src/components/DashboardView.js',
+  '/src/components/TransactionsView.js',
+  '/src/components/SubscriptionsView.js',
+  '/src/components/DebtsView.js',
+  '/src/components/AnalyticsView.js',
+  '/src/components/BudgetsView.js',
+  '/src/components/ToolsView.js',
+  '/src/components/TransactionModal.js',
+  '/src/components/ConnectMobileModal.js',
+  '/src/components/ExportImportModal.js'
 ];
 
-// Install: Cache core assets and activate immediately
+// Install: Cache Core Assets & Skip Waiting immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_VERSION).then((cache) => {
-      return cache.addAll(CORE_ASSETS);
+      return cache.addAll(CORE_ASSETS).catch((err) => {
+        console.warn('[VALO SW] Non-fatal cache item warning:', err);
+      });
     })
   );
-  self.skipWaiting();
 });
 
-// Activate: Clean old caches, claim clients, and send native Android notification
+// Activate: Claim Clients, Flush Outdated Caches & Send Instant System Notification
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_VERSION) {
-            return caches.delete(name);
+        keys.map((key) => {
+          if (key !== CACHE_VERSION) {
+            return caches.delete(key);
           }
         })
       );
     }).then(() => {
       return self.clients.claim();
     }).then(() => {
-      // Send Native Notification to Android Status Bar if permission is granted
+      // Trigger instant background notification if permission is granted
       if (self.Notification && self.Notification.permission === 'granted') {
-        self.registration.showNotification('✨ Aurora Finanzix Actualizada', {
-          body: 'Se ha instalado la última versión con diseño blanco perla y botón central (+).',
+        return self.registration.showNotification('💎 VALO OS Actualizado', {
+          body: 'Nueva versión v1.0.18 lista con mejoras visuales y bilingües.',
           icon: '/icon.svg',
           badge: '/icon.svg',
           vibrate: [200, 100, 200],
-          tag: 'finanzix-auto-update',
+          tag: 'valo-system-update',
           renotify: true,
           data: { url: '/' }
         });
@@ -54,9 +74,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Notification Click Handler (opens app when tapped in Android notification bar)
+// Notification Click Handler: Focus or Open App Window
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
@@ -78,9 +99,13 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-// Push Notification Listener (triggered via WebPush / Firebase Push)
+// Push Notification Listener (triggered via WebPush / Serverless Push)
 self.addEventListener('push', (event) => {
-  let payload = { title: '🚀 Aurora Finanzix Actualizada', body: 'Hay una nueva versión disponible. Toca para abrir.' };
+  let payload = { 
+    title: '💎 VALO OS Actualizado', 
+    body: 'Nueva versión disponible. Toca para ver tus finanzas.' 
+  };
+  
   try {
     if (event.data) payload = event.data.json();
   } catch (e) {
@@ -88,12 +113,12 @@ self.addEventListener('push', (event) => {
   }
 
   event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
+    self.registration.showNotification(payload.title || '💎 VALO OS Actualizado', {
+      body: payload.body || 'Nueva versión lista.',
       icon: '/icon.svg',
       badge: '/icon.svg',
       vibrate: [200, 100, 200],
-      tag: 'finanzix-push-update',
+      tag: 'valo-push-alert',
       renotify: true,
       data: { url: payload.url || '/' }
     })
@@ -106,12 +131,12 @@ async function checkBackgroundUpdate() {
     if (res.ok) {
       const data = await res.json();
       if (self.Notification && self.Notification.permission === 'granted') {
-        self.registration.showNotification('🚀 Nueva Actualización de Aurora Finanzix', {
-          body: `Versión v${data.version} lista con nuevas mejoras visuales.`,
+        self.registration.showNotification('💎 VALO OS Actualizado', {
+          body: `Versión v${data.version} lista. Toca para abrir.`,
           icon: '/icon.svg',
           badge: '/icon.svg',
           vibrate: [200, 100, 200],
-          tag: 'finanzix-version-alert',
+          tag: 'valo-version-alert',
           renotify: true,
           data: { url: '/' }
         });
@@ -142,55 +167,27 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => {
-          return caches.match(event.request).then((cached) => cached || caches.match('/index.html'));
-        })
+        .catch(() => caches.match(event.request))
     );
     return;
   }
 
-  // Other assets (CSS, JS, SVGs, Fonts): Stale-While-Revalidate
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const copy = networkResponse.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
-          }
-          return networkResponse;
-        })
-        .catch(() => cachedResponse);
+  // Stale-While-Revalidate for local assets
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const copy = networkResponse.clone();
+              caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
 
-      return cachedResponse || fetchPromise;
-    })
-  );
-});
-
-// ==========================================================================
-// VAPID WEB PUSH NOTIFICATIONS EVENT LISTENER
-// ==========================================================================
-self.addEventListener('push', (event) => {
-  let payload = { title: 'Notificación de Aurora', body: 'Tienes una nueva alerta.' };
-
-  if (event.data) {
-    try {
-      payload = event.data.json();
-    } catch (e) {
-      payload.body = event.data.text();
-    }
+        return cachedResponse || fetchPromise;
+      })
+    );
   }
-
-  const options = {
-    body: payload.body,
-    icon: payload.icon || '/icon.svg',
-    badge: '/icon.svg',
-    vibrate: [200, 100, 200],
-    data: payload.data || { url: '/' },
-    tag: payload.tag || 'aurora-push'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title, options)
-  );
 });
