@@ -37,6 +37,12 @@ class App {
 
   setupServiceWorker() {
     if ('serviceWorker' in navigator) {
+      if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(() => {
+          Notification.requestPermission().catch(() => {});
+        }, 1500);
+      }
+
       navigator.serviceWorker.register('/sw.js').then((registration) => {
         // Check for updates periodically every 15 minutes
         setInterval(() => {
@@ -49,6 +55,15 @@ class App {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 this.showUpdateBanner();
+
+                if (Notification.permission === 'granted') {
+                  registration.showNotification('✨ Aurora Finanzix Actualizada', {
+                    body: 'Nueva versión disponible con efectos fluidos y cards de cristal líquido.',
+                    icon: '/icon.svg',
+                    vibrate: [150, 80, 150],
+                    data: { url: '/' }
+                  }).catch(() => {});
+                }
               }
             });
           }

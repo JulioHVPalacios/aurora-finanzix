@@ -1,10 +1,8 @@
 /* ==========================================================================
-   AURORA FINANZIX - SEAMLESS AUTO-UPDATE SERVICE WORKER
-   Network-First for Manifest & HTML (Instant Name, Logo & Code Updates)
-   Cache-First with Background Sync for Assets (100% Offline Capability)
+   AURORA FINANZIX - AUTO-UPDATE & ANDROID SYSTEM PUSH NOTIFICATIONS
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v4-pearl-fix';
+const CACHE_VERSION = 'aurora-finanzix-v5-fluid-ultra';
 
 const CORE_ASSETS = [
   '/',
@@ -23,7 +21,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: Delete old caches and take immediate control of all open client tabs
+// Activate: Clean old caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -36,13 +34,41 @@ self.addEventListener('activate', (event) => {
       );
     }).then(() => {
       return self.clients.claim();
+    }).then(() => {
+      // Send Native Notification to Android Status Bar if permission is granted
+      if (self.Notification && self.Notification.permission === 'granted') {
+        self.registration.showNotification('✨ Aurora Finanzix Actualizada', {
+          body: 'Se ha instalado la versión más reciente con efectos fluidos y cards de cristal.',
+          icon: '/icon.svg',
+          badge: '/icon.svg',
+          vibrate: [150, 80, 150],
+          tag: 'finanzix-update',
+          renotify: true,
+          data: { url: '/' }
+        });
+      }
     })
   );
 });
 
-// Fetch Strategy:
-// 1. For HTML, manifest.json and API calls: Network-First (gets new names/features instantly, falls back to offline cache)
-// 2. For static scripts/styles/images: Stale-While-Revalidate (fast load + background update)
+// Notification Click Handler (opens app when tapped in Android notification bar)
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(event.notification.data?.url || '/');
+      }
+    })
+  );
+});
+
+// Network-First for HTML/Manifest, Stale-While-Revalidate for other assets
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
