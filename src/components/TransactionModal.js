@@ -5,6 +5,7 @@
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { createIcons, icons } from 'lucide';
+import { t, formatCurrency } from '../services/i18n.js';
 
 export function showTransactionModal({ initialType = 'expense', onSave, onClose }) {
   const portal = document.getElementById('modal-portal');
@@ -17,6 +18,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
   let currentType = initialType;
   let selectedCategory = categories.find(c => c.type === currentType)?.id || 'food';
   let selectedPaymentMethod = 'cash';
+  let attachedPhoto = null;
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -31,17 +33,17 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
       <div class="bottom-sheet">
         <div class="sheet-handle"></div>
         <div class="sheet-header">
-          <h3 class="sheet-title">Registrar Movimiento</h3>
+          <h3 class="sheet-title">${t('tx_new')}</h3>
           <button type="button" class="sheet-close-btn" id="btn-sheet-close">✕</button>
         </div>
 
         <!-- Segmented Type Selector -->
         <div class="segmented-control" style="margin-bottom: 14px;">
           <button type="button" class="segment-btn ${currentType === 'expense' ? 'active expense' : ''}" id="btn-type-expense">
-            Gasto
+            ${t('tx_type_expense')}
           </button>
           <button type="button" class="segment-btn ${currentType === 'income' ? 'active income' : ''}" id="btn-type-income">
-            Ingreso
+            ${t('tx_type_income')}
           </button>
         </div>
 
@@ -49,7 +51,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
           <!-- Amount Input -->
           <div class="form-group">
             <label class="form-label">
-              <span>Monto (${symbol})</span>
+              <span>${t('tx_amount')} (${symbol})</span>
             </label>
             <div style="position: relative; display: flex; align-items: center;">
               <span style="position: absolute; left: 14px; font-weight: 800; font-size: 1.3rem; color: ${currentType === 'income' ? '#059669' : '#DC2626'};">${symbol}</span>
@@ -59,11 +61,27 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
 
           <!-- Description Input -->
           <div class="form-group">
-            <label class="form-label">Concepto / Descripción</label>
-            <input type="text" required id="tx-title" class="input-control" placeholder="Ej. Almuerzo, Yape taxi, Sueldo..." maxlength="60" style="font-weight: 600;" />
+            <label class="form-label">
+              <span>${t('tx_desc')}</span>
+            </label>
+            <input type="text" id="tx-title" class="input-control" placeholder="Ej. Almuerzo, Uber, Sueldo..." required />
           </div>
 
-          <!-- Category Grid Picker -->
+          <!-- Receipt Attachment (ezBookkeeping style) -->
+          <div class="form-group">
+            <label class="form-label">
+              <span>Adjuntar Recibo / Foto</span>
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn" id="btn-attach-photo" style="background: rgba(99, 102, 241, 0.1); color: #4F46E5; width: 100%; border: 1px dashed rgba(99, 102, 241, 0.4);">
+                <i data-lucide="camera" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                Tomar Foto / Subir
+              </button>
+              <input type="file" id="tx-photo-input" accept="image/*" style="display: none;" />
+            </div>
+            <div id="tx-photo-preview" style="margin-top: 8px; display: none;"></div>
+          </div>
+          <!-- Receipt Attachment (ezBookkeeping style) -->
           <div class="form-group">
             <label class="form-label">Categoría</label>
             <div class="category-picker-grid" id="cat-picker-container">

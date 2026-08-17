@@ -25,13 +25,13 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
       </button>
     </div>
 
-    <!-- Slot 4: Costos -->
-    <button class="nav-item ${activeTab === 'costs' ? 'active' : ''}" data-tab="costs">
-      <i data-lucide="calculator" style="width: 20px; height: 20px;"></i>
-      <span>Costos</span>
+    <!-- Slot 4: Suscripciones -->
+    <button class="nav-item ${activeTab === 'subscriptions' ? 'active' : ''}" data-tab="subscriptions">
+      <i data-lucide="calendar-clock" style="width: 20px; height: 20px;"></i>
+      <span>Pagos Fijos</span>
     </button>
 
-    <!-- Slot 5: Reportes & Más -->
+    <!-- Slot 5: Metas & Más -->
     <button class="nav-item ${isReportsActive ? 'active' : ''}" data-tab="analytics">
       <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i>
       <span>Reportes</span>

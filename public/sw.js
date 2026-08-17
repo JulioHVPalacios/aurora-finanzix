@@ -4,7 +4,7 @@
    Background Periodic Sync & Push Event Listeners
    ========================================================================== */
 
-const CACHE_VERSION = 'aurora-finanzix-v8-clean-zero-state-20260817';
+const CACHE_VERSION = 'aurora-finanzix-v9-liquid-glass-20260817';
 
 const CORE_ASSETS = [
   '/',
@@ -164,5 +164,33 @@ self.addEventListener('fetch', (event) => {
 
       return cachedResponse || fetchPromise;
     })
+  );
+});
+
+// ==========================================================================
+// VAPID WEB PUSH NOTIFICATIONS EVENT LISTENER
+// ==========================================================================
+self.addEventListener('push', (event) => {
+  let payload = { title: 'Notificación de Aurora', body: 'Tienes una nueva alerta.' };
+
+  if (event.data) {
+    try {
+      payload = event.data.json();
+    } catch (e) {
+      payload.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: payload.body,
+    icon: payload.icon || '/icon.svg',
+    badge: '/icon.svg',
+    vibrate: [200, 100, 200],
+    data: payload.data || { url: '/' },
+    tag: payload.tag || 'aurora-push'
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, options)
   );
 });

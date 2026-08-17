@@ -4,6 +4,9 @@
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
+import { getFinancialMetrics } from '../services/analytics.js';
+import { t, formatCurrency } from '../services/i18n.js';
+import { createIcons, icons } from 'lucide';
 import confetti from 'canvas-confetti';
 
 export function renderBudgets(container, { onShowToast }) {

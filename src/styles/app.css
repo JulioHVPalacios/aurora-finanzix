@@ -1177,3 +1177,78 @@ html, body {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
   }
 }
+
+/* ==========================================================================
+   AURORA FINANZIX - ZEN MODE (PRIVACY EYE)
+   ========================================================================== */
+body.zen-mode-active .hero-balance-amount,
+body.zen-mode-active .stat-amount,
+body.zen-mode-active .tx-amount,
+body.zen-mode-active .budget-values {
+  filter: blur(6px);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+body.zen-mode-active .hero-balance-amount:hover,
+body.zen-mode-active .stat-amount:hover,
+body.zen-mode-active .tx-amount:hover {
+  filter: blur(0px);
+  opacity: 1;
+}
+body.zen-mode-active #btn-nav-zen i {
+  color: #4F46E5 !important;
+}
+
+/* ==========================================================================
+   AURORA FINANZIX - ULTRA PREMIUM SPLASH SCREEN
+   ========================================================================== */
+#app-splash {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: var(--bg-silver-gradient);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s var(--e-out), visibility 0.6s var(--e-out), transform 0.8s var(--e-out);
+}
+#app-splash.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+.splash-logo {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #6366F1, #3B82F6);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 24px;
+  box-shadow: 0 16px 32px rgba(99, 102, 241, 0.3);
+  animation: pulse-glow 2s infinite alternate;
+}
+@keyframes pulse-glow {
+  0% { box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2); transform: scale(1); }
+  100% { box-shadow: 0 16px 40px rgba(99, 102, 241, 0.5); transform: scale(1.02); }
+}
+.splash-brand {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+.splash-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-40);
+  margin-top: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}

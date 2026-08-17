@@ -8,10 +8,11 @@ import { renderNavbar } from './components/Navbar.js';
 import { renderBottomNav } from './components/BottomNav.js';
 import { renderDashboard } from './components/DashboardView.js';
 import { renderTransactions } from './components/TransactionsView.js';
-import { renderCostCalculator } from './components/CostCalculatorView.js';
 import { renderBudgets } from './components/BudgetsView.js';
 import { renderAnalytics } from './components/AnalyticsView.js';
 import { renderTools } from './components/ToolsView.js';
+import { renderSubscriptions } from './components/SubscriptionsView.js';
+import { renderDebts } from './components/DebtsView.js';
 import { showTransactionModal } from './components/TransactionModal.js';
 import { showConnectMobileModal } from './components/ConnectMobileModal.js';
 import { showExportImportModal } from './components/ExportImportModal.js';
@@ -33,74 +34,81 @@ class App {
       this.renderCurrentView();
       this.refreshNavbar();
     });
+
+    // Premium Splash Screen Fade-out
+    setTimeout(() => {
+      const splash = document.getElementById('app-splash');
+      if (splash) {
+        splash.classList.add('fade-out');
+        setTimeout(() => splash.remove(), 800);
+      }
+    }, 1400); // 1.4s of splash for premium feel
   }
 
   setupServiceWorker() {
     if ('serviceWorker' in navigator) {
-      if ('Notification' in window && Notification.permission === 'default') {
-        setTimeout(() => {
-          Notification.requestPermission().catch(() => {});
-        }, 1200);
-      }
-
-      navigator.serviceWorker.register('/sw.js').then((registration) => {
-        this.swRegistration = registration;
-        // Check for updates immediately
-        registration.update().catch(() => {});
-
-        // Check for updates whenever the user returns to the app
-        window.addEventListener('focus', () => registration.update().catch(() => {}));
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible') {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            this.swRegistration = registration;
+            this.setupPushSubscription(registration);
+            
+            // Check for updates immediately
             registration.update().catch(() => {});
-          }
-        });
-
-        // Register Periodic Background Sync if supported (Android Chrome)
-        if ('periodicSync' in registration) {
-          navigator.permissions?.query({ name: 'periodic-background-sync' }).then((status) => {
-            if (status.state === 'granted') {
-              registration.periodicSync.register('check-app-updates', {
-                minInterval: 60 * 60 * 1000 // Every 1 hour
-              }).catch(() => {});
-            }
-          }).catch(() => {});
-        }
-
-        // Periodic check every 5 minutes
-        setInterval(() => {
-          registration.update().catch(() => {});
-        }, 5 * 60 * 1000);
-
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed') {
-                this.showUpdateBanner();
-
-                if ('Notification' in window && Notification.permission === 'granted') {
-                  registration.showNotification('✨ Aurora Finanzix Actualizada', {
-                    body: 'Se ha instalado la última versión con diseño blanco perla.',
-                    icon: '/icon.svg',
-                    vibrate: [200, 100, 200],
-                    data: { url: '/' }
-                  }).catch(() => {});
-                }
+            
+            window.addEventListener('focus', () => registration.update().catch(() => {}));
+            document.addEventListener('visibilitychange', () => {
+              if (document.visibilityState === 'visible') {
+                registration.update().catch(() => {});
               }
             });
+
+            // Register Periodic Background Sync if supported (Android Chrome)
+            if ('periodicSync' in registration) {
+              navigator.permissions?.query({ name: 'periodic-background-sync' }).then((status) => {
+                if (status.state === 'granted') {
+                  registration.periodicSync.register('check-app-updates', {
+                    minInterval: 60 * 60 * 1000 // Every 1 hour
+                  }).catch(() => {});
+                 }
+              }).catch(() => {});
+            }
+
+            // Periodic check every 5 minutes
+            setInterval(() => {
+              registration.update().catch(() => {});
+            }, 5 * 60 * 1000);
+
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed') {
+                    this.showUpdateBanner();
+
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                      registration.showNotification('✨ Aurora Finanzix Actualizada', {
+                        body: 'Se ha instalado la última versión con diseño blanco perla.',
+                        icon: '/icon.svg',
+                        vibrate: [200, 100, 200],
+                        data: { url: '/' }
+                      }).catch(() => {});
+                    }
+                  }
+                });
+              }
+            });
+          }).catch(err => {
+            console.warn('SW registration skipped:', err);
+          });
+          
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
           }
         });
-      }).catch(err => {
-        console.warn('SW registration skipped:', err);
-      });
-
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
       });
     }
   }
@@ -300,10 +308,12 @@ class App {
         });
         break;
 
-      case 'costs':
-        renderCostCalculator(mainEl, {
-          onShowToast: (msg, type) => this.showToast(msg, type)
-        });
+      case 'subscriptions':
+        renderSubscriptions(mainEl);
+        break;
+
+      case 'debts':
+        renderDebts(mainEl);
         break;
 
       case 'budgets':
