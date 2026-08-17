@@ -26,18 +26,24 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   container.innerHTML = `
     <div class="view-transition-wrap">
-      <!-- Hero Balance Card (Obsidian Black Titanium Finish) -->
+      <!-- Hero Balance Card (Obsidian Living Video Card) -->
       <div class="hero-balance-card">
-        <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
-        <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
-        
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-          <div class="hero-savings-chip">
-            <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #34D399;"></i>
-            <span>${metrics.savingsRate || 0}% ${t('dash_savings_rate')}</span>
-          </div>
-          <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.85);">
-            ${t('dash_budget')}: <strong>${symbol}${monthlyBudget}</strong>
+        <video class="hero-bg-video" autoplay muted loop playsinline preload="auto">
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-card-overlay"></div>
+        <div class="hero-card-content">
+          <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
+          <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div class="hero-savings-chip">
+              <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #34D399;"></i>
+              <span>${metrics.savingsRate || 0}% ${t('dash_savings_rate')}</span>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.9);">
+              ${t('dash_budget')}: <strong>${symbol}${monthlyBudget}</strong>
+            </div>
           </div>
         </div>
       </div>

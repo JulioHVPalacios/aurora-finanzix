@@ -1,48 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Deep Obsidian Titanium Background -->
-    <linearGradient id="bgObsidian" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#090D16"/>
-      <stop offset="50%" stop-color="#111827"/>
-      <stop offset="100%" stop-color="#030712"/>
-    </linearGradient>
+    <!-- Obsidian Satin Background -->
+    <radialGradient id="bgSatin" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#1A2234"/>
+      <stop offset="50%" stop-color="#0E131F"/>
+      <stop offset="100%" stop-color="#05080E"/>
+    </radialGradient>
 
-    <!-- Platinum Refraction Gradient -->
-    <linearGradient id="platinumWing" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Liquid Platinum Facet -->
+    <linearGradient id="facetPlatinum" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="35%" stop-color="#E2E8F0"/>
-      <stop offset="100%" stop-color="#64748B"/>
+      <stop offset="25%" stop-color="#F1F5F9"/>
+      <stop offset="60%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#475569"/>
     </linearGradient>
 
-    <!-- Emerald Apex Gradient -->
-    <linearGradient id="emeraldWing" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#059669"/>
-      <stop offset="60%" stop-color="#10B981"/>
-      <stop offset="100%" stop-color="#34D399"/>
+    <!-- Neon Emerald Energy Vector -->
+    <linearGradient id="facetEmerald" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="40%" stop-color="#059669"/>
+      <stop offset="80%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#6EE7B7"/>
     </linearGradient>
 
-    <!-- Ambient Glow Filter -->
-    <filter id="valoGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#10B981" flood-opacity="0.3"/>
+    <!-- Core Floating Prism Top -->
+    <linearGradient id="coreDiamond" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+
+    <!-- Master Shadow Depth -->
+    <filter id="valoShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#10B981" flood-opacity="0.35"/>
     </filter>
+
+    <!-- Metallic Rim Specular -->
+    <linearGradient id="borderRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.05)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.25)"/>
+    </linearGradient>
   </defs>
 
-  <!-- Chassis Surface -->
-  <rect width="512" height="512" rx="124" fill="url(#bgObsidian)"/>
-  <rect x="20" y="20" width="472" height="472" rx="104" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2.5"/>
+  <!-- Outer Rounded Shield -->
+  <rect width="512" height="512" rx="128" fill="url(#bgSatin)"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="url(#borderRim)" stroke-width="2"/>
 
-  <!-- Geometric "VALO" Monogram / Dynamic Delta Crest -->
-  <g filter="url(#valoGlow)">
-    <!-- Left Wing (Platinum Geometry) -->
-    <path d="M128 140 L216 140 L256 290 L210 290 Z" fill="url(#platinumWing)"/>
-    
-    <!-- Right Wing (Emerald Surge) -->
-    <path d="M384 140 L296 140 L256 290 L302 290 Z" fill="url(#emeraldWing)"/>
+  <!-- Iconic Sculpted VALO "V" Vector Monogram -->
+  <g filter="url(#valoShadow)">
+    <!-- Left Chiseled Wing (Platinum) -->
+    <path d="M 120 135 L 210 135 L 256 315 L 180 315 Z" fill="url(#facetPlatinum)"/>
+    <path d="M 180 135 L 210 135 L 256 315 L 235 315 Z" fill="#64748B" opacity="0.4"/>
 
-    <!-- Bottom Vertex Anchor -->
-    <polygon points="210,290 302,290 256,380" fill="#10B981"/>
+    <!-- Right Dynamic Wing (Emerald Ascent) -->
+    <path d="M 392 135 L 302 135 L 256 315 L 332 315 Z" fill="url(#facetEmerald)"/>
+    <path d="M 302 135 L 332 135 L 256 315 L 277 315 Z" fill="#047857" opacity="0.3"/>
 
-    <!-- Core Floating Prism Diamond -->
-    <polygon points="256,180 290,240 256,270 222,240" fill="#FFFFFF" opacity="0.95"/>
+    <!-- Lower Apex Keystone -->
+    <polygon points="180,315 332,315 256,405" fill="#10B981"/>
+
+    <!-- Floating Specular Prism Diamond (Center) -->
+    <polygon points="256,165 304,245 256,290 208,245" fill="url(#coreDiamond)" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
   </g>
 </svg>
