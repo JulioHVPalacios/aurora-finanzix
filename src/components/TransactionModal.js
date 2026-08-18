@@ -34,9 +34,6 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
         <div class="sheet-handle"></div>
         <div class="sheet-header">
           <h3 class="sheet-title">${t('modal_tx_new')}</h3>
-          <button type="button" class="sheet-close-btn" id="btn-sheet-close">
-            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
-          </button>
         </div>
 
         <!-- Segmented Type Selector -->
@@ -85,18 +82,49 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
           </div>
 
           <!-- Category Picker -->
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom: 18px;">
             <label class="form-label">${t('modal_tx_category')}</label>
-            <div class="category-picker-grid" id="cat-picker-container">
+            <div id="cat-picker-container" style="
+              display: flex;
+              gap: 10px;
+              overflow-x: auto;
+              padding-bottom: 8px;
+              margin: 0 -20px;
+              padding-left: 20px;
+              padding-right: 20px;
+              scroll-snap-type: x mandatory;
+              -webkit-overflow-scrolling: touch;
+            ">
               ${filteredCategories.map(cat => `
-                <div class="cat-picker-item ${cat.id === selectedCategory ? 'selected' : ''}" data-cat-id="${cat.id}">
-                  <div class="cat-picker-icon-wrap" style="background: #0F172A; color: #FFFFFF;">
-                    <i data-lucide="${cat.icon || 'receipt'}" style="width: 17px; height: 17px;"></i>
-                  </div>
-                  <span class="cat-picker-label">${getCategoryName(cat)}</span>
+                <div class="cat-picker-item ${cat.id === selectedCategory ? 'selected' : ''}" data-cat-id="${cat.id}" style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-width: 76px;
+                  height: 76px;
+                  border-radius: 16px;
+                  background: ${cat.id === selectedCategory ? '#0F172A' : '#F8FAFC'};
+                  color: ${cat.id === selectedCategory ? '#FFFFFF' : '#64748B'};
+                  border: 1px solid ${cat.id === selectedCategory ? '#0F172A' : 'rgba(15,23,42,0.08)'};
+                  cursor: pointer;
+                  scroll-snap-align: start;
+                  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                  flex-shrink: 0;
+                ">
+                  <i data-lucide="${cat.icon || 'receipt'}" style="width: 22px; height: 22px; margin-bottom: 6px;"></i>
+                  <span style="font-size: 0.65rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 68px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${getCategoryName(cat)}
+                  </span>
                 </div>
               `).join('')}
             </div>
+            
+            <style>
+              /* Hide scrollbar for the horizontal list */
+              #cat-picker-container::-webkit-scrollbar { display: none; }
+              #cat-picker-container { -ms-overflow-style: none; scrollbar-width: none; }
+            </style>
           </div>
 
           <!-- Payment Method -->
@@ -146,8 +174,20 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
     overlay.querySelectorAll('.cat-picker-item').forEach(item => {
       item.addEventListener('click', () => {
         selectedCategory = item.getAttribute('data-cat-id');
-        overlay.querySelectorAll('.cat-picker-item').forEach(i => i.classList.remove('selected'));
+        
+        // Reset all styles
+        overlay.querySelectorAll('.cat-picker-item').forEach(i => {
+          i.classList.remove('selected');
+          i.style.background = '#F8FAFC';
+          i.style.color = '#64748B';
+          i.style.borderColor = 'rgba(15,23,42,0.08)';
+        });
+        
+        // Apply active style
         item.classList.add('selected');
+        item.style.background = '#0F172A';
+        item.style.color = '#FFFFFF';
+        item.style.borderColor = '#0F172A';
       });
     });
 
@@ -181,7 +221,6 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
       }
     });
 
-    overlay.querySelector('#btn-sheet-close')?.addEventListener('click', close);
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) close();
     });
@@ -229,5 +268,62 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
   requestAnimationFrame(() => {
     overlay.classList.add('active');
     overlay.querySelector('#tx-amount')?.focus();
+  });
+
+  // Swipe to dismiss logic
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+  
+  overlay.addEventListener('touchstart', (e) => {
+    const sheet = overlay.querySelector('.bottom-sheet');
+    if (!sheet) return;
+    // Don't drag if scrolling inside a scrollable area unless at the top
+    const isScrollable = e.target.closest('#cat-picker-container') || e.target.closest('select');
+    if (isScrollable) return;
+
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    sheet.style.transition = 'none'; // Disable transition while dragging
+  }, { passive: true });
+
+  overlay.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const sheet = overlay.querySelector('.bottom-sheet');
+    if (!sheet) return;
+
+    currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+
+    // Only allow dragging downwards
+    if (deltaY > 0) {
+      sheet.style.transform = `translateY(${deltaY}px)`;
+    }
+  }, { passive: true });
+
+  overlay.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    const sheet = overlay.querySelector('.bottom-sheet');
+    if (!sheet) return;
+    
+    const deltaY = currentY - startY;
+    
+    // Re-enable transitions
+    sheet.style.transition = 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)';
+    
+    // If dragged down more than 100px, close the modal
+    if (deltaY > 100) {
+      sheet.style.transform = `translateY(100%)`;
+      close();
+    } else {
+      // Snap back to original position
+      sheet.style.transform = '';
+    }
+    
+    // Reset values
+    startY = 0;
+    currentY = 0;
   });
 }
