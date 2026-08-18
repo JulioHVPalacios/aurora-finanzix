@@ -1,30 +1,62 @@
 {
-  "name": "VALO | Control de Gastos y Finanzas",
+  "name": "VALO - Control de Gastos y Finanzas",
   "short_name": "VALO OS",
   "description": "Aplicación inteligente y privada para el control de gastos personales, cálculo de presupuestos y gestión de pagos fijos.",
   "start_url": "/",
-  "id": "valo-finanzix-app",
+  "scope": "/",
+  "id": "valo-os-app",
   "display": "standalone",
-  "display_override": ["standalone", "window-controls-overlay"],
-  "orientation": "portrait",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#FFFFFF",
   "theme_color": "#0F172A",
   "categories": ["finance", "productivity", "utilities"],
   "lang": "es",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "auto"
+  },
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "192x192 512x512 any",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.svg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "VALO OS Desktop Financial Dashboard"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "VALO OS Mobile App"
     }
   ],
   "shortcuts": [
@@ -33,23 +65,14 @@
       "short_name": "Gasto",
       "description": "Registrar un nuevo gasto",
       "url": "/?action=new-expense",
-      "icons": [{ "src": "/icon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Pagos Fijos",
       "short_name": "Suscripciones",
       "description": "Ver pagos fijos y vencimientos",
       "url": "/?tab=subscriptions",
-      "icons": [{ "src": "/icon.svg", "sizes": "192x192" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Dashboard Principal VALO"
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

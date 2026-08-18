@@ -11,8 +11,12 @@ const STATIC_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/version.json',
-  '/icon.svg'
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/privacy.html'
 ];
+
 
 // Install: Skip Waiting and cache only available root assets
 self.addEventListener('install', (event) => {
