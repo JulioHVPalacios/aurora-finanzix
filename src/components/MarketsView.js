@@ -207,7 +207,7 @@ export class MarketsView {
   async fetchHistoricalData(symbol) {
     try {
       // Fetch last 24h of 15m candles
-      const res = await fetch(\`https://api.binance.com/api/v3/klines?symbol=\${symbol}&interval=15m&limit=96\`);
+      const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=15m&limit=96`);
       const data = await res.json();
       
       const chartData = data.map(d => ({
@@ -249,8 +249,8 @@ export class MarketsView {
 
   initWebSocket() {
     // Combine streams: all mini-tickers for the watchlist, plus the trade stream for the active chart
-    const streams = this.assets.map(a => \`\${a.symbol.toLowerCase()}@miniTicker\`).join('/');
-    const wsUrl = \`wss://stream.binance.com:9443/stream?streams=\${streams}\`;
+    const streams = this.assets.map(a => `${a.symbol.toLowerCase()}@miniTicker`).join('/');
+    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
     
     this.ws = new WebSocket(wsUrl);
     
@@ -271,13 +271,13 @@ export class MarketsView {
       // Formatters
       const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
       const isPositive = changePct >= 0;
-      const formattedChange = \`\${isPositive ? '+' : ''}\${changePct.toFixed(2)}%\`;
+      const formattedChange = `${isPositive ? '+' : ''}${changePct.toFixed(2)}%`;
       const color = isPositive ? '#10B981' : '#EF4444'; // Green or Red
       const icon = isPositive ? 'trending-up' : 'trending-down';
 
       // 1. Update Watchlist Card
-      const priceEl = this.container.querySelector(\`#price-\${symbol}\`);
-      const changeEl = this.container.querySelector(\`#change-\${symbol}\`);
+      const priceEl = this.container.querySelector(`#price-${symbol}`);
+      const changeEl = this.container.querySelector(`#change-${symbol}`);
       if (priceEl && changeEl) {
         // Flash animation
         const oldPrice = priceEl.getAttribute('data-raw') || 0;
@@ -300,7 +300,7 @@ export class MarketsView {
         if (livePriceEl && liveChangeEl) {
           livePriceEl.textContent = formattedPrice;
           liveChangeEl.style.color = color;
-          liveChangeEl.innerHTML = \`<i data-lucide="\${icon}" style="width: 18px; height: 18px;"></i> \${formattedChange}\`;
+          liveChangeEl.innerHTML = `<i data-lucide="${icon}" style="width: 18px; height: 18px;"></i> ${formattedChange}`;
           createIcons({ icons, nameAttr: 'data-lucide', root: liveChangeEl });
         }
 
