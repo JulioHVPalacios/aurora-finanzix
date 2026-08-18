@@ -9,6 +9,7 @@
 import { storage } from '../services/storage.js';
 import { setLanguage } from '../services/i18n.js';
 import { ALL_COUNTRIES, getCitiesForCountry } from '../services/citiesData.js';
+import { biometrics } from '../services/biometrics.js';
 
 const ONBOARDING_KEY = 'valo_onboarding_done_v1';
 
@@ -251,6 +252,12 @@ export function showOnboarding({ onComplete }) {
   let selectedCity    = '';
   let visitedStep2    = false;
   let geoResolved     = false;
+  let biometricsAvailable = false;
+
+  biometrics.isAvailable().then(a => {
+    biometricsAvailable = a;
+    if (currentStep === 3) render(); // Update if already on step 3
+  });
 
   function T(key) { return (ONBOARDING_TX[currentLang] || ONBOARDING_TX.es)[key]; }
 
@@ -344,6 +351,13 @@ export function showOnboarding({ onComplete }) {
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
             <input class="onb-input" id="onb-pin-code" type="password" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="1234" style="letter-spacing:6px; font-weight:800; text-align:center; font-size:1.4rem;" autocomplete="off" />
+            
+            <div id="onb-bio-container" style="display:${biometricsAvailable ? 'flex' : 'none'}; margin-top:8px; align-items:center; justify-content:center; gap:8px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer; color:#10B981; font-weight:700;">
+                <input type="checkbox" id="onb-bio-enable" style="width:16px; height:16px; accent-color:#10B981;" />
+                <span id="onb-bio-label">${currentLang === 'es' ? 'Usar Huella / Face ID' : 'Use Fingerprint / Face ID'}</span>
+              </label>
+            </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;width:100%;margin-top:14px;gap:2px;">
             <button class="onb-btn-primary" id="onb-btn-3">${currentLang === 'es' ? 'Guardar PIN →' : 'Save PIN →'}</button>
@@ -414,21 +428,33 @@ export function showOnboarding({ onComplete }) {
 
     overlay.querySelector('#onb-btn-3')?.addEventListener('click', () => {
       const pinCode = overlay.querySelector('#onb-pin-code')?.value.trim();
+      const bioEnabled = overlay.querySelector('#onb-bio-enable')?.checked;
+      
       if (pinCode && pinCode.length === 4) {
         storage.updateSettings({ securityPinEnabled: true, securityPin: pinCode });
+        
+        if (bioEnabled) {
+          biometrics.register().then(success => {
+            if (!success) {
+              alert(currentLang === 'es' ? 'No se pudo configurar la huella.' : 'Could not set up biometrics.');
+            }
+            proceedToWelcome();
+          });
+          return; // Wait for promise
+        }
       }
-      const namePart = savedFirstName ? `, ${savedFirstName}` : '';
-      const w = overlay.querySelector('#onb-welcome-name');
-      if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
-      currentStep = 4; render();
+      
+      proceedToWelcome();
     });
     
-    overlay.querySelector('#onb-skip-3')?.addEventListener('click', () => {
+    function proceedToWelcome() {
       const namePart = savedFirstName ? `, ${savedFirstName}` : '';
       const w = overlay.querySelector('#onb-welcome-name');
       if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
       currentStep = 4; render();
-    });
+    }
+
+    overlay.querySelector('#onb-skip-3')?.addEventListener('click', proceedToWelcome);
 
     overlay.querySelector('#onb-btn-4')?.addEventListener('click', () => finish(savedFirstName, savedLastName));
   }
