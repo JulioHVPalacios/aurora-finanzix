@@ -335,14 +335,30 @@ export function showOnboarding({ onComplete }) {
           </div>
         </div>
 
-        <!-- Step 3 -->
+        <!-- Step 3 (Security) -->
         <div class="onb-step${currentStep===3?' active':''}" id="onb-step-3">
+          <div style="text-align:center;margin-bottom:18px;">
+            <div style="font-size:1.9rem;margin-bottom:6px;">🔒</div>
+            <h2 style="font-size:1.18rem;font-weight:800;color:#0F172A;margin:0;">${currentLang === 'es' ? 'Seguridad de tu App' : 'App Security'}</h2>
+            <p style="font-size:0.75rem;color:#64748B;margin-top:6px;">${currentLang === 'es' ? 'Ingresa un PIN de 4 dígitos para proteger tu información.' : 'Enter a 4-digit PIN to secure your data.'}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+            <input class="onb-input" id="onb-pin-code" type="password" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="1234" style="letter-spacing:6px; font-weight:800; text-align:center; font-size:1.4rem;" autocomplete="off" />
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;width:100%;margin-top:14px;gap:2px;">
+            <button class="onb-btn-primary" id="onb-btn-3">${currentLang === 'es' ? 'Guardar PIN →' : 'Save PIN →'}</button>
+            <button class="onb-btn-skip" id="onb-skip-3">${T('step1_skip')}</button>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="onb-step${currentStep===4?' active':''}" id="onb-step-4">
           <div style="text-align:center;margin-bottom:24px;">
             <div style="font-size:2.8rem;margin-bottom:10px;">${T('step3_emoji')}</div>
             <h2 style="font-size:1.25rem;font-weight:800;color:#0F172A;margin:0 0 8px;" id="onb-welcome-name">${T('step3_base')}${T('step3_end')}</h2>
             <p style="font-size:0.82rem;color:#64748B;margin:0;line-height:1.5;">${T('step3_sub')}</p>
           </div>
-          <button class="onb-btn-primary" id="onb-btn-3">${T('step3_btn')}</button>
+          <button class="onb-btn-primary" id="onb-btn-4">${T('step3_btn')}</button>
         </div>
       </div>
     `;
@@ -363,7 +379,9 @@ export function showOnboarding({ onComplete }) {
       savedLastName  = overlay.querySelector('#onb-last-name')?.value.trim() || '';
       visitedStep2 = true; currentStep = 2; render();
     });
-    overlay.querySelector('#onb-skip-1')?.addEventListener('click', () => finish('', ''));
+    overlay.querySelector('#onb-skip-1')?.addEventListener('click', () => {
+      visitedStep2 = true; currentStep = 2; render();
+    });
 
     overlay.querySelector('#onb-country')?.addEventListener('change', (e) => {
       selectedCountry = e.target.value;
@@ -384,9 +402,6 @@ export function showOnboarding({ onComplete }) {
       const lang = SPANISH_SPEAKING_COUNTRIES.has(country) ? 'es' : 'en';
       currentLang = lang; setLanguage(lang); selectedCountry = country; visitedStep2 = true;
       storage.updateSettings({ userCity: city, userCountry: country });
-      const namePart = savedFirstName ? `, ${savedFirstName}` : '';
-      const w = overlay.querySelector('#onb-welcome-name');
-      if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
       currentStep = 3; render();
     });
 
@@ -394,13 +409,28 @@ export function showOnboarding({ onComplete }) {
       const country = overlay.querySelector('#onb-country')?.value || selectedCountry;
       const lang = SPANISH_SPEAKING_COUNTRIES.has(country) ? 'es' : 'en';
       currentLang = lang; setLanguage(lang); visitedStep2 = true;
-      const namePart = savedFirstName ? `, ${savedFirstName}` : '';
-      const w = overlay.querySelector('#onb-welcome-name');
-      if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
       currentStep = 3; render();
     });
 
-    overlay.querySelector('#onb-btn-3')?.addEventListener('click', () => finish(savedFirstName, savedLastName));
+    overlay.querySelector('#onb-btn-3')?.addEventListener('click', () => {
+      const pinCode = overlay.querySelector('#onb-pin-code')?.value.trim();
+      if (pinCode && pinCode.length === 4) {
+        storage.updateSettings({ securityPinEnabled: true, securityPin: pinCode });
+      }
+      const namePart = savedFirstName ? `, ${savedFirstName}` : '';
+      const w = overlay.querySelector('#onb-welcome-name');
+      if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
+      currentStep = 4; render();
+    });
+    
+    overlay.querySelector('#onb-skip-3')?.addEventListener('click', () => {
+      const namePart = savedFirstName ? `, ${savedFirstName}` : '';
+      const w = overlay.querySelector('#onb-welcome-name');
+      if (w) w.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
+      currentStep = 4; render();
+    });
+
+    overlay.querySelector('#onb-btn-4')?.addEventListener('click', () => finish(savedFirstName, savedLastName));
   }
 
   // ── Geo update (called after geo resolves, only if still on step 1) ───
