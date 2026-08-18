@@ -7,32 +7,20 @@ export class MarketsView {
     this.container = container;
     this.currentSymbol = 'BTCUSDT';
     this.assets = [];
-    this.stockAssets = [
-      { symbol: 'AAPL', name: 'Apple', domain: 'apple.com' },
-      { symbol: 'MSFT', name: 'Microsoft', domain: 'microsoft.com' },
-      { symbol: 'NVDA', name: 'NVIDIA', domain: 'nvidia.com' },
-      { symbol: 'TSLA', name: 'Tesla', domain: 'tesla.com' },
-      { symbol: 'AMZN', name: 'Amazon', domain: 'amazon.com' },
-      { symbol: 'GOOGL', name: 'Alphabet', domain: 'google.com' },
-      { symbol: 'META', name: 'Meta', domain: 'meta.com' },
-      { symbol: 'NFLX', name: 'Netflix', domain: 'netflix.com' },
-      { symbol: 'AMD', name: 'AMD', domain: 'amd.com' },
-      { symbol: 'INTC', name: 'Intel', domain: 'intel.com' }
-    ];
     this.ws = null;
     this.chart = null;
     this.lineSeries = null;
-    this.stockPollInterval = null;
     this.sortState = { list: null, column: null, asc: true };
   }
 
   async init() {
     this.renderSkeleton();
+    
     await this.fetchTopCryptos();
     
     this.render();
     this.initWebSocket();
-    this.pollStocks();
+    this.initNativeStocks();
     this.bindSorting();
     
     try {
@@ -83,6 +71,16 @@ export class MarketsView {
     if (typeof createIcons !== 'undefined') createIcons({ icons, nameAttr: 'data-lucide', root: this.container });
   }
 
+  formatPrice(price) {
+    // Fixes zeroes for cheap cryptos like PEPE or SHIB
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD',
+      minimumFractionDigits: price < 1 ? 4 : 2,
+      maximumFractionDigits: price < 1 ? 6 : 2
+    }).format(price);
+  }
+
   render() {
     const activeAsset = this.assets.find(a => a.symbol === this.currentSymbol) || this.assets[0];
 
@@ -93,7 +91,7 @@ export class MarketsView {
             <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--ink);">Mercados</h1>
             <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
               <span style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);"></span>
-              <span style="font-size: 0.72rem; color: var(--ink-60); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tiempo Real · Global</span>
+              <span style="font-size: 0.72rem; color: var(--ink-60); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tiempo Real · Instantáneo</span>
             </div>
           </div>
         </div>
@@ -128,14 +126,14 @@ export class MarketsView {
         
         <div style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 20px; padding: 12px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 24px; overflow: hidden;">
            <div style="display: flex; justify-content: space-between; padding: 0 16px 12px 16px; border-bottom: 1px solid rgba(15, 23, 42, 0.06); font-size: 0.7rem; color: var(--ink-40); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;">
-             <span class="sort-header" data-list="crypto" data-col="name" style="flex: 1.5; cursor: pointer; display: flex; align-items: center; gap: 4px;">Activo <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
+             <span class="sort-header" data-list="crypto" data-col="name" style="flex: 1.5; cursor: pointer; display: flex; align-items: center; gap: 4px;">Activo (Restaurar)</span>
              <span class="sort-header" data-list="crypto" data-col="price" style="flex: 1; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 4px;">Precio <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
              <span class="sort-header" data-list="crypto" data-col="change" style="flex: 1; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 4px;">24h % <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
            </div>
            
            <div id="crypto-list" style="max-height: 450px; overflow-y: auto; padding: 0 8px; scrollbar-width: none;">
              ${this.assets.map((asset) => `
-               <div class="crypto-row list-row" data-symbol="${asset.symbol}" data-name="${asset.name}" data-price="${asset.price}" data-change="${asset.change}" style="
+               <div class="crypto-row list-row" data-symbol="${asset.symbol}" data-name="${asset.name}" data-price="${asset.price}" data-change="${asset.change}" data-rank="${asset.rank}" style="
                  display: flex; justify-content: space-between; align-items: center; 
                  padding: 12px 8px; border-bottom: 1px solid rgba(15, 23, 42, 0.03); 
                  cursor: pointer; transition: background 0.1s; border-radius: 10px;
@@ -149,7 +147,7 @@ export class MarketsView {
                    </div>
                  </div>
                  <div style="flex: 1; text-align: right; font-weight: 800; font-size: 0.9rem; color: var(--ink);" id="price-${asset.symbol}">
-                   ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(asset.price)}
+                   ${this.formatPrice(asset.price)}
                  </div>
                  <div style="flex: 1; text-align: right; font-weight: 700; font-size: 0.8rem; color: ${asset.change >= 0 ? '#10B981' : '#EF4444'};" id="change-${asset.symbol}">
                    ${asset.change >= 0 ? '+' : ''}${asset.change.toFixed(2)}%
@@ -160,61 +158,25 @@ export class MarketsView {
         </div>
 
         <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; color: var(--ink);">Acciones Globales</h3>
-        <div style="position: relative; margin-bottom: 12px;">
-          <i data-lucide="search" style="position: absolute; left: 14px; top: 12px; width: 16px; height: 16px; color: var(--ink-40);"></i>
-          <input type="text" id="stock-search" placeholder="Buscar acción..." style="width: 100%; padding: 12px 12px 12px 38px; border-radius: 14px; border: 1px solid rgba(15, 23, 42, 0.1); font-size: 0.85rem; background: #FFFFFF; color: var(--ink); outline: none;">
-        </div>
-
-        <div style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 20px; padding: 12px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 24px; overflow: hidden;">
-           <div style="display: flex; justify-content: space-between; padding: 0 16px 12px 16px; border-bottom: 1px solid rgba(15, 23, 42, 0.06); font-size: 0.7rem; color: var(--ink-40); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;">
-             <span class="sort-header" data-list="stock" data-col="name" style="flex: 1.5; cursor: pointer; display: flex; align-items: center; gap: 4px;">Activo <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
-             <span class="sort-header" data-list="stock" data-col="price" style="flex: 1; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 4px;">Precio <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
-             <span class="sort-header" data-list="stock" data-col="change" style="flex: 1; text-align: right; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 4px;">24h % <i data-lucide="arrow-up-down" style="width: 12px; height: 12px;"></i></span>
-           </div>
-           
-           <div id="stocks-list" style="max-height: 450px; overflow-y: auto; padding: 0 8px; scrollbar-width: none;">
-             ${this.stockAssets.map((asset, index) => `
-               <div class="stock-row list-row" data-symbol="${asset.symbol}" data-name="${asset.name}" data-price="0" data-change="0" style="
-                 display: flex; justify-content: space-between; align-items: center; 
-                 padding: 12px 8px; border-bottom: 1px solid rgba(15, 23, 42, 0.03); 
-                 cursor: pointer; transition: background 0.1s; border-radius: 10px;
-               " onmouseover="this.style.background='rgba(15, 23, 42, 0.02)'" onmouseout="this.style.background='transparent'">
-                 <div style="flex: 1.5; display: flex; align-items: center; gap: 10px;">
-                   <span style="font-size: 0.75rem; color: var(--ink-40); font-weight: 700; width: 18px; text-align: center;">${index + 1}</span>
-                   <img src="https://logo.clearbit.com/${asset.domain}" onerror="this.src='https://ui-avatars.com/api/?name=${asset.symbol}&background=random'" style="width: 28px; height: 28px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                   <div style="display: flex; flex-direction: column;">
-                     <span style="font-weight: 800; font-size: 0.85rem; color: var(--ink); line-height: 1.2;">${asset.name}</span>
-                     <span style="font-size: 0.7rem; color: var(--ink-40); font-weight: 600;">${asset.symbol}</span>
-                   </div>
-                 </div>
-                 <div style="flex: 1; text-align: right; font-weight: 800; font-size: 0.9rem; color: var(--ink);" id="stock-price-${asset.symbol}">
-                   <i data-lucide="loader" style="width: 14px; height: 14px; animation: spin 2s linear infinite;"></i>
-                 </div>
-                 <div style="flex: 1; text-align: right; font-weight: 700; font-size: 0.8rem; color: var(--ink-40);" id="stock-change-${asset.symbol}">
-                   ---
-                 </div>
-               </div>
-             `).join('')}
-           </div>
+        <div id="stocks-container" style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); min-height: 400px; width: 100%; position: relative;">
+          <!-- TradingView widget will be injected natively here -->
         </div>
       </div>
     `;
 
     createIcons({ icons, nameAttr: 'data-lucide', root: this.container });
 
-    ['crypto', 'stock'].forEach(type => {
-      const searchInput = this.container.querySelector(`#${type}-search`);
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const val = e.target.value.toLowerCase();
-          this.container.querySelectorAll(`.${type}-row`).forEach(row => {
-            const symbol = row.getAttribute('data-symbol').toLowerCase();
-            const name = row.getAttribute('data-name').toLowerCase();
-            row.style.display = (symbol.includes(val) || name.includes(val)) ? 'flex' : 'none';
-          });
+    const searchInput = this.container.querySelector('#crypto-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        this.container.querySelectorAll('.crypto-row').forEach(row => {
+          const symbol = row.getAttribute('data-symbol').toLowerCase();
+          const name = row.getAttribute('data-name').toLowerCase();
+          row.style.display = (symbol.includes(val) || name.includes(val)) ? 'flex' : 'none';
         });
-      }
-    });
+      });
+    }
 
     this.container.querySelectorAll('.crypto-row').forEach(card => {
       card.addEventListener('click', () => {
@@ -224,90 +186,83 @@ export class MarketsView {
     });
   }
 
+  initNativeStocks() {
+    const container = this.container.querySelector('#stocks-container');
+    if (!container) return;
+
+    // We use dynamic script injection (not iframe) to perfectly blend with the native UI
+    const widgetConfig = {
+      "width": "100%",
+      "height": 500,
+      "symbolsGroups": [
+        {
+          "name": "Wall Street Top",
+          "originalName": "Tech",
+          "symbols": [
+            { "name": "NASDAQ:AAPL", "displayName": "Apple" },
+            { "name": "NASDAQ:MSFT", "displayName": "Microsoft" },
+            { "name": "NASDAQ:NVDA", "displayName": "NVIDIA" },
+            { "name": "NASDAQ:TSLA", "displayName": "Tesla" },
+            { "name": "NASDAQ:AMZN", "displayName": "Amazon" },
+            { "name": "NASDAQ:GOOGL", "displayName": "Alphabet" },
+            { "name": "NASDAQ:META", "displayName": "Meta" },
+            { "name": "NASDAQ:NFLX", "displayName": "Netflix" },
+            { "name": "NASDAQ:AMD", "displayName": "AMD" },
+            { "name": "NASDAQ:INTC", "displayName": "Intel" }
+          ]
+        }
+      ],
+      "showSymbolLogo": true,
+      "isTransparent": true,
+      "colorTheme": "light",
+      "locale": "es"
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify(widgetConfig);
+
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'tradingview-widget-container__widget';
+    container.appendChild(innerDiv);
+    container.appendChild(script);
+  }
+
   bindSorting() {
     this.container.querySelectorAll('.sort-header').forEach(header => {
       header.addEventListener('click', () => {
         const listId = header.getAttribute('data-list');
         const col = header.getAttribute('data-col');
+        const listContainer = this.container.querySelector(`#${listId}-list`);
+        if (!listContainer) return;
+        
+        const rows = Array.from(listContainer.querySelectorAll('.list-row'));
+
+        if (col === 'name') {
+          // Activo button resets to original rank order
+          rows.sort((a,b) => parseInt(a.getAttribute('data-rank')) - parseInt(b.getAttribute('data-rank')));
+          this.sortState = { list: null, column: null, asc: true };
+          rows.forEach(row => listContainer.appendChild(row));
+          return;
+        }
         
         if (this.sortState.list === listId && this.sortState.column === col) {
           this.sortState.asc = !this.sortState.asc;
         } else {
-          this.sortState = { list: listId, column: col, asc: false };
+          this.sortState = { list: listId, column: col, asc: false }; // default desc
         }
 
-        const listContainer = this.container.querySelector(`#${listId}-list`);
-        if (!listContainer) return;
-
-        const rows = Array.from(listContainer.querySelectorAll('.list-row'));
-        
         rows.sort((a, b) => {
-          let valA = a.getAttribute(`data-${col}`);
-          let valB = b.getAttribute(`data-${col}`);
-          
-          if (col === 'price' || col === 'change') {
-            valA = parseFloat(valA) || 0;
-            valB = parseFloat(valB) || 0;
-            return this.sortState.asc ? valA - valB : valB - valA;
-          } else {
-            return this.sortState.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-          }
+          let valA = parseFloat(a.getAttribute(`data-${col}`)) || 0;
+          let valB = parseFloat(b.getAttribute(`data-${col}`)) || 0;
+          return this.sortState.asc ? valA - valB : valB - valA;
         });
 
         rows.forEach(row => listContainer.appendChild(row));
       });
     });
-  }
-
-  async pollStocks() {
-    const fetchQuotes = async () => {
-      try {
-        const symbols = this.stockAssets.map(a => a.symbol).join(',');
-        const targetUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-        
-        const res = await fetch(proxyUrl);
-        const json = await res.json();
-        const data = JSON.parse(json.contents);
-        
-        if (data && data.quoteResponse && data.quoteResponse.result) {
-          data.quoteResponse.result.forEach(quote => {
-            const symbol = quote.symbol;
-            const price = quote.regularMarketPrice;
-            const changePct = quote.regularMarketChangePercent;
-            
-            const row = this.container.querySelector(`.stock-row[data-symbol="${symbol}"]`);
-            const priceEl = this.container.querySelector(`#stock-price-${symbol}`);
-            const changeEl = this.container.querySelector(`#stock-change-${symbol}`);
-            
-            if (row && priceEl && changeEl) {
-              row.setAttribute('data-price', price);
-              row.setAttribute('data-change', changePct);
-
-              const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
-              const isPositive = changePct >= 0;
-              const formattedChange = `${isPositive ? '+' : ''}${changePct.toFixed(2)}%`;
-              const color = isPositive ? '#10B981' : '#EF4444';
-
-              const oldPrice = priceEl.getAttribute('data-raw') || 0;
-              if (price !== parseFloat(oldPrice)) {
-                priceEl.style.color = price > oldPrice ? '#10B981' : '#EF4444';
-                setTimeout(() => priceEl.style.color = '', 300);
-              }
-              priceEl.setAttribute('data-raw', price);
-              priceEl.textContent = formattedPrice;
-              changeEl.style.color = color;
-              changeEl.textContent = formattedChange;
-            }
-          });
-        }
-      } catch (e) {
-        console.error('Error polling stocks via Yahoo Finance proxy', e);
-      }
-    };
-
-    fetchQuotes();
-    this.stockPollInterval = setInterval(fetchQuotes, 5000);
   }
 
   async initChart() {
@@ -377,7 +332,8 @@ export class MarketsView {
   }
 
   initWebSocket() {
-    const wsUrl = `wss://stream.binance.com/ws/!miniTicker@arr`;
+    // Upgraded from !miniTicker@arr to !ticker@arr for unthrottled, instantaneous real-time prices
+    const wsUrl = `wss://stream.binance.com/ws/!ticker@arr`;
     this.ws = new WebSocket(wsUrl);
     
     this.ws.onmessage = (event) => {
@@ -386,11 +342,8 @@ export class MarketsView {
         const symbol = ticker.s;
         const price = parseFloat(ticker.c);
         
-        const openPrice = parseFloat(ticker.o);
-        let changePct = 0;
-        if (openPrice > 0) {
-           changePct = ((price - openPrice) / openPrice) * 100;
-        }
+        // Use P (Price Change Percent) directly since !ticker@arr provides it natively!
+        const changePct = parseFloat(ticker.P) || 0;
         
         const row = this.container.querySelector(`.crypto-row[data-symbol="${symbol}"]`);
         const priceEl = this.container.querySelector(`#price-${symbol}`);
@@ -400,7 +353,7 @@ export class MarketsView {
           row.setAttribute('data-price', price);
           row.setAttribute('data-change', changePct);
 
-          const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+          const formattedPrice = this.formatPrice(price);
           const isPositive = changePct >= 0;
           const formattedChange = `${isPositive ? '+' : ''}${changePct.toFixed(2)}%`;
           const color = isPositive ? '#10B981' : '#EF4444';
@@ -421,7 +374,7 @@ export class MarketsView {
           const liveChangeEl = this.container.querySelector('#chart-live-change');
           
           if (livePriceEl && liveChangeEl) {
-            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+            const formattedPrice = this.formatPrice(price);
             const isPositive = changePct >= 0;
             const color = isPositive ? '#10B981' : '#EF4444';
             const icon = isPositive ? 'trending-up' : 'trending-down';
@@ -480,9 +433,6 @@ export class MarketsView {
     if (this.chart) {
       this.chart.remove();
       this.chart = null;
-    }
-    if (this.stockPollInterval) {
-      clearInterval(this.stockPollInterval);
     }
     this.container.innerHTML = '';
   }
