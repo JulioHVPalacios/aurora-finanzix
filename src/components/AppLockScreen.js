@@ -1,10 +1,7 @@
-/* ==========================================================================
-   VALO OS - APP LOCK SCREEN (PIN SECURITY)
-   ========================================================================== */
-
 import { storage } from '../services/storage.js';
 import { createIcons, icons } from 'lucide';
 import { t } from '../services/i18n.js';
+import { biometrics } from '../services/biometrics.js';
 
 let isLocked = false;
 let unlockCallback = null;
@@ -38,6 +35,9 @@ function showLockScreen() {
   let lockContainer = document.getElementById('valo-security-lock');
   if (lockContainer) {
     lockContainer.style.display = 'flex';
+    // Auto trigger biometric if enabled
+    const settings = storage.getSettings() || {};
+    if (settings.biometricEnabled) triggerBiometricUnlock();
     return;
   }
 
@@ -59,8 +59,8 @@ function showLockScreen() {
       <div style="width: 54px; height: 54px; border-radius: 16px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
         <i data-lucide="lock" style="width: 24px; height: 24px; color: #10B981;"></i>
       </div>
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;">Valo Bloqueado</h2>
-      <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">Ingresa tu PIN de seguridad</p>
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;">VALO Seguro</h2>
+      <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">Ingresa tu PIN ${settings.biometricEnabled ? 'o Huella' : ''}</p>
     </div>
 
     <!-- Dots -->
@@ -81,7 +81,16 @@ function showLockScreen() {
           transition: background 0.15s; margin: 0 auto;
         ">${n}</button>
       `).join('')}
-      <div style="width: 70px; height: 70px;"></div>
+      
+      <!-- Bottom row: Biometric, 0, Delete -->
+      ${settings.biometricEnabled ? `
+        <button id="pin-bio" style="
+          width: 70px; height: 70px; border-radius: 50%; border: none; outline: none;
+          background: transparent; color: #10B981; font-size: 1.5rem;
+          cursor: pointer; display:flex; align-items:center; justify-content:center; margin: 0 auto;
+        "><i data-lucide="fingerprint"></i></button>
+      ` : `<div style="width: 70px; height: 70px;"></div>`}
+
       <button class="pin-btn" data-val="0" style="
         width: 70px; height: 70px; border-radius: 50%; border: none; outline: none;
         background: rgba(255,255,255,0.05); color: #FFF; font-size: 1.6rem; font-weight: 500;
@@ -97,6 +106,30 @@ function showLockScreen() {
 
   document.body.appendChild(lockContainer);
   createIcons({ icons, root: lockContainer });
+
+  function triggerBiometricUnlock() {
+    biometrics.verify().then(success => {
+      if (success) {
+        isLocked = false;
+        lockContainer.style.animation = 'fadeOut 0.4s ease forwards';
+        setTimeout(() => {
+          lockContainer.style.display = 'none';
+          currentInput = '';
+          updateDots();
+          if (unlockCallback) unlockCallback();
+        }, 400);
+      }
+    });
+  }
+
+  // Auto-trigger if biometric is enabled
+  if (settings.biometricEnabled) {
+    triggerBiometricUnlock();
+  }
+
+  lockContainer.querySelector('#pin-bio')?.addEventListener('click', () => {
+    triggerBiometricUnlock();
+  });
 
   const dots = lockContainer.querySelectorAll('.pin-dot');
   
@@ -149,7 +182,6 @@ function showLockScreen() {
 
   lockContainer.querySelectorAll('.pin-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      // Feedback
       btn.style.background = 'rgba(255,255,255,0.15)';
       setTimeout(() => btn.style.background = 'rgba(255,255,255,0.05)', 150);
       handleInput(btn.getAttribute('data-val'));
@@ -163,7 +195,6 @@ function showLockScreen() {
     }
   });
 
-  // Inject CSS animations if not present
   if (!document.getElementById('pin-styles')) {
     const style = document.createElement('style');
     style.id = 'pin-styles';

@@ -159,10 +159,48 @@ export function showUserProfileModal({ onSave }) {
       securityPin: pinEnabled ? pinCode : null
     });
 
+    const bioEnabled = overlay.querySelector('#prof-bio-enable')?.checked;
+    if (bioEnabled && !settings.biometricEnabled) {
+      // Need to register
+      import('../services/biometrics.js').then(({ biometrics }) => {
+        biometrics.register().then(success => {
+          if (success) {
+            onSave?.();
+            close();
+          } else {
+            alert('No se pudo activar la huella. Verifica que tu dispositivo tenga un lector configurado.');
+            onSave?.();
+            close();
+          }
+        });
+      });
+      return; // Wait for biometric promise
+    } else if (!bioEnabled) {
+      storage.updateSettings({ biometricEnabled: false, biometricId: null });
+    }
+
     onSave?.();
     close();
   });
 
   portal.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
+
+  // Initialize Biometrics Checkbox state
+  import('../services/biometrics.js').then(({ biometrics }) => {
+    biometrics.isAvailable().then(available => {
+      if (available) {
+        const bioContainer = document.createElement('label');
+        bioContainer.style.cssText = 'display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer; color:#10B981; font-weight:600;';
+        bioContainer.innerHTML = `
+          <input type="checkbox" id="prof-bio-enable" style="width:16px; height:16px; accent-color:#10B981;" ${settings.biometricEnabled ? 'checked' : ''} />
+          <i data-lucide="fingerprint" style="width:16px; height:16px;"></i>
+          Usar Huella / Face ID
+        `;
+        const pinSetup = overlay.querySelector('#pin-setup-container');
+        pinSetup?.appendChild(bioContainer);
+        createIcons({ icons, root: bioContainer });
+      }
+    });
+  });
 }
