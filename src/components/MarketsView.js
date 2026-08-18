@@ -245,10 +245,7 @@ export class MarketsView {
     const container = this.container.querySelector('#stocks-widget-container');
     if (!container) return;
 
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
-    script.async = true;
-    script.innerHTML = JSON.stringify({
+    const config = {
       "colorTheme": "light",
       "dateRange": "1M",
       "showChart": true,
@@ -280,11 +277,28 @@ export class MarketsView {
           ]
         }
       ]
-    });
-    
-    // Replace content in case it was already initialized
-    container.innerHTML = '<div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>';
-    container.appendChild(script);
+    };
+
+    const iframeHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; }</style>
+      </head>
+      <body>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            ${JSON.stringify(config)}
+          </script>
+        </div>
+      </body>
+      </html>
+    `;
+
+    container.innerHTML = `<iframe srcdoc='${iframeHtml.replace(/'/g, "&#39;")}' style="width: 100%; height: 100%; border: none;" scrolling="no"></iframe>`;
   }
 
   switchAsset(symbol) {
