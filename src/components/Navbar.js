@@ -1,15 +1,16 @@
 /* ==========================================================================
    VALO OS - TOP NAVBAR COMPONENT
-   Minimalist Glass Controls, Zero Collisions & Quick Settings Menu
+   Minimalist Glass Controls, Custom User Initials (JP) & Profile Personalization
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
-import { t } from '../services/i18n.js';
+import { t, setLanguage } from '../services/i18n.js';
+import { showUserProfileModal } from './UserProfileModal.js';
 import { createIcons, icons } from 'lucide';
 
 export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, onCurrencyChange, onCheckUpdates }) {
   const settings = storage.getSettings() || {};
-  const currentLang = settings.lang || 'es';
+  const currentLang = settings.language || settings.lang || 'es';
   const currentCurrency = settings.currency || 'PEN';
   const currentSymbol = settings.currencySymbol || 'S/';
 
@@ -17,10 +18,31 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
     ? t('nav_my_space')
     : settings.userName;
 
+  // Compute initials from First Name + Last Surname (e.g. Julio Palacios -> JP)
+  const userFirstName = settings.userFirstName || '';
+  const userLastName = settings.userLastName || '';
+  
+  let initials = 'JP';
+  if (userFirstName || userLastName) {
+    const firstI = userFirstName ? userFirstName.trim()[0] : '';
+    const lastParts = userLastName ? userLastName.trim().split(/\s+/) : [];
+    const lastI = lastParts.length > 0 ? lastParts[lastParts.length - 1][0] : '';
+    initials = (firstI + lastI).toUpperCase() || 'JP';
+  } else if (settings.userName && settings.userName !== 'Mi Espacio' && settings.userName !== 'My Space') {
+    const parts = settings.userName.trim().split(/\s+/);
+    if (parts.length === 1) {
+      initials = parts[0].substring(0, 2).toUpperCase();
+    } else {
+      initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+  } else {
+    initials = 'JP';
+  }
+
   container.innerHTML = `
-    <div class="navbar-user" style="max-width: 48%; overflow: hidden;">
-      <div class="user-avatar-glass" style="background: #090D16; border: 1.5px solid rgba(255,255,255,0.85); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0;">
-        ${(userName[0] || 'V').toUpperCase()}
+    <div class="navbar-user" id="btn-navbar-profile" style="max-width: 48%; overflow: hidden; cursor: pointer;" title="Editar Perfil">
+      <div class="user-avatar-glass" style="background: #090D16; border: 1.5px solid rgba(255,255,255,0.85); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0; font-size: 0.85rem; letter-spacing: 0.5px;">
+        ${initials}
       </div>
       <div style="min-width: 0; overflow: hidden;">
         <div class="greeting-sub" style="font-family: var(--font-mono); font-size: 0.60rem; letter-spacing: 0.1em; color: var(--ink-60);">
@@ -56,10 +78,18 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
   `;
 
   // Bind Events
+  container.querySelector('#btn-navbar-profile')?.addEventListener('click', () => {
+    showUserProfileModal({
+      onSave: () => {
+        window.dispatchEvent(new CustomEvent('finanzix:data-changed'));
+      }
+    });
+  });
+
   container.querySelector('#btn-lang-selector')?.addEventListener('click', () => {
     const nextLang = currentLang === 'es' ? 'en' : 'es';
-    storage.updateSettings({ lang: nextLang });
-    window.location.reload();
+    setLanguage(nextLang);
+    window.dispatchEvent(new CustomEvent('finanzix:data-changed'));
   });
 
   container.querySelector('#btn-currency-selector')?.addEventListener('click', () => {

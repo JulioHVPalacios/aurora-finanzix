@@ -1,5 +1,5 @@
 {
-  "version": "1.0.19",
-  "buildTime": 1787011000000,
-  "description": "Bulletproof Service Worker caching, fixed reload loops, and smooth PWA boot"
+  "version": "1.0.20",
+  "buildTime": 1787011500000,
+  "description": "User profile personalization with exact first/last initials (JP), fully interactive Subscriptions modal, custom pricing, and Peru/Global real logos catalogue"
 }
