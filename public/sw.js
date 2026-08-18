@@ -1,50 +1,39 @@
 /* ==========================================================================
-   VALO OS - SERVICE WORKER (v1.0.18 PRODUCTION)
-   Ultra-Fast Offline Cache, Instant Background Notifications & Updates
+   VALO OS - ROCK-SOLID PRODUCTION SERVICE WORKER (v1.0.19)
+   Zero-Hang Guarantee: Safe Static Caching & Dynamic Asset Caching
    ========================================================================== */
 
-const CACHE_VERSION = 'valo-os-v18-production-20260817';
+const CACHE_VERSION = 'valo-os-v19-bulletproof-20260817';
 
-const CORE_ASSETS = [
+// Only cache essential root assets that exist unconditionally in both dev and production
+const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/version.json',
-  '/icon.svg',
-  '/src/main.js',
-  '/src/styles/design-tokens.css',
-  '/src/styles/app.css',
-  '/src/services/storage.js',
-  '/src/services/i18n.js',
-  '/src/services/analytics.js',
-  '/src/services/costCalculator.js',
-  '/src/components/Navbar.js',
-  '/src/components/BottomNav.js',
-  '/src/components/DashboardView.js',
-  '/src/components/TransactionsView.js',
-  '/src/components/SubscriptionsView.js',
-  '/src/components/DebtsView.js',
-  '/src/components/AnalyticsView.js',
-  '/src/components/BudgetsView.js',
-  '/src/components/ToolsView.js',
-  '/src/components/TransactionModal.js',
-  '/src/components/ConnectMobileModal.js',
-  '/src/components/ExportImportModal.js'
+  '/icon.svg'
 ];
 
-// Install: Cache Core Assets & Skip Waiting immediately
+// Install: Skip Waiting and cache only available root assets
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => {
-      return cache.addAll(CORE_ASSETS).catch((err) => {
-        console.warn('[VALO SW] Non-fatal cache item warning:', err);
-      });
+    caches.open(CACHE_VERSION).then(async (cache) => {
+      for (const asset of STATIC_ASSETS) {
+        try {
+          const res = await fetch(asset, { cache: 'no-cache' });
+          if (res.ok) {
+            await cache.put(asset, res);
+          }
+        } catch (err) {
+          console.warn('[VALO SW] Skipped non-critical asset:', asset);
+        }
+      }
     })
   );
 });
 
-// Activate: Claim Clients, Flush Outdated Caches & Send Instant System Notification
+// Activate: Clean old caches and claim all clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -57,19 +46,6 @@ self.addEventListener('activate', (event) => {
       );
     }).then(() => {
       return self.clients.claim();
-    }).then(() => {
-      // Trigger instant background notification if permission is granted
-      if (self.Notification && self.Notification.permission === 'granted') {
-        return self.registration.showNotification('💎 VALO OS Actualizado', {
-          body: 'Nueva versión v1.0.18 lista con mejoras visuales y bilingües.',
-          icon: '/icon.svg',
-          badge: '/icon.svg',
-          vibrate: [200, 100, 200],
-          tag: 'valo-system-update',
-          renotify: true,
-          data: { url: '/' }
-        });
-      }
     })
   );
 });
@@ -92,14 +68,7 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Background Periodic Sync (checks for updates in Android background without opening app)
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'check-app-updates') {
-    event.waitUntil(checkBackgroundUpdate());
-  }
-});
-
-// Push Notification Listener (triggered via WebPush / Serverless Push)
+// Push Notification Listener (Android & Chrome WebPush)
 self.addEventListener('push', (event) => {
   let payload = { 
     title: '💎 VALO OS Actualizado', 
@@ -125,34 +94,15 @@ self.addEventListener('push', (event) => {
   );
 });
 
-async function checkBackgroundUpdate() {
-  try {
-    const res = await fetch('/version.json?t=' + Date.now(), { cache: 'no-cache' });
-    if (res.ok) {
-      const data = await res.json();
-      if (self.Notification && self.Notification.permission === 'granted') {
-        self.registration.showNotification('💎 VALO OS Actualizado', {
-          body: `Versión v${data.version} lista. Toca para abrir.`,
-          icon: '/icon.svg',
-          badge: '/icon.svg',
-          vibrate: [200, 100, 200],
-          tag: 'valo-version-alert',
-          renotify: true,
-          data: { url: '/' }
-        });
-      }
-    }
-  } catch (e) {}
-}
-
-// Network-First for HTML, Manifest & Version.json; Stale-While-Revalidate for other assets
+// Fetch Handler: Bulletproof Network-First with Cache Fallback
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // HTML, Manifest and Version: Always Network-First
+  // Network-First for HTML navigation, manifest, and version checks
   if (
+    event.request.mode === 'navigate' ||
     event.request.headers.get('accept')?.includes('text/html') ||
     url.pathname.endsWith('manifest.json') ||
     url.pathname.endsWith('version.json') ||
@@ -167,12 +117,12 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(event.request).then(cached => cached || caches.match('/')))
     );
     return;
   }
 
-  // Stale-While-Revalidate for local assets
+  // Stale-While-Revalidate for JS, CSS, Fonts, Images & Icons
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {

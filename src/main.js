@@ -76,17 +76,8 @@ class App {
               const newWorker = registration.installing;
               if (newWorker) {
                 newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed') {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                     this.showUpdateBanner();
-
-                    if ('Notification' in window && Notification.permission === 'granted') {
-                      registration.showNotification('✨ Aurora Finanzix Actualizada', {
-                        body: 'Se ha instalado la última versión.',
-                        icon: '/icon.svg',
-                        vibrate: [200, 100, 200],
-                        data: { url: '/' }
-                      }).catch(() => {});
-                    }
                   }
                 });
               }
@@ -94,14 +85,6 @@ class App {
           }).catch(err => {
             console.warn('SW registration skipped:', err);
           });
-          
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing) {
-            refreshing = true;
-            window.location.reload();
-          }
-        });
       });
     }
   }
