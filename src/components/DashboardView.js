@@ -6,7 +6,9 @@
 import { storage } from '../services/storage.js';
 import { getFinancialMetrics } from '../services/analytics.js';
 import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
+import { renderSponsoredDealsCard, attachSponsoredDealEvents } from './SponsoredDealsCard.js';
 import { createIcons, icons } from 'lucide';
+
 
 export function renderDashboard(container, { onNavigate, onAddTransaction, onShowToast }) {
   const metrics = getFinancialMetrics() || { netBalance: 0, totalIncome: 0, totalExpense: 0, savingsRate: 0 };
@@ -157,8 +159,12 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         </div>
       ` : ''}
 
+      <!-- Elegant Sponsored Deals & Savings Opportunities Card -->
+      ${renderSponsoredDealsCard()}
+
       <!-- Recent Transactions Section -->
       <div>
+
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <span style="font-family: var(--font-display); font-weight: 800; font-size: 0.96rem; color: var(--ink);">${t('dash_recent_tx')}</span>
           <button type="button" id="btn-view-all-tx" style="background: transparent; border: none; font-size: 0.78rem; font-weight: 700; color: #4F46E5; cursor: pointer;">
@@ -214,7 +220,11 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
 
+  // Attach sponsored deals dismiss handler
+  attachSponsoredDealEvents(container);
+
   // Accelerate hero background video to 1.65x for lively, vibrant motion
+
   const videoEl = container.querySelector('.hero-bg-video');
   if (videoEl) {
     videoEl.playbackRate = 1.65;

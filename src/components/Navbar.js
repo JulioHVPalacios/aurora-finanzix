@@ -193,6 +193,17 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
           </div>
         </button>
 
+        <!-- Privacy Policy -->
+        <a href="/privacy.html" target="_blank" rel="noopener noreferrer" class="btn" style="background: #F8FAFC; border: 1px solid rgba(15, 23, 42, 0.08); justify-content: flex-start; padding: 14px 16px; border-radius: 14px; font-weight: 700; color: var(--ink); text-decoration: none; display: flex; align-items: center;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #F3F4F6; color: #4B5563; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+            <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
+          </div>
+          <div style="text-align: left;">
+            <div style="font-size: 0.9rem;">Política de Privacidad</div>
+            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">Almacenamiento 100% local y seguro</div>
+          </div>
+        </a>
+
         <!-- Reset App -->
         <button type="button" class="btn" id="btn-more-reset" style="background: #FFF5F5; border: 1px solid rgba(239, 68, 68, 0.15); justify-content: flex-start; padding: 14px 16px; border-radius: 14px; font-weight: 700; color: #DC2626;">
           <div style="width: 36px; height: 36px; border-radius: 10px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
@@ -206,6 +217,7 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
       </div>
     </div>
   `;
+
 
   function close() {
     overlay.classList.remove('active');

@@ -1,39 +1,55 @@
 {
-  "name": "VALO | Financial Intelligence OS",
-  "short_name": "VALO",
-  "description": "Ultra-fast, luxury financial intelligence and expense engine.",
-  "start_url": "/?v=1.0.16",
-  "id": "/?v=1.0.16",
+  "name": "VALO | Control de Gastos y Finanzas",
+  "short_name": "VALO OS",
+  "description": "Aplicación inteligente y privada para el control de gastos personales, cálculo de presupuestos y gestión de pagos fijos.",
+  "start_url": "/",
+  "id": "valo-finanzix-app",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "portrait",
   "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF",
+  "theme_color": "#0F172A",
   "categories": ["finance", "productivity", "utilities"],
   "lang": "es",
   "dir": "ltr",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icon.svg?v=1.0.16",
+      "src": "/icon.svg",
       "sizes": "192x192 512x512 any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.svg?v=1.0.16",
+      "src": "/icon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Nuevo Gasto",
+      "short_name": "Gasto",
+      "description": "Registrar un nuevo gasto",
+      "url": "/?action=new-expense",
+      "icons": [{ "src": "/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pagos Fijos",
+      "short_name": "Suscripciones",
+      "description": "Ver pagos fijos y vencimientos",
+      "url": "/?tab=subscriptions",
+      "icons": [{ "src": "/icon.svg", "sizes": "192x192" }]
+    }
+  ],
   "screenshots": [
     {
-      "src": "/icon.svg?v=1.0.16",
+      "src": "/icon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "form_factor": "narrow",
-      "label": "VALO Mobile Dashboard"
+      "label": "Dashboard Principal VALO"
     }
   ]
 }
