@@ -145,6 +145,7 @@ export function showOnboarding({ onComplete }) {
   let savedFirstName = '';
   let savedLastName  = '';
   let selectedCountry = 'Perú';
+  let visitedStep2 = false;   // true when user reaches or skips step 2
 
   function T(key) { return (ONBOARDING_TX[currentLang] || ONBOARDING_TX.es)[key]; }
 
@@ -248,6 +249,7 @@ export function showOnboarding({ onComplete }) {
     overlay.querySelector('#onb-btn-1')?.addEventListener('click', () => {
       savedFirstName = overlay.querySelector('#onb-first-name')?.value.trim() || '';
       savedLastName  = overlay.querySelector('#onb-last-name')?.value.trim() || '';
+      visitedStep2 = true;
       currentStep = 2; render();
     });
     overlay.querySelector('#onb-skip-1')?.addEventListener('click', () => finish('',''));
@@ -279,6 +281,14 @@ export function showOnboarding({ onComplete }) {
     overlay.querySelector('#onb-btn-2')?.addEventListener('click', () => {
       const country = overlay.querySelector('#onb-country')?.value || selectedCountry;
       const city    = overlay.querySelector('#onb-city')?.value || '';
+
+      // ✅ ALWAYS apply language based on the final chosen country
+      const finalLang = SPANISH_SPEAKING_COUNTRIES.has(country) ? 'es' : 'en';
+      currentLang = finalLang;
+      setLanguage(finalLang);
+      selectedCountry = country;
+      visitedStep2 = true;
+
       storage.updateSettings({ userCity: city, userCountry: country });
 
       const namePart = savedFirstName ? `, ${savedFirstName}` : '';
@@ -289,6 +299,13 @@ export function showOnboarding({ onComplete }) {
     });
 
     overlay.querySelector('#onb-skip-2')?.addEventListener('click', () => {
+      // Even on skip, apply language based on whatever country is currently shown
+      const country = overlay.querySelector('#onb-country')?.value || selectedCountry;
+      const finalLang = SPANISH_SPEAKING_COUNTRIES.has(country) ? 'es' : 'en';
+      currentLang = finalLang;
+      setLanguage(finalLang);
+      visitedStep2 = true;
+
       const namePart = savedFirstName ? `, ${savedFirstName}` : '';
       const welcomeEl = overlay.querySelector('#onb-welcome-name');
       if (welcomeEl) welcomeEl.textContent = `${T('step3_base')}${namePart}${T('step3_end')}`;
@@ -300,6 +317,13 @@ export function showOnboarding({ onComplete }) {
   }
 
   function finish(firstName, lastName) {
+    // ✅ Final language lock — if user went through step 2, country drives the language.
+    // If they skipped step 2 entirely, the manual chip selection stays.
+    if (visitedStep2) {
+      const finalLang = SPANISH_SPEAKING_COUNTRIES.has(selectedCountry) ? 'es' : 'en';
+      setLanguage(finalLang);
+    }
+
     if (firstName || lastName) {
       const fullName = [firstName, lastName].filter(Boolean).join(' ');
       storage.updateSettings({ userName: fullName, userFirstName: firstName, userLastName: lastName });
@@ -308,6 +332,7 @@ export function showOnboarding({ onComplete }) {
     overlay.classList.add('leaving');
     overlay.addEventListener('animationend', () => { overlay.remove(); onComplete?.(); }, { once: true });
   }
+
 
   root.prepend(overlay);
   render();
