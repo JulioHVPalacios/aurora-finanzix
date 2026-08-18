@@ -134,7 +134,10 @@ export class MarketsView {
         <!-- Header -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
           <div>
-            <h1 style="font-size:1.6rem;font-weight:800;margin:0;color:var(--ink);">Mercados</h1>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <h1 style="font-size:1.6rem;font-weight:800;margin:0;color:var(--ink);">Mercados</h1>
+              <span style="font-size:0.65rem;background:#E2E8F0;color:#475569;padding:2px 6px;border-radius:4px;font-weight:800;letter-spacing:0.05em;">V33</span>
+            </div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
               <span id="ws-dot" style="display:inline-block;width:8px;height:8px;background:#94A3B8;border-radius:50%;transition:background 0.3s;"></span>
               <span id="ws-label" style="font-size:0.7rem;color:var(--ink-60);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Conectando...</span>
