@@ -467,9 +467,8 @@ export function getLanguage() {
 
 export function setLanguage(lang) {
   const validLang = lang === 'en' ? 'en' : 'es';
-  const settings = storage.getSettings() || {};
-  storage.saveSettings({ ...settings, language: validLang });
-  window.dispatchEvent(new CustomEvent('finanzix:language-changed', { detail: { lang: validLang } }));
+  storage.updateSettings({ language: validLang });
+  window.dispatchEvent(new CustomEvent('finanzix:data-changed'));
 }
 
 export function t(key) {

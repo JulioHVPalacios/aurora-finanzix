@@ -91,7 +91,6 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
   container.querySelector('#btn-lang-selector')?.addEventListener('click', () => {
     const nextLang = currentLang === 'es' ? 'en' : 'es';
     setLanguage(nextLang);
-    window.dispatchEvent(new CustomEvent('finanzix:data-changed'));
   });
 
   container.querySelector('#btn-currency-selector')?.addEventListener('click', () => {
