@@ -59,45 +59,45 @@ export class MarketsView {
 
   render() {
     this.container.innerHTML = `
-      <div style="padding: 24px; padding-top: 50px; padding-bottom: 100px; color: #FFFFFF; min-height: 100vh; background: #020617; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <div style="padding-bottom: 130px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
         <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
           <div>
-            <h1 style="font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: -0.03em;">Mercados</h1>
+            <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--ink);">Mercados</h1>
             <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
-              <span style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981;"></span>
-              <span style="font-size: 0.75rem; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tiempo Real · Binance</span>
+              <span style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);"></span>
+              <span style="font-size: 0.72rem; color: var(--ink-60); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tiempo Real · Binance</span>
             </div>
           </div>
-          <button style="width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #FFF; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+          <button style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); color: var(--ink); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
             <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
           </button>
         </div>
 
-        <!-- Main Chart Card (Glassmorphism) -->
+        <!-- Main Chart Card (Light Glassmorphism) -->
         <div style="
-          background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #FFFFFF;
+          border: 1px solid rgba(15, 23, 42, 0.06);
           border-radius: 24px;
           padding: 20px;
-          margin-bottom: 28px;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+          margin-bottom: 24px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
           position: relative;
           overflow: hidden;
         ">
           <!-- Active Asset Info -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; position: relative; z-index: 2;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; position: relative; z-index: 2;">
             <div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <div style="width: 24px; height: 24px; border-radius: 50%; background: #F7931A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;" id="chart-asset-icon">₿</div>
-                <span style="font-weight: 700; color: #CBD5E1; font-size: 1rem;" id="chart-asset-name">Bitcoin</span>
-                <span style="font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 6px; color: #94A3B8;">BTC</span>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <div style="width: 24px; height: 24px; border-radius: 50%; background: #F7931A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #FFF;" id="chart-asset-icon">₿</div>
+                <span style="font-weight: 700; color: var(--ink-80); font-size: 1rem;" id="chart-asset-name">Bitcoin</span>
+                <span style="font-size: 0.7rem; background: var(--bg-color); padding: 2px 6px; border-radius: 6px; color: var(--ink-60); font-weight: 600;">BTC</span>
               </div>
-              <div style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; color: #FFFFFF;" id="chart-live-price">
+              <div style="font-size: 2.1rem; font-weight: 800; letter-spacing: -0.04em; color: var(--ink);" id="chart-live-price">
                 Cargando...
               </div>
-              <div style="font-size: 0.9rem; font-weight: 600; color: #10B981; display: flex; align-items: center; gap: 4px; margin-top: 2px;" id="chart-live-change">
-                <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+              <div style="font-size: 0.85rem; font-weight: 700; color: #10B981; display: flex; align-items: center; gap: 4px; margin-top: 2px;" id="chart-live-change">
+                <i data-lucide="loader" style="width: 14px; height: 14px; animation: spin 2s linear infinite;"></i>
                 ---
               </div>
             </div>
@@ -107,34 +107,35 @@ export class MarketsView {
           <div id="tv-chart" style="width: 100%; height: 220px; position: relative; z-index: 2;"></div>
           
           <!-- Background Glow -->
-          <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; filter: blur(40px); z-index: 0;" id="chart-glow"></div>
+          <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(16, 185, 129, 0.08); border-radius: 50%; filter: blur(40px); z-index: 0;" id="chart-glow"></div>
         </div>
 
         <!-- Watchlist -->
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: #E2E8F0;">Tendencias (Watchlist)</h3>
+        <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--ink);">Tendencias (Watchlist)</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;" id="watchlist-grid">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" id="watchlist-grid">
           ${this.assets.map(asset => `
             <div class="watchlist-card" data-symbol="${asset.symbol}" style="
-              background: rgba(30, 41, 59, 0.5);
-              border: 1px solid rgba(255, 255, 255, 0.05);
+              background: #FFFFFF;
+              border: 1.5px solid rgba(15, 23, 42, 0.05);
               border-radius: 18px;
-              padding: 16px;
+              padding: 14px;
               cursor: pointer;
               transition: all 0.2s;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.02);
             ">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <div style="width: 28px; height: 28px; border-radius: 50%; background: ${asset.color}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #FFF;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <div style="width: 26px; height: 26px; border-radius: 50%; background: ${asset.color}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: #FFF;">
                     ${asset.icon}
                   </div>
-                  <span style="font-weight: 700; font-size: 0.85rem;">${asset.name}</span>
+                  <span style="font-weight: 700; font-size: 0.8rem; color: var(--ink-80);">${asset.name}</span>
                 </div>
               </div>
-              <div style="font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 2px;" id="price-${asset.symbol}">
+              <div style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 2px; color: var(--ink);" id="price-${asset.symbol}">
                 ---
               </div>
-              <div style="font-size: 0.75rem; font-weight: 600; color: #64748B;" id="change-${asset.symbol}">
+              <div style="font-size: 0.72rem; font-weight: 700; color: var(--ink-40);" id="change-${asset.symbol}">
                 ---
               </div>
             </div>
@@ -201,13 +202,14 @@ export class MarketsView {
       }
     });
 
-    await this.fetchHistoricalData(this.currentSymbol);
+    this.switchAsset(this.currentSymbol);
   }
 
   async fetchHistoricalData(symbol) {
     try {
       // Fetch last 24h of 15m candles
       const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=15m&limit=96`);
+      if (!res.ok) throw new Error('API Error');
       const data = await res.json();
       
       const chartData = data.map(d => ({
@@ -219,6 +221,12 @@ export class MarketsView {
       this.chart.timeScale().fitContent();
     } catch (e) {
       console.error('Failed to load historical data', e);
+      // Fallback: draw a straight line if API is blocked by CORS/Adblocker
+      const now = Math.floor(Date.now() / 1000);
+      this.lineSeries.setData([
+        { time: now - 3600, value: 50000 },
+        { time: now, value: 50000 }
+      ]);
     }
   }
 
@@ -238,11 +246,13 @@ export class MarketsView {
     // Update active styles
     this.container.querySelectorAll('.watchlist-card').forEach(c => {
       if (c.getAttribute('data-symbol') === symbol) {
-        c.style.border = '1px solid rgba(255,255,255,0.3)';
-        c.style.background = 'rgba(255,255,255,0.08)';
+        c.style.border = '1.5px solid #4F46E5';
+        c.style.background = '#EEF2FF';
+        c.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.1)';
       } else {
-        c.style.border = '1px solid rgba(255,255,255,0.05)';
-        c.style.background = 'rgba(30, 41, 59, 0.5)';
+        c.style.border = '1.5px solid rgba(15, 23, 42, 0.05)';
+        c.style.background = '#FFFFFF';
+        c.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)';
       }
     });
   }
