@@ -82,6 +82,23 @@ export function showUserProfileModal({ onSave }) {
           <label class="form-label">Correo Electrónico (Opcional)</label>
           <input type="email" id="prof-email" class="input-control" value="${currentEmail}" placeholder="nombre@correo.com" />
         </div>
+        
+        <div style="margin-top: 10px; padding-top: 15px; border-top: 1px solid rgba(15,23,42,0.08);">
+          <h4 style="font-size:0.8rem; font-weight:700; color:var(--ink); margin-bottom:8px;">Seguridad de la App</h4>
+          
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom: 10px; cursor:pointer;">
+            <input type="checkbox" id="prof-pin-enable" style="width:16px; height:16px; accent-color:#10B981;" ${settings.securityPinEnabled ? 'checked' : ''} />
+            Habilitar Bloqueo por PIN
+          </label>
+          
+          <div id="pin-setup-container" style="display: ${settings.securityPinEnabled ? 'block' : 'none'};">
+            <div class="form-group">
+              <label class="form-label">PIN de 4 dígitos</label>
+              <input type="password" id="prof-pin-code" class="input-control" value="${settings.securityPin || ''}" placeholder="Ej: 1234" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" style="letter-spacing:4px; font-weight:bold; text-align:center;" />
+              <span style="font-size:0.65rem;color:var(--ink-40);margin-top:4px;">Tu PIN se guarda solo en tu dispositivo de forma segura.</span>
+            </div>
+          </div>
+        </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="padding:12px;font-size:0.92rem;font-weight:700;margin-top:4px;">
           Guardar Perfil
@@ -97,6 +114,16 @@ export function showUserProfileModal({ onSave }) {
     const citySelect = overlay.querySelector('#prof-city');
     if (citySelect) {
       citySelect.innerHTML = buildCityOpts(e.target.value, '');
+    }
+  });
+
+  // Toggle PIN Setup visibility
+  const pinEnableCheckbox = overlay.querySelector('#prof-pin-enable');
+  const pinSetupContainer = overlay.querySelector('#pin-setup-container');
+  pinEnableCheckbox?.addEventListener('change', (e) => {
+    if (pinSetupContainer) {
+      pinSetupContainer.style.display = e.target.checked ? 'block' : 'none';
+      if (e.target.checked) overlay.querySelector('#prof-pin-code')?.focus();
     }
   });
 
@@ -116,10 +143,20 @@ export function showUserProfileModal({ onSave }) {
     const city    = overlay.querySelector('#prof-city').value;
     const email   = overlay.querySelector('#prof-email').value.trim();
 
+    const pinEnabled = pinEnableCheckbox?.checked || false;
+    const pinCode = overlay.querySelector('#prof-pin-code')?.value.trim();
+
+    if (pinEnabled && pinCode.length !== 4) {
+      alert('El PIN debe tener exactamente 4 dígitos.');
+      return;
+    }
+
     const fullName = [first, last].filter(Boolean).join(' ') || 'Mi Espacio';
     storage.updateSettings({
       userName: fullName, userFirstName: first, userLastName: last,
-      userCity: city, userCountry: country, userEmail: email
+      userCity: city, userCountry: country, userEmail: email,
+      securityPinEnabled: pinEnabled,
+      securityPin: pinEnabled ? pinCode : null
     });
 
     onSave?.();

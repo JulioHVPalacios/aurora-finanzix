@@ -19,7 +19,7 @@ import { showTransactionModal } from './components/TransactionModal.js';
 import { showConnectMobileModal } from './components/ConnectMobileModal.js';
 import { showExportImportModal } from './components/ExportImportModal.js';
 import { isOnboardingDone, showOnboarding } from './components/OnboardingFlow.js';
-
+import { initSecurityLock } from './components/AppLockScreen.js';
 class App {
   constructor() {
     this.currentTab = 'dashboard';
@@ -401,18 +401,20 @@ class App {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  if (!isOnboardingDone()) {
-    // Hide the main app shell visually while onboarding runs
-    const appRoot = document.getElementById('app-root');
-    if (appRoot) appRoot.style.visibility = 'hidden';
+  initSecurityLock(() => {
+    if (!isOnboardingDone()) {
+      // Hide the main app shell visually while onboarding runs
+      const appRoot = document.getElementById('app-root');
+      if (appRoot) appRoot.style.visibility = 'hidden';
 
-    showOnboarding({
-      onComplete: () => {
-        if (appRoot) appRoot.style.visibility = 'visible';
-        new App();
-      }
-    });
-  } else {
-    new App();
-  }
+      showOnboarding({
+        onComplete: () => {
+          if (appRoot) appRoot.style.visibility = 'visible';
+          new App();
+        }
+      });
+    } else {
+      new App();
+    }
+  });
 });
