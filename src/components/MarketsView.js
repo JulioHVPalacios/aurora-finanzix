@@ -10,10 +10,15 @@ export class MarketsView {
     this.assets = [
       { symbol: 'BTCUSDT', name: 'Bitcoin', icon: '₿', color: '#F7931A' },
       { symbol: 'ETHUSDT', name: 'Ethereum', icon: 'Ξ', color: '#627EEA' },
-      { symbol: 'SOLUSDT', name: 'Solana', icon: 'S', color: '#14F195' },
       { symbol: 'BNBUSDT', name: 'BNB', icon: 'B', color: '#F3BA2F' },
+      { symbol: 'SOLUSDT', name: 'Solana', icon: 'S', color: '#14F195' },
       { symbol: 'XRPUSDT', name: 'Ripple', icon: '✕', color: '#23292F' },
-      { symbol: 'DOGEUSDT', name: 'Dogecoin', icon: 'Ð', color: '#C2A633' }
+      { symbol: 'DOGEUSDT', name: 'Dogecoin', icon: 'Ð', color: '#C2A633' },
+      { symbol: 'ADAUSDT', name: 'Cardano', icon: '₳', color: '#0033AD' },
+      { symbol: 'TRXUSDT', name: 'TRON', icon: 'T', color: '#FF0013' },
+      { symbol: 'LINKUSDT', name: 'Chainlink', icon: 'L', color: '#2A5ADA' },
+      { symbol: 'DOTUSDT', name: 'Polkadot', icon: 'P', color: '#E6007A' },
+      { symbol: 'MATICUSDT', name: 'Polygon', icon: 'M', color: '#8247E5' }
     ];
     this.ws = null;
     this.chart = null;
@@ -36,27 +41,17 @@ export class MarketsView {
       await this.initChart();
     } catch (err) {
       console.error('Error loading lightweight-charts', err);
-      // Even if chart fails, live prices will still work because WS is decoupled
     }
   }
 
   renderSkeleton() {
     this.container.innerHTML = `
-      <div style="padding: 24px; padding-top: 60px; color: #FFFFFF; min-height: 100vh; background: #020617;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h1 style="font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: -0.03em;">Mercados</h1>
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
-            <i data-lucide="search" style="width: 20px; height: 20px;"></i>
-          </div>
-        </div>
-        <div style="height: 300px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 24px; animation: pulse 1.5s infinite;"></div>
-        <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px;">
-          <div style="min-width: 140px; height: 160px; background: rgba(255,255,255,0.05); border-radius: 16px;"></div>
-          <div style="min-width: 140px; height: 160px; background: rgba(255,255,255,0.05); border-radius: 16px;"></div>
-        </div>
+      <div style="padding: 24px; padding-top: 50px; text-align: center; color: var(--ink-40);">
+        <i data-lucide="loader" style="width: 32px; height: 32px; animation: spin 2s linear infinite; margin-bottom: 12px;"></i>
+        <p style="font-size: 0.9rem; font-weight: 600;">Conectando a los mercados en vivo...</p>
       </div>
     `;
-    createIcons({ icons, nameAttr: 'data-lucide', root: this.container });
+    if (typeof createIcons !== 'undefined') createIcons({ icons, nameAttr: 'data-lucide', root: this.container });
   }
 
   render() {
@@ -72,7 +67,7 @@ export class MarketsView {
             </div>
           </div>
           <button style="width: 40px; height: 40px; border-radius: 50%; background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); color: var(--ink); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-            <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
           </button>
         </div>
 
@@ -112,42 +107,49 @@ export class MarketsView {
           <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(16, 185, 129, 0.08); border-radius: 50%; filter: blur(40px); z-index: 0;" id="chart-glow"></div>
         </div>
 
-        <!-- Watchlist -->
-        <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--ink);">Tendencias (Watchlist)</h3>
+        <!-- Crypto List (CoinMarketCap Style) -->
+        <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--ink);">Criptomonedas (Top 10)</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" id="watchlist-grid">
-          ${this.assets.map(asset => `
-            <div class="watchlist-card" data-symbol="${asset.symbol}" style="
-              background: #FFFFFF;
-              border: 1.5px solid rgba(15, 23, 42, 0.05);
-              border-radius: 18px;
-              padding: 14px;
-              cursor: pointer;
-              transition: all 0.2s;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            ">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <div style="width: 26px; height: 26px; border-radius: 50%; background: ${asset.color}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: #FFF;">
-                    ${asset.icon}
-                  </div>
-                  <span style="font-weight: 700; font-size: 0.8rem; color: var(--ink-80);">${asset.name}</span>
-                </div>
-              </div>
-              <div style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 2px; color: var(--ink);" id="price-${asset.symbol}">
-                ---
-              </div>
-              <div style="font-size: 0.72rem; font-weight: 700; color: var(--ink-40);" id="change-${asset.symbol}">
-                ---
-              </div>
-            </div>
-          `).join('')}
+        <div style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 20px; padding: 16px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 24px;">
+           <div style="display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid rgba(15, 23, 42, 0.06); font-size: 0.7rem; color: var(--ink-40); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;">
+             <span style="flex: 1.5; padding-left: 8px;">Activo</span>
+             <span style="flex: 1; text-align: right;">Precio</span>
+             <span style="flex: 1; text-align: right; padding-right: 8px;">24h %</span>
+           </div>
+           
+           <div id="crypto-list">
+             ${this.assets.map((asset, index) => `
+               <div class="watchlist-card" data-symbol="${asset.symbol}" style="
+                 display: flex; justify-content: space-between; align-items: center; 
+                 padding: 12px 8px; border-bottom: 1px solid rgba(15, 23, 42, 0.03); 
+                 cursor: pointer; transition: all 0.2s; border-radius: 10px;
+                 margin-top: 4px;
+               ">
+                 <div style="flex: 1.5; display: flex; align-items: center; gap: 10px;">
+                   <span style="font-size: 0.75rem; color: var(--ink-40); font-weight: 700; width: 14px;">${index + 1}</span>
+                   <div style="width: 30px; height: 30px; border-radius: 50%; background: ${asset.color}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: #FFF; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                     ${asset.icon}
+                   </div>
+                   <div style="display: flex; flex-direction: column;">
+                     <span style="font-weight: 800; font-size: 0.85rem; color: var(--ink); line-height: 1.2;">${asset.name}</span>
+                     <span style="font-size: 0.7rem; color: var(--ink-40); font-weight: 600;">${asset.symbol.replace('USDT', '')}</span>
+                   </div>
+                 </div>
+                 <div style="flex: 1; text-align: right; font-weight: 800; font-size: 0.9rem; color: var(--ink);" id="price-${asset.symbol}">
+                   ---
+                 </div>
+                 <div style="flex: 1; text-align: right; font-weight: 700; font-size: 0.8rem; padding-right: 4px;" id="change-${asset.symbol}">
+                   ---
+                 </div>
+               </div>
+             `).join('')}
+           </div>
         </div>
 
         <!-- Global Stocks Section -->
-        <div style="margin-top: 30px;">
+        <div style="margin-top: 10px;">
           <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--ink);">Acciones Globales</h3>
-          <div id="stocks-widget-container" style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); height: 420px; width: 100%;">
+          <div id="stocks-widget-container" style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); height: 500px; width: 100%;">
             <!-- Script will be injected here -->
           </div>
         </div>
@@ -246,37 +248,35 @@ export class MarketsView {
     if (!container) return;
 
     const config = {
-      "colorTheme": "light",
-      "dateRange": "1M",
-      "showChart": true,
-      "locale": "es",
       "width": "100%",
       "height": "100%",
-      "largeChartUrl": "",
-      "isTransparent": true,
-      "showSymbolLogo": true,
-      "showFloatingTooltip": false,
-      "tabs": [
+      "symbolsGroups": [
         {
-          "title": "Tecnología",
+          "name": "Tecnología",
+          "originalName": "Technology",
           "symbols": [
-            { "s": "NASDAQ:AAPL", "d": "Apple Inc." },
-            { "s": "NASDAQ:NVDA", "d": "NVIDIA" },
-            { "s": "NASDAQ:TSLA", "d": "Tesla" },
-            { "s": "NASDAQ:MSFT", "d": "Microsoft" },
-            { "s": "NASDAQ:AMZN", "d": "Amazon" },
-            { "s": "NASDAQ:META", "d": "Meta" }
+            { "name": "NASDAQ:AAPL", "displayName": "Apple Inc." },
+            { "name": "NASDAQ:NVDA", "displayName": "NVIDIA" },
+            { "name": "NASDAQ:TSLA", "displayName": "Tesla" },
+            { "name": "NASDAQ:MSFT", "displayName": "Microsoft" },
+            { "name": "NASDAQ:AMZN", "displayName": "Amazon" },
+            { "name": "NASDAQ:META", "displayName": "Meta" }
           ]
         },
         {
-          "title": "Índices",
+          "name": "Índices Mundiales",
+          "originalName": "Indices",
           "symbols": [
-            { "s": "FOREXCOM:SPXUSD", "d": "S&P 500" },
-            { "s": "FOREXCOM:NSXUSD", "d": "Nasdaq 100" },
-            { "s": "FOREXCOM:DJI", "d": "Dow Jones" }
+            { "name": "FOREXCOM:SPXUSD", "displayName": "S&P 500" },
+            { "name": "FOREXCOM:NSXUSD", "displayName": "Nasdaq 100" },
+            { "name": "FOREXCOM:DJI", "displayName": "Dow Jones" }
           ]
         }
-      ]
+      ],
+      "showSymbolLogo": true,
+      "isTransparent": true,
+      "colorTheme": "light",
+      "locale": "es"
     };
 
     const iframeHtml = `
@@ -290,7 +290,7 @@ export class MarketsView {
       <body>
         <div class="tradingview-widget-container">
           <div class="tradingview-widget-container__widget"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
             ${JSON.stringify(config)}
           </script>
         </div>
@@ -317,13 +317,13 @@ export class MarketsView {
     // Update active styles
     this.container.querySelectorAll('.watchlist-card').forEach(c => {
       if (c.getAttribute('data-symbol') === symbol) {
-        c.style.border = '1.5px solid #4F46E5';
         c.style.background = '#EEF2FF';
-        c.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.1)';
+        c.style.borderBottom = '1px solid #4F46E5';
+        c.style.boxShadow = 'inset 4px 0 0 #4F46E5';
       } else {
-        c.style.border = '1.5px solid rgba(15, 23, 42, 0.05)';
-        c.style.background = '#FFFFFF';
-        c.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)';
+        c.style.background = 'transparent';
+        c.style.borderBottom = '1px solid rgba(15, 23, 42, 0.03)';
+        c.style.boxShadow = 'none';
       }
     });
   }
