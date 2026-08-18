@@ -1,5 +1,5 @@
 {
-  "version": "1.0.21",
-  "buildTime": 1787012000000,
-  "description": "Onboarding flow on first launch, correct initials (no JP hardcode), fixed export/import"
+  "version": "1.0.23",
+  "buildTime": 1787014000000,
+  "description": "Massive country-specific subscriptions & services catalogue (Peru utilities, telecom, streaming, fintech, health, education) with real logos and live search"
 }

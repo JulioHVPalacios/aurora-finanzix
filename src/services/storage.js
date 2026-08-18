@@ -43,45 +43,11 @@ export const PAYMENT_METHODS = [
   { id: 'transfer', name: 'Transferencia', icon: 'building-2' },
 ];
 
-// Comprehensive Catalogue of Real Services (Peru & Global)
-export const POPULAR_SUBSCRIPTIONS_CATALOG = [
-  // Streaming & Video
-  { id: 'netflix', name: 'Netflix', category: 'entertainment', defaultAmount: 44.90, icon: 'netflix', color: '#E50914', hasOfficialLogo: true },
-  { id: 'spotify', name: 'Spotify', category: 'entertainment', defaultAmount: 20.90, icon: 'spotify', color: '#1DB954', hasOfficialLogo: true },
-  { id: 'disney', name: 'Disney+', category: 'entertainment', defaultAmount: 38.90, icon: 'disneyplus', color: '#113CCF', hasOfficialLogo: true },
-  { id: 'max', name: 'Max (HBO)', category: 'entertainment', defaultAmount: 29.90, icon: 'max', color: '#002BE7', hasOfficialLogo: true },
-  { id: 'prime', name: 'Amazon Prime', category: 'entertainment', defaultAmount: 19.90, icon: 'amazonprime', color: '#00A8E1', hasOfficialLogo: true },
-  { id: 'youtube', name: 'YouTube Premium', category: 'entertainment', defaultAmount: 24.90, icon: 'youtube', color: '#FF0000', hasOfficialLogo: true },
-  { id: 'appletv', name: 'Apple TV+', category: 'entertainment', defaultAmount: 29.90, icon: 'appletv', color: '#000000', hasOfficialLogo: true },
-  { id: 'crunchyroll', name: 'Crunchyroll', category: 'entertainment', defaultAmount: 19.00, icon: 'crunchyroll', color: '#F47521', hasOfficialLogo: true },
-  
-  // Servicios Hogar & Telecom Perú
-  { id: 'movistar', name: 'Movistar Fibra', category: 'services', defaultAmount: 89.90, icon: 'movistar', color: '#019DF4', hasOfficialLogo: true },
-  { id: 'claro', name: 'Claro Hogar', category: 'services', defaultAmount: 85.00, icon: 'claro', color: '#DA291C', hasOfficialLogo: true },
-  { id: 'win', name: 'WIN Internet', category: 'services', defaultAmount: 99.00, icon: 'wifi', color: '#F97316', hasOfficialLogo: false },
-  { id: 'entel', name: 'Entel Móvil', category: 'services', defaultAmount: 49.90, icon: 'smartphone', color: '#0055A5', hasOfficialLogo: false },
-  { id: 'luz_del_sur', name: 'Luz del Sur / Pluz', category: 'home', defaultAmount: 120.00, icon: 'zap', color: '#F59E0B', hasOfficialLogo: false },
-  { id: 'sedapal', name: 'Sedapal (Agua)', category: 'home', defaultAmount: 65.00, icon: 'droplet', color: '#0284C7', hasOfficialLogo: false },
-  { id: 'calidda', name: 'Cálidda Gas', category: 'home', defaultAmount: 35.00, icon: 'flame', color: '#EF4444', hasOfficialLogo: false },
-  
-  // Gimnasios & Salud Perú
-  { id: 'smartfit', name: 'SmartFit', category: 'health', defaultAmount: 99.00, icon: 'dumbbell', color: '#FFB81C', hasOfficialLogo: false },
-  { id: 'bodytech', name: 'Bodytech', category: 'health', defaultAmount: 150.00, icon: 'dumbbell', color: '#DC2626', hasOfficialLogo: false },
-  { id: 'pacifico', name: 'Pacífico EPS', category: 'health', defaultAmount: 180.00, icon: 'heart-pulse', color: '#0D9488', hasOfficialLogo: false },
-  { id: 'rimac', name: 'Rímac Seguros', category: 'health', defaultAmount: 160.00, icon: 'shield', color: '#B91C1C', hasOfficialLogo: false },
-  
-  // Tech & Productividad
-  { id: 'icloud', name: 'Apple iCloud', category: 'education', defaultAmount: 3.90, icon: 'icloud', color: '#3699F2', hasOfficialLogo: true },
-  { id: 'googleone', name: 'Google One', category: 'education', defaultAmount: 6.90, icon: 'google', color: '#4285F4', hasOfficialLogo: true },
-  { id: 'chatgpt', name: 'ChatGPT Plus', category: 'education', defaultAmount: 76.00, icon: 'openai', color: '#10A37F', hasOfficialLogo: true },
-  { id: 'canva', name: 'Canva Pro', category: 'education', defaultAmount: 34.90, icon: 'canva', color: '#00C4CC', hasOfficialLogo: true },
-  { id: 'microsoft365', name: 'Microsoft 365', category: 'education', defaultAmount: 26.00, icon: 'microsoft', color: '#0078D4', hasOfficialLogo: true },
-  
-  // Gaming & Delivery
-  { id: 'rappi', name: 'Rappi Prime', category: 'shopping', defaultAmount: 22.90, icon: 'shopping-bag', color: '#FF441F', hasOfficialLogo: false },
-  { id: 'psplus', name: 'PlayStation Plus', category: 'entertainment', defaultAmount: 35.00, icon: 'playstation', color: '#003791', hasOfficialLogo: true },
-  { id: 'xbox', name: 'Xbox Game Pass', category: 'entertainment', defaultAmount: 39.90, icon: 'xbox', color: '#107C10', hasOfficialLogo: true }
-];
+import { getServicesForCountry } from './servicesCatalog.js';
+
+// Comprehensive Catalogue of Real Services (Peru & Global default)
+export const POPULAR_SUBSCRIPTIONS_CATALOG = getServicesForCountry('Perú');
+
 
 class StorageService {
   constructor() {
