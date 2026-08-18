@@ -6,18 +6,18 @@ let LightweightCharts = null;
 export class MarketsView {
   constructor(container) {
     this.container = container;
-    this.ws = null;
-    this.chart = null;
-    this.lineSeries = null;
     this.currentSymbol = 'BTCUSDT';
-    
-    // Top assets to track in real-time
     this.assets = [
       { symbol: 'BTCUSDT', name: 'Bitcoin', icon: '₿', color: '#F7931A' },
       { symbol: 'ETHUSDT', name: 'Ethereum', icon: 'Ξ', color: '#627EEA' },
       { symbol: 'SOLUSDT', name: 'Solana', icon: 'S', color: '#14F195' },
-      { symbol: 'BNBUSDT', name: 'BNB', icon: 'B', color: '#F3BA2F' }
+      { symbol: 'BNBUSDT', name: 'BNB', icon: 'B', color: '#F3BA2F' },
+      { symbol: 'XRPUSDT', name: 'Ripple', icon: '✕', color: '#23292F' },
+      { symbol: 'DOGEUSDT', name: 'Dogecoin', icon: 'Ð', color: '#C2A633' }
     ];
+    this.ws = null;
+    this.chart = null;
+    this.lineSeries = null;
   }
 
   async init() {
@@ -26,6 +26,7 @@ export class MarketsView {
     // Start WebSocket IMMEDIATELY, don't wait for chart libraries
     this.render();
     this.initWebSocket();
+    this.initStocksWidget();
     
     // Load Lightweight Charts dynamically
     try {
@@ -142,6 +143,15 @@ export class MarketsView {
             </div>
           `).join('')}
         </div>
+
+        <!-- Global Stocks Section -->
+        <div style="margin-top: 30px;">
+          <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--ink);">Acciones Globales</h3>
+          <div id="stocks-widget-container" style="background: #FFFFFF; border: 1.5px solid rgba(15, 23, 42, 0.05); border-radius: 18px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); height: 420px; width: 100%;">
+            <!-- Script will be injected here -->
+          </div>
+        </div>
+
       </div>
     `;
 
@@ -231,6 +241,52 @@ export class MarketsView {
     }
   }
 
+  initStocksWidget() {
+    const container = this.container.querySelector('#stocks-widget-container');
+    if (!container) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      "colorTheme": "light",
+      "dateRange": "1M",
+      "showChart": true,
+      "locale": "es",
+      "width": "100%",
+      "height": "100%",
+      "largeChartUrl": "",
+      "isTransparent": true,
+      "showSymbolLogo": true,
+      "showFloatingTooltip": false,
+      "tabs": [
+        {
+          "title": "Tecnología",
+          "symbols": [
+            { "s": "NASDAQ:AAPL", "d": "Apple Inc." },
+            { "s": "NASDAQ:NVDA", "d": "NVIDIA" },
+            { "s": "NASDAQ:TSLA", "d": "Tesla" },
+            { "s": "NASDAQ:MSFT", "d": "Microsoft" },
+            { "s": "NASDAQ:AMZN", "d": "Amazon" },
+            { "s": "NASDAQ:META", "d": "Meta" }
+          ]
+        },
+        {
+          "title": "Índices",
+          "symbols": [
+            { "s": "FOREXCOM:SPXUSD", "d": "S&P 500" },
+            { "s": "FOREXCOM:NSXUSD", "d": "Nasdaq 100" },
+            { "s": "FOREXCOM:DJI", "d": "Dow Jones" }
+          ]
+        }
+      ]
+    });
+    
+    // Replace content in case it was already initialized
+    container.innerHTML = '<div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>';
+    container.appendChild(script);
+  }
+
   switchAsset(symbol) {
     this.currentSymbol = symbol;
     const asset = this.assets.find(a => a.symbol === symbol);
@@ -294,7 +350,7 @@ export class MarketsView {
         const oldPrice = priceEl.getAttribute('data-raw') || 0;
         if (price !== parseFloat(oldPrice)) {
           priceEl.style.color = price > oldPrice ? '#10B981' : '#EF4444';
-          setTimeout(() => priceEl.style.color = '#FFFFFF', 300);
+          setTimeout(() => priceEl.style.color = '', 300); // FIXED: reset to CSS default, not white!
         }
         priceEl.setAttribute('data-raw', price);
         priceEl.textContent = formattedPrice;
