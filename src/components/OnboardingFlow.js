@@ -351,13 +351,6 @@ export function showOnboarding({ onComplete }) {
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
             <input class="onb-input" id="onb-pin-code" type="password" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="1234" style="letter-spacing:6px; font-weight:800; text-align:center; font-size:1.4rem;" autocomplete="off" />
-            
-            <div id="onb-bio-container" style="display:${biometricsAvailable ? 'flex' : 'none'}; margin-top:8px; align-items:center; justify-content:center; gap:8px;">
-              <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; cursor:pointer; color:#10B981; font-weight:700;">
-                <input type="checkbox" id="onb-bio-enable" style="width:16px; height:16px; accent-color:#10B981;" />
-                <span id="onb-bio-label">${currentLang === 'es' ? 'Usar Huella / Face ID' : 'Use Fingerprint / Face ID'}</span>
-              </label>
-            </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;width:100%;margin-top:14px;gap:2px;">
             <button class="onb-btn-primary" id="onb-btn-3">${currentLang === 'es' ? 'Guardar PIN →' : 'Save PIN →'}</button>
@@ -379,6 +372,14 @@ export function showOnboarding({ onComplete }) {
     bindEvents();
   }
 
+  // ── Helper for Validation ──────────────────────────────────────────────
+  function showError(inputEl, msg) {
+    if (!inputEl) return;
+    inputEl.setCustomValidity(msg);
+    inputEl.reportValidity();
+    inputEl.addEventListener('input', () => inputEl.setCustomValidity(''), { once: true });
+  }
+
   // ── Bind events ────────────────────────────────────────────────────────
   function bindEvents() {
     overlay.querySelector('#onb-lang-es')?.addEventListener('click', () => {
@@ -389,11 +390,33 @@ export function showOnboarding({ onComplete }) {
     });
 
     overlay.querySelector('#onb-btn-1')?.addEventListener('click', () => {
-      savedFirstName = overlay.querySelector('#onb-first-name')?.value.trim() || '';
-      savedLastName  = overlay.querySelector('#onb-last-name')?.value.trim() || '';
+      const firstInput = overlay.querySelector('#onb-first-name');
+      const lastInput  = overlay.querySelector('#onb-last-name');
+      const first = firstInput?.value.trim() || '';
+      const last  = lastInput?.value.trim() || '';
+      
+      const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+      
+      if (!first) {
+        showError(firstInput, currentLang === 'es' ? 'El nombre es obligatorio.' : 'First name is required.');
+        return;
+      }
+      if (!nameRegex.test(first)) {
+        showError(firstInput, currentLang === 'es' ? 'Solo se permiten letras.' : 'Only letters are allowed.');
+        return;
+      }
+      if (last && !nameRegex.test(last)) {
+        showError(lastInput, currentLang === 'es' ? 'Solo se permiten letras.' : 'Only letters are allowed.');
+        return;
+      }
+
+      savedFirstName = first;
+      savedLastName  = last;
       visitedStep2 = true; currentStep = 2; render();
     });
+
     overlay.querySelector('#onb-skip-1')?.addEventListener('click', () => {
+      savedFirstName = ''; savedLastName = '';
       visitedStep2 = true; currentStep = 2; render();
     });
 
@@ -411,8 +434,16 @@ export function showOnboarding({ onComplete }) {
     });
 
     overlay.querySelector('#onb-btn-2')?.addEventListener('click', () => {
-      const country = overlay.querySelector('#onb-country')?.value || selectedCountry;
-      const city    = overlay.querySelector('#onb-city')?.value || '';
+      const countryInput = overlay.querySelector('#onb-country');
+      const cityInput    = overlay.querySelector('#onb-city');
+      const country = countryInput?.value || selectedCountry;
+      const city    = cityInput?.value || '';
+
+      if (!country) {
+        showError(countryInput, currentLang === 'es' ? 'Selecciona un país.' : 'Select a country.');
+        return;
+      }
+
       const lang = SPANISH_SPEAKING_COUNTRIES.has(country) ? 'es' : 'en';
       currentLang = lang; setLanguage(lang); selectedCountry = country; visitedStep2 = true;
       storage.updateSettings({ userCity: city, userCountry: country });
@@ -427,24 +458,26 @@ export function showOnboarding({ onComplete }) {
     });
 
     overlay.querySelector('#onb-btn-3')?.addEventListener('click', () => {
-      const pinCode = overlay.querySelector('#onb-pin-code')?.value.trim();
-      const bioEnabled = overlay.querySelector('#onb-bio-enable')?.checked;
+      const pinInput = overlay.querySelector('#onb-pin-code');
+      const pinCode = pinInput?.value.trim();
       
-      if (pinCode && pinCode.length === 4) {
-        storage.updateSettings({ securityPinEnabled: true, securityPin: pinCode });
-        
-        if (bioEnabled) {
-          biometrics.register().then(success => {
-            if (!success) {
-              alert(currentLang === 'es' ? 'No se pudo configurar la huella.' : 'Could not set up biometrics.');
-            }
-            proceedToWelcome();
-          });
-          return; // Wait for promise
-        }
+      if (!pinCode || pinCode.length !== 4) {
+        showError(pinInput, currentLang === 'es' ? 'Ingresa un PIN de 4 dígitos.' : 'Enter a 4-digit PIN.');
+        return;
       }
       
-      proceedToWelcome();
+      storage.updateSettings({ securityPinEnabled: true, securityPin: pinCode });
+      
+      if (biometricsAvailable) {
+        // Auto-prompt biometrics
+        biometrics.register().then(() => {
+          proceedToWelcome();
+        }).catch(() => {
+          proceedToWelcome(); // Proceed even if they cancel
+        });
+      } else {
+        proceedToWelcome();
+      }
     });
     
     function proceedToWelcome() {
