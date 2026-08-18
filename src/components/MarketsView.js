@@ -401,7 +401,13 @@ ${config}
         for (const ticker of data) {
           const symbol    = ticker.s;                          // e.g. "BTCUSDT"
           const price     = parseFloat(ticker.c);             // close price
-          const changePct = parseFloat(ticker.P);             // 24h priceChangePercent — OFFICIAL from Binance
+          const open      = parseFloat(ticker.o);
+          
+          // !miniTicker@arr doesn't have P, so we calculate the exact 24h % manually
+          let changePct = 0;
+          if (open > 0) {
+            changePct = ((price - open) / open) * 100;
+          }
 
           // Update list row
           const row      = this.container.querySelector(`.mkt-row[data-symbol="${symbol}"]`);
