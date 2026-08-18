@@ -84,13 +84,13 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           </div>
 
           <!-- Category Filter Tabs -->
-          <div style="display: flex; gap: 5px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+          <div style="display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px 8px 2px; margin-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
             ${SERVICE_CATEGORIES.map(cat => `
               <button type="button" class="btn-cat-chip ${selectedCategory === cat.id ? 'active' : ''}" data-cat="${cat.id}" style="
                 flex-shrink: 0;
-                padding: 4px 9px;
-                border-radius: 8px;
-                font-size: 0.72rem;
+                padding: 6px 12px;
+                border-radius: 12px;
+                font-size: 0.75rem;
                 font-weight: 600;
                 border: 1px solid ${selectedCategory === cat.id ? '#4F46E5' : 'rgba(15, 23, 42, 0.08)'};
                 background: ${selectedCategory === cat.id ? '#EEF2FF' : '#FFFFFF'};
