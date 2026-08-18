@@ -23,19 +23,20 @@ export class MarketsView {
   async init() {
     this.renderSkeleton();
     
-    // Load Lightweight Charts via dynamic import
-    if (!LightweightCharts) {
-      try {
-        LightweightCharts = await import('https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.mjs');
-      } catch (err) {
-        console.error('Error loading lightweight-charts', err);
-        return;
-      }
-    }
-
+    // Start WebSocket IMMEDIATELY, don't wait for chart libraries
     this.render();
-    await this.initChart();
     this.initWebSocket();
+    
+    // Load Lightweight Charts dynamically
+    try {
+      if (!LightweightCharts) {
+        LightweightCharts = await import('https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.mjs');
+      }
+      await this.initChart();
+    } catch (err) {
+      console.error('Error loading lightweight-charts', err);
+      // Even if chart fails, live prices will still work because WS is decoupled
+    }
   }
 
   renderSkeleton() {
@@ -260,7 +261,7 @@ export class MarketsView {
   initWebSocket() {
     // Combine streams: all mini-tickers for the watchlist, plus the trade stream for the active chart
     const streams = this.assets.map(a => `${a.symbol.toLowerCase()}@miniTicker`).join('/');
-    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+    const wsUrl = `wss://stream.binance.com/stream?streams=${streams}`;
     
     this.ws = new WebSocket(wsUrl);
     
