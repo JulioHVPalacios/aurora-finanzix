@@ -16,10 +16,10 @@ export function renderBottomNav(container, activeTab, onTabSelect, onFabClick) {
       <span>${t('nav_dashboard')}</span>
     </button>
 
-    <!-- Slot 2: Gastos -->
-    <button class="nav-item ${activeTab === 'transactions' ? 'active' : ''}" data-tab="transactions">
-      <i data-lucide="receipt" style="width: 20px; height: 20px;"></i>
-      <span>${t('nav_transactions')}</span>
+    <!-- Slot 2: Mercados -->
+    <button class="nav-item ${activeTab === 'markets' ? 'active' : ''}" data-tab="markets">
+      <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
+      <span>Mercados</span>
     </button>
 
     <!-- Slot 3: Center Floating Action Button (Exact Math Center) -->

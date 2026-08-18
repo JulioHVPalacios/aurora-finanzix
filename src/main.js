@@ -9,7 +9,7 @@ import { t, formatCurrency } from './services/i18n.js';
 import { renderNavbar } from './components/Navbar.js';
 import { renderBottomNav } from './components/BottomNav.js';
 import { renderDashboard } from './components/DashboardView.js';
-import { renderTransactions } from './components/TransactionsView.js';
+import { MarketsView } from './components/MarketsView.js';
 import { renderBudgets } from './components/BudgetsView.js';
 import { renderAnalytics } from './components/AnalyticsView.js';
 import { renderTools } from './components/ToolsView.js';
@@ -336,11 +336,13 @@ class App {
         });
         break;
 
-      case 'transactions':
-        renderTransactions(mainEl, {
-          onAddTransaction: (type) => this.openTransactionModal(type),
-          onShowToast: (msg, type) => this.showToast(msg, type)
-        });
+      case 'markets':
+        mainEl.innerHTML = ''; // Clear container
+        if (this.marketsViewInstance) {
+          this.marketsViewInstance.destroy();
+        }
+        this.marketsViewInstance = new MarketsView(mainEl);
+        this.marketsViewInstance.init();
         break;
 
       case 'subscriptions':
@@ -375,6 +377,13 @@ class App {
   }
 
   switchTab(tabName) {
+    if (this.currentTab === tabName) return;
+
+    if (this.currentTab === 'markets' && this.marketsViewInstance) {
+      this.marketsViewInstance.destroy();
+      this.marketsViewInstance = null;
+    }
+
     this.currentTab = tabName;
     const bottomNavEl = document.getElementById('app-bottom-nav');
     if (bottomNavEl) {
