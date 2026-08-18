@@ -274,6 +274,32 @@ export const COUNTRY_SERVICES = {
     { id: 'us_equinox', name: 'Equinox Fitness Club', category: 'health', defaultAmount: 280.00, icon: 'dumbbell', color: '#000000', hasOfficialLogo: false },
     { id: 'us_geico', name: 'GEICO Auto Insurance', category: 'transport', defaultAmount: 120.00, icon: 'shield', color: '#003366', hasOfficialLogo: false },
     { id: 'us_ezpass', name: 'E-ZPass Tolls', category: 'transport', defaultAmount: 45.00, icon: 'car', color: '#90278E', hasOfficialLogo: false }
+  ],
+  
+  // 🇨🇭 SUIZA (Switzerland)
+  'Switzerland': [
+    { id: 'ch_swisscom', name: 'Swisscom / Internet & Mobile', category: 'services', icon: 'wifi', color: '#0055A5', hasOfficialLogo: false },
+    { id: 'ch_sunrise', name: 'Sunrise UPC', category: 'services', icon: 'wifi', color: '#FF0000', hasOfficialLogo: false },
+    { id: 'ch_salt', name: 'Salt Mobile', category: 'services', icon: 'smartphone', color: '#000000', hasOfficialLogo: false },
+    { id: 'ch_bkw', name: 'BKW Energie', category: 'home', icon: 'zap', color: '#0080FF', hasOfficialLogo: false },
+    { id: 'ch_ewz', name: 'ewz (Zurich Electricity)', category: 'home', icon: 'zap', color: '#0033A0', hasOfficialLogo: false },
+    { id: 'ch_sbb', name: 'SBB CFF FFS (GA Travelcard)', category: 'transport', icon: 'train', color: '#FF0000', hasOfficialLogo: false },
+    { id: 'ch_css', name: 'CSS Insurance', category: 'health', icon: 'heart-pulse', color: '#00A3E0', hasOfficialLogo: false },
+    { id: 'ch_helsana', name: 'Helsana Insurance', category: 'health', icon: 'shield', color: '#E30613', hasOfficialLogo: false },
+    { id: 'ch_migros', name: 'Migros Fitness', category: 'health', icon: 'dumbbell', color: '#FF6600', hasOfficialLogo: false }
+  ],
+
+  // 🇨🇦 CANADÁ
+  'Canada': [
+    { id: 'ca_bell', name: 'Bell Canada / Fibe', category: 'services', icon: 'wifi', color: '#0055A5', hasOfficialLogo: false },
+    { id: 'ca_rogers', name: 'Rogers Communications', category: 'services', icon: 'wifi', color: '#E31837', hasOfficialLogo: false },
+    { id: 'ca_telus', name: 'Telus', category: 'services', icon: 'smartphone', color: '#4B286D', hasOfficialLogo: false },
+    { id: 'ca_hydroone', name: 'Hydro One', category: 'home', icon: 'zap', color: '#00853F', hasOfficialLogo: false },
+    { id: 'ca_bchydro', name: 'BC Hydro', category: 'home', icon: 'zap', color: '#0055A5', hasOfficialLogo: false },
+    { id: 'ca_enbridge', name: 'Enbridge Gas', category: 'home', icon: 'flame', color: '#FFCC00', hasOfficialLogo: false },
+    { id: 'ca_goodlife', name: 'GoodLife Fitness', category: 'health', icon: 'dumbbell', color: '#E31837', hasOfficialLogo: false },
+    { id: 'ca_sunlife', name: 'Sun Life Insurance', category: 'health', icon: 'shield', color: '#FFB81C', hasOfficialLogo: false },
+    { id: 'ca_presto', name: 'Presto Card (Transit)', category: 'transport', icon: 'train', color: '#00853F', hasOfficialLogo: false }
   ]
 };
 
@@ -281,7 +307,21 @@ export const COUNTRY_SERVICES = {
  * Returns complete list of services for a given country (Country-specific + Global)
  */
 export function getServicesForCountry(countryName = 'Perú') {
-  const specific = COUNTRY_SERVICES[countryName] || [];
+  let specific = COUNTRY_SERVICES[countryName];
+  
+  if (!specific) {
+    // Dynamically generate generic local services if country is not explicitly mapped
+    specific = [
+      { id: 'gen_elec', name: `Compañía de Luz (${countryName})`, category: 'home', icon: 'zap', color: '#0080FF', hasOfficialLogo: false },
+      { id: 'gen_agua', name: `Servicio de Agua (${countryName})`, category: 'home', icon: 'droplet', color: '#0072CE', hasOfficialLogo: false },
+      { id: 'gen_gas', name: `Servicio de Gas (${countryName})`, category: 'home', icon: 'flame', color: '#EF4444', hasOfficialLogo: false },
+      { id: 'gen_internet', name: `Proveedor de Internet (${countryName})`, category: 'services', icon: 'wifi', color: '#0F172A', hasOfficialLogo: false },
+      { id: 'gen_movil', name: `Telefonía Móvil (${countryName})`, category: 'services', icon: 'smartphone', color: '#4F46E5', hasOfficialLogo: false },
+      { id: 'gen_salud', name: `Seguro Médico / EPS (${countryName})`, category: 'health', icon: 'heart-pulse', color: '#0D9488', hasOfficialLogo: false },
+      { id: 'gen_gym', name: `Gimnasio Local (${countryName})`, category: 'health', icon: 'dumbbell', color: '#000000', hasOfficialLogo: false },
+      { id: 'gen_trans', name: `Peajes y Transporte (${countryName})`, category: 'transport', icon: 'car', color: '#F59E0B', hasOfficialLogo: false }
+    ];
+  }
   
   // Combine specific first, then global (deduplicating by id)
   const combined = [...specific, ...GLOBAL_SERVICES];
@@ -292,17 +332,3 @@ export function getServicesForCountry(countryName = 'Perú') {
     return true;
   });
 }
-
-/**
- * Gets the list of available countries with rich specialized catalogues
- */
-export const AVAILABLE_CATALOG_COUNTRIES = [
-  'Perú',
-  'México',
-  'Colombia',
-  'Argentina',
-  'Chile',
-  'España',
-  'United States',
-  'Internacional'
-];

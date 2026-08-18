@@ -4,20 +4,9 @@
    ========================================================================== */
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
-import { getServicesForCountry, SERVICE_CATEGORIES, AVAILABLE_CATALOG_COUNTRIES } from '../services/servicesCatalog.js';
+import { getServicesForCountry, SERVICE_CATEGORIES } from '../services/servicesCatalog.js';
 import { t, formatCurrency, getPaymentMethodName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
-
-const COUNTRY_FLAGS = {
-  'Perú': '🇵🇪',
-  'México': '🇲🇽',
-  'Colombia': '🇨🇴',
-  'Argentina': '🇦🇷',
-  'Chile': '🇨🇱',
-  'España': '🇪🇸',
-  'United States': '🇺🇸',
-  'Internacional': '🌐'
-};
 
 export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
   const portal = document.getElementById('modal-portal');
@@ -28,22 +17,22 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
   const userCountry = settings.userCountry || 'Perú';
 
   // State
-  let selectedCountry = subscriptionToEdit ? 'Perú' : (AVAILABLE_CATALOG_COUNTRIES.includes(userCountry) ? userCountry : 'Perú');
+  let selectedCountry = userCountry; // Strict lock to user's country
   let selectedCategory = 'all';
   let searchQuery = '';
 
   let currentServicesList = getServicesForCountry(selectedCountry);
-  let selectedPreset = subscriptionToEdit ? null : currentServicesList[0];
+  let selectedPreset = subscriptionToEdit ? null : null; // No default preset selected initially
 
-  let customName = subscriptionToEdit ? subscriptionToEdit.name : (selectedPreset?.name || '');
-  let customAmount = subscriptionToEdit ? subscriptionToEdit.amount : (selectedPreset?.defaultAmount || 20.00);
+  let customName = subscriptionToEdit ? subscriptionToEdit.name : '';
+  let customAmount = subscriptionToEdit ? subscriptionToEdit.amount : '';
   let customPeriod = subscriptionToEdit ? (subscriptionToEdit.billingPeriod || 'monthly') : 'monthly';
   let customDay = subscriptionToEdit ? (subscriptionToEdit.renewalDay || 1) : 15;
   let customPaymentMethod = subscriptionToEdit ? (subscriptionToEdit.paymentMethod || 'debit') : 'debit';
-  let customCategory = subscriptionToEdit ? (subscriptionToEdit.category || 'entertainment') : (selectedPreset?.category || 'entertainment');
-  let customColor = subscriptionToEdit ? (subscriptionToEdit.color || '#0F172A') : (selectedPreset?.color || '#0F172A');
-  let customIcon = subscriptionToEdit ? (subscriptionToEdit.icon || 'receipt') : (selectedPreset?.icon || 'receipt');
-  let hasOfficialLogo = subscriptionToEdit ? (subscriptionToEdit.hasOfficialLogo !== false) : (selectedPreset?.hasOfficialLogo ?? true);
+  let customCategory = subscriptionToEdit ? (subscriptionToEdit.category || 'entertainment') : 'entertainment';
+  let customColor = subscriptionToEdit ? (subscriptionToEdit.color || '#0F172A') : '#0F172A';
+  let customIcon = subscriptionToEdit ? (subscriptionToEdit.icon || 'receipt') : 'receipt';
+  let hasOfficialLogo = subscriptionToEdit ? (subscriptionToEdit.hasOfficialLogo !== false) : true;
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -72,7 +61,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
             </div>
             <div>
               <h3 class="sheet-title" style="margin: 0;">${subscriptionToEdit ? 'Editar Pago Fijo' : 'Añadir Servicio / Pago Fijo'}</h3>
-              <div style="font-size: 0.70rem; color: var(--ink-60);">Catálogo inteligente por país</div>
+              <div style="font-size: 0.70rem; color: var(--ink-60);">Catálogo para ${selectedCountry}</div>
             </div>
           </div>
           <button type="button" class="sheet-close-btn" id="btn-sub-close">
@@ -81,35 +70,6 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
         </div>
 
         ${!subscriptionToEdit ? `
-          <!-- Country Filter Bar -->
-          <div style="margin-bottom: 8px;">
-            <label style="font-size: 0.68rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">
-              País del Catálogo
-            </label>
-            <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-              ${AVAILABLE_CATALOG_COUNTRIES.map(c => `
-                <button type="button" class="btn-country-chip ${selectedCountry === c ? 'active' : ''}" data-country="${c}" style="
-                  flex-shrink: 0;
-                  padding: 5px 10px;
-                  border-radius: 999px;
-                  font-size: 0.76rem;
-                  font-weight: 700;
-                  border: 1px solid ${selectedCountry === c ? '#0F172A' : 'rgba(15, 23, 42, 0.1)'};
-                  background: ${selectedCountry === c ? '#0F172A' : '#F8FAFC'};
-                  color: ${selectedCountry === c ? '#FFFFFF' : 'var(--ink)'};
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  gap: 4px;
-                  transition: all 0.15s;
-                ">
-                  <span>${COUNTRY_FLAGS[c] || '🌍'}</span>
-                  <span>${c}</span>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
           <!-- Search Bar -->
           <div style="margin-bottom: 8px;">
             <div style="position: relative; display: flex; align-items: center;">
@@ -192,11 +152,8 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
                         </div>
                       `}
                     </div>
-                    <span style="font-size: 0.68rem; font-weight: 700; max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1;">
+                    <span style="font-size: 0.68rem; font-weight: 700; max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1; margin-top: 4px;">
                       ${item.name}
-                    </span>
-                    <span style="font-size: 0.62rem; color: ${isSelected ? 'rgba(255,255,255,0.7)' : 'var(--ink-40)'}; font-family: var(--font-mono); font-weight: 600;">
-                      ${symbol} ${Number(item.defaultAmount).toFixed(2)}
                     </span>
                   </button>
                 `;
@@ -264,15 +221,6 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
   }
 
   function bindModalEvents() {
-    // Country Chips
-    overlay.querySelectorAll('.btn-country-chip').forEach(btn => {
-      btn.addEventListener('click', () => {
-        selectedCountry = btn.getAttribute('data-country');
-        searchQuery = '';
-        renderModal();
-      });
-    });
-
     // Category Tabs
     overlay.querySelectorAll('.btn-cat-chip').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -310,7 +258,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
         if (found) {
           selectedPreset = found;
           customName = found.name;
-          customAmount = found.defaultAmount;
+          customAmount = ''; // Force user to enter their own price
           customCategory = found.category;
           customColor = found.color;
           customIcon = found.icon;
@@ -320,7 +268,10 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           const nameInput = overlay.querySelector('#sub-input-name');
           const amountInput = overlay.querySelector('#sub-input-amount');
           if (nameInput) nameInput.value = customName;
-          if (amountInput) amountInput.value = customAmount;
+          if (amountInput) {
+            amountInput.value = customAmount;
+            amountInput.focus(); // Focus it so they can type immediately
+          }
 
           // Update active style on preset buttons
           overlay.querySelectorAll('.btn-preset-service').forEach(b => {

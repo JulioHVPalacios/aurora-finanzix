@@ -113,7 +113,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
                   flex-shrink: 0;
                 ">
                   <i data-lucide="${cat.icon || 'receipt'}" style="width: 22px; height: 22px; margin-bottom: 6px;"></i>
-                  <span style="font-size: 0.65rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 68px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  <span style="font-size: 0.65rem; font-weight: 700; text-align: center; line-height: 1.1; max-width: 68px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal;">
                     ${getCategoryName(cat)}
                   </span>
                 </div>
