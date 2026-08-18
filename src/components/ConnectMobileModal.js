@@ -30,10 +30,11 @@ export function showConnectMobileModal() {
       </div>
 
       <!-- Direct APK Download Button -->
-      <a href="${apkDownloadUrl}" download="VALO-Finanzix.apk" class="btn btn-primary btn-block" style="padding: 14px; font-size: 0.92rem; margin-bottom: 14px; background: #0F172A; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;">
+      <a href="${apkDownloadUrl}" download="VALO-OS.apk" class="btn btn-primary btn-block" style="padding: 14px; font-size: 0.92rem; margin-bottom: 14px; background: #0F172A; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;">
         <i data-lucide="download" style="width: 17px; height: 17px;"></i>
         <span>${t('modal_qr_download_apk')}</span>
       </a>
+
 
       <!-- Segmented Tabs -->
       <div class="segmented-control" style="margin-bottom: 14px;">

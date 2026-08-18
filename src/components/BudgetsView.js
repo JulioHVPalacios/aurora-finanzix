@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AURORA FINANZIX - BUDGETS & SAVINGS GOALS (LUXURY FINTECH EDITION)
+   VALO OS - BUDGETS & SAVINGS GOALS (LUXURY FINTECH EDITION)
    Clear Progress Meters & Motivating Visual Goals
    ========================================================================== */
 

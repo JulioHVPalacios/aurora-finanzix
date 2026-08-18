@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AURORA FINANZIX - QUICK FINANCIAL TOOLS (LUXURY FINTECH EDITION)
+   VALO OS - QUICK FINANCIAL TOOLS (LUXURY FINTECH EDITION)
    Split Bill, Loan Amortization & Live Currency Converter
    ========================================================================== */
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AURORA FINANZIX - TRANSACTIONS VIEW (HIGH-END FINTECH LEDGER)
+   VALO OS - TRANSACTIONS VIEW (HIGH-END FINTECH LEDGER)
    Clean Search, Category Filter & High-Contrast Transaction Ledger
    ========================================================================== */
 

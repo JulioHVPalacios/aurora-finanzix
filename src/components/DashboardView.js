@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AURORA FINANZIX - DASHBOARD VIEW (OBSIDIAN & PEARL FINTECH EDITION)
+   VALO OS - DASHBOARD VIEW (OBSIDIAN & PEARL FINTECH EDITION)
    High-Contrast Luxury Obsidian Hero Card, Clean White Stat Boxes & Minimalist Wave
    ========================================================================== */
 

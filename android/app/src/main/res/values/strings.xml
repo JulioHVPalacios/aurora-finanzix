@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Aurora Finanzix</string>
-    <string name="title_activity_main">Aurora Finanzix</string>
-    <string name="package_name">com.aurora.finanzix</string>
-    <string name="custom_url_scheme">com.aurora.finanzix</string>
+    <string name="app_name">VALO</string>
+    <string name="title_activity_main">VALO</string>
+    <string name="package_name">com.valo.app</string>
+    <string name="custom_url_scheme">com.valo.app</string>
 </resources>

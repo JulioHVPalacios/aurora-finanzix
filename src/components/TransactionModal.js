@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AURORA FINANZIX - TRANSACTION MODAL (HIGH-END FINTECH BOTTOM SHEET)
+   VALO OS - TRANSACTION MODAL (HIGH-END FINTECH BOTTOM SHEET)
    Clean Lucide Vector Icons & Perfectly Fitted Inputs with 100% i18n
    ========================================================================== */
 
