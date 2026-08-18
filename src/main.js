@@ -1,5 +1,6 @@
 /* ==========================================================================
-   AURORA FINANZIX - MAIN APPLICATION ENTRYPOINT
+   VALO OS - MAIN APPLICATION ENTRYPOINT
+   Onboarding-first flow: profile setup before the main app loads
    ========================================================================== */
 
 import { createIcons, icons } from 'lucide';
@@ -17,6 +18,7 @@ import { renderDebts } from './components/DebtsView.js';
 import { showTransactionModal } from './components/TransactionModal.js';
 import { showConnectMobileModal } from './components/ConnectMobileModal.js';
 import { showExportImportModal } from './components/ExportImportModal.js';
+import { isOnboardingDone, showOnboarding } from './components/OnboardingFlow.js';
 
 class App {
   constructor() {
@@ -399,5 +401,18 @@ class App {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  new App();
+  if (!isOnboardingDone()) {
+    // Hide the main app shell visually while onboarding runs
+    const appRoot = document.getElementById('app-root');
+    if (appRoot) appRoot.style.visibility = 'hidden';
+
+    showOnboarding({
+      onComplete: () => {
+        if (appRoot) appRoot.style.visibility = 'visible';
+        new App();
+      }
+    });
+  } else {
+    new App();
+  }
 });

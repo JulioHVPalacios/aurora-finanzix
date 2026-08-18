@@ -1,5 +1,5 @@
 {
-  "version": "1.0.20",
-  "buildTime": 1787011500000,
-  "description": "User profile personalization with exact first/last initials (JP), fully interactive Subscriptions modal, custom pricing, and Peru/Global real logos catalogue"
+  "version": "1.0.21",
+  "buildTime": 1787012000000,
+  "description": "Onboarding flow on first launch, correct initials (no JP hardcode), fixed export/import"
 }

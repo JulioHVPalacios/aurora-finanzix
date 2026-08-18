@@ -18,16 +18,17 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
     ? t('nav_my_space')
     : settings.userName;
 
-  // Compute initials from First Name + Last Surname (e.g. Julio Palacios -> JP)
   const userFirstName = settings.userFirstName || '';
   const userLastName = settings.userLastName || '';
-  
-  let initials = 'JP';
+  const hasProfile = !!(userFirstName || (settings.userName && settings.userName !== 'Mi Espacio' && settings.userName !== 'My Space'));
+
+  let initials = '';
   if (userFirstName || userLastName) {
     const firstI = userFirstName ? userFirstName.trim()[0] : '';
     const lastParts = userLastName ? userLastName.trim().split(/\s+/) : [];
-    const lastI = lastParts.length > 0 ? lastParts[lastParts.length - 1][0] : '';
-    initials = (firstI + lastI).toUpperCase() || 'JP';
+    // Use second surname (last part) if available, else first surname
+    const lastI = lastParts.length > 1 ? lastParts[lastParts.length - 1][0] : (lastParts[0] ? lastParts[0][0] : '');
+    initials = (firstI + lastI).toUpperCase();
   } else if (settings.userName && settings.userName !== 'Mi Espacio' && settings.userName !== 'My Space') {
     const parts = settings.userName.trim().split(/\s+/);
     if (parts.length === 1) {
@@ -35,14 +36,15 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
     } else {
       initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
-  } else {
-    initials = 'JP';
   }
 
   container.innerHTML = `
-    <div class="navbar-user" id="btn-navbar-profile" style="max-width: 48%; overflow: hidden; cursor: pointer;" title="Editar Perfil">
-      <div class="user-avatar-glass" style="background: #090D16; border: 1.5px solid rgba(255,255,255,0.85); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0; font-size: 0.85rem; letter-spacing: 0.5px;">
-        ${initials}
+    <div class="navbar-user" id="btn-navbar-profile" style="max-width: 48%; overflow: hidden; cursor: pointer;" title="${t('nav_edit_profile') || 'Editar Perfil'}">
+      <div class="user-avatar-glass" style="background: #090D16; border: 1.5px solid rgba(255,255,255,0.85); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0; font-size: ${initials.length > 0 ? '0.85rem' : '1rem'}; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center;">
+        ${initials.length > 0
+          ? initials
+          : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+        }
       </div>
       <div style="min-width: 0; overflow: hidden;">
         <div class="greeting-sub" style="font-family: var(--font-mono); font-size: 0.60rem; letter-spacing: 0.1em; color: var(--ink-60);">

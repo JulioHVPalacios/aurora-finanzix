@@ -128,19 +128,22 @@ export function showExportImportModal({ onDataReload, onShowToast }) {
     close();
   });
 
-  // JSON Export
+  // JSON Export — Full backup including subscriptions & profile
   overlay.querySelector('#btn-download-json')?.addEventListener('click', () => {
-    const backupData = storage.exportAllData();
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
-    const link = document.createElement('a');
-    link.setAttribute('href', dataStr);
-    link.setAttribute('download', `VALO_Backup_${new Date().toISOString().split('T')[0]}.json`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    onShowToast?.('Respaldo JSON descargado con éxito');
-    close();
+    try {
+      const backupData = storage.exportAllData();
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const link = document.createElement('a');
+      link.setAttribute('href', dataStr);
+      link.setAttribute('download', `VALO_Backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      onShowToast?.('Respaldo JSON descargado con éxito ✓', 'success');
+      close();
+    } catch (err) {
+      onShowToast?.('Error al exportar: ' + err.message, 'error');
+    }
   });
 
   // JSON Import
@@ -153,20 +156,25 @@ export function showExportImportModal({ onDataReload, onShowToast }) {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (!file.name.endsWith('.json')) {
+      onShowToast?.('Solo se aceptan archivos .json de respaldo VALO', 'error');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const parsed = JSON.parse(event.target.result);
         const success = storage.importAllData(parsed);
         if (success) {
-          onShowToast?.('Respaldo restaurado con éxito');
+          onShowToast?.('Respaldo restaurado con éxito ✓', 'success');
           onDataReload?.();
           close();
         } else {
-          onShowToast?.('Error al validar el archivo de respaldo');
+          onShowToast?.('El archivo no es un respaldo VALO válido', 'error');
         }
       } catch (err) {
-        onShowToast?.('Formato de archivo inválido');
+        onShowToast?.('Formato de archivo inválido o corrupto', 'error');
       }
     };
     reader.readAsText(file);
