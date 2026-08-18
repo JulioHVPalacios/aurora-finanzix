@@ -178,6 +178,31 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
             <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">Escanear túnel para abrir en celular</div>
           </div>
         </button>
+
+        <!-- Divider -->
+        <div style="height: 1px; background: rgba(15, 23, 42, 0.06); margin: 2px 0;"></div>
+
+        <!-- Edit Profile -->
+        <button type="button" class="btn" id="btn-more-edit-profile" style="background: #F8FAFC; border: 1px solid rgba(15, 23, 42, 0.08); justify-content: flex-start; padding: 14px 16px; border-radius: 14px; font-weight: 700; color: var(--ink);">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #F0F9FF; color: #0284C7; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+            <i data-lucide="user-pen" style="width: 18px; height: 18px;"></i>
+          </div>
+          <div style="text-align: left;">
+            <div style="font-size: 0.9rem;">Editar Perfil</div>
+            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">Cambiar nombre, ciudad y datos personales</div>
+          </div>
+        </button>
+
+        <!-- Reset App -->
+        <button type="button" class="btn" id="btn-more-reset" style="background: #FFF5F5; border: 1px solid rgba(239, 68, 68, 0.15); justify-content: flex-start; padding: 14px 16px; border-radius: 14px; font-weight: 700; color: #DC2626;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+            <i data-lucide="rotate-ccw" style="width: 18px; height: 18px;"></i>
+          </div>
+          <div style="text-align: left;">
+            <div style="font-size: 0.9rem; color: #DC2626;">Reiniciar App</div>
+            <div style="font-size: 0.72rem; color: #F87171; font-weight: 500;">Borrar todos los datos y volver al inicio</div>
+          </div>
+        </button>
       </div>
     </div>
   `;
@@ -207,7 +232,41 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
     onOpenMobileQR?.();
   });
 
+  overlay.querySelector('#btn-more-edit-profile')?.addEventListener('click', () => {
+    close();
+    setTimeout(() => {
+      showUserProfileModal({
+        onSave: () => window.dispatchEvent(new CustomEvent('finanzix:data-changed'))
+      });
+    }, 300);
+  });
+
+  overlay.querySelector('#btn-more-reset')?.addEventListener('click', () => {
+    // Two-step confirmation inside the panel
+    const resetBtn = overlay.querySelector('#btn-more-reset');
+    if (resetBtn.dataset.confirmed !== 'true') {
+      resetBtn.dataset.confirmed = 'true';
+      resetBtn.innerHTML = `
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: #DC2626; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+          <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+        </div>
+        <div style="text-align: left;">
+          <div style="font-size: 0.9rem; color: #DC2626; font-weight: 800;">⚠️ Toca de nuevo para confirmar</div>
+          <div style="font-size: 0.72rem; color: #F87171; font-weight: 500;">Se borrarán TODOS tus datos. Irreversible.</div>
+        </div>
+      `;
+      createIcons({ icons, nameAttr: 'data-lucide', root: resetBtn });
+      return;
+    }
+
+    // Confirmed — wipe everything
+    localStorage.clear();
+    // Reload app so onboarding shows again
+    window.location.reload();
+  });
+
   portal.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('active'));
   createIcons({ icons, nameAttr: 'data-lucide', root: overlay });
 }
+
