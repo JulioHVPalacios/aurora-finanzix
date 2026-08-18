@@ -135,7 +135,7 @@ export class MarketsView {
           <div>
             <div style="display:flex;align-items:baseline;gap:8px;">
               <h1 style="font-size:1.6rem;font-weight:800;margin:0;color:var(--ink);">Mercados</h1>
-              <span style="font-size:0.65rem;background:#E2E8F0;color:#475569;padding:2px 6px;border-radius:4px;font-weight:800;letter-spacing:0.05em;">V33</span>
+              <span id="debug-badge" style="font-size:0.65rem;background:#E2E8F0;color:#475569;padding:2px 6px;border-radius:4px;font-weight:800;letter-spacing:0.05em;">V35</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
               <span id="ws-dot" style="display:inline-block;width:8px;height:8px;background:#94A3B8;border-radius:50%;transition:background 0.3s;"></span>
@@ -380,7 +380,6 @@ ${config}
   }
 
   initWebSocket() {
-    // DOM Caching: Extremely fast O(1) updates to prevent browser freeze
     const rowsMap = new Map();
     this.container.querySelectorAll('.mkt-row').forEach(row => {
       const sym = row.dataset.symbol;
@@ -393,66 +392,76 @@ ${config}
 
     const connect = () => {
       if (this._destroyed) return;
-      // !ticker@arr is ultra-high frequency (multiple times per second) and has P natively
-      const ws = new WebSocket('wss://stream.binance.com/ws/!ticker@arr');
+      
+      // Combine 100 specific streams to get ultra-fast updates without 5MB/sec overload
+      const streams = this.assets.map(a => a.symbol.toLowerCase() + '@ticker').join('/');
+      const ws = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
       this.ws = ws;
+
+      let tickCount = 0;
 
       ws.onopen = () => {
         const dot   = this.container.querySelector('#ws-dot');
         const label = this.container.querySelector('#ws-label');
         if (dot)   dot.style.background = '#10B981';
-        if (label) label.textContent = 'En vivo · Ultra Rápido';
+        if (label) label.textContent = 'En vivo · Pro Stream';
       };
 
       ws.onmessage = (event) => {
         if (this._destroyed) return;
-        let data;
-        try { data = JSON.parse(event.data); } catch { return; }
+        let payload;
+        try { payload = JSON.parse(event.data); } catch { return; }
 
-        for (const ticker of data) {
-          const dom = rowsMap.get(ticker.s);
-          if (!dom) continue; // Skip thousands of unused pairs instantly
+        // Update debug badge so user knows it's receiving
+        tickCount++;
+        const badge = this.container.querySelector('#debug-badge');
+        if (badge) badge.textContent = `V35 (${tickCount})`;
 
-          const price     = parseFloat(ticker.c);
-          const changePct = parseFloat(ticker.P); // Native exact 24h percentage
+        const ticker = payload.data;
+        if (!ticker) return;
 
-          if (dom.priceEl && dom.changeEl) {
-            dom.row.dataset.price  = price;
-            dom.row.dataset.change = changePct;
+        const dom = rowsMap.get(ticker.s);
+        if (!dom) return;
 
-            const prev = parseFloat(dom.priceEl.dataset.raw) || 0;
-            if (price !== prev) {
-              dom.priceEl.style.transition = 'color 0.1s';
-              dom.priceEl.style.color = price > prev ? '#10B981' : '#EF4444';
-              setTimeout(() => { if (dom.priceEl) dom.priceEl.style.color = ''; }, 300);
-            }
-            dom.priceEl.dataset.raw  = price;
-            dom.priceEl.textContent  = this.formatPrice(price);
+        const price     = parseFloat(ticker.c);
+        const changePct = parseFloat(ticker.P);
 
+        if (dom.priceEl && dom.changeEl) {
+          dom.row.dataset.price  = price;
+          dom.row.dataset.change = changePct;
+
+          const prev = parseFloat(dom.priceEl.dataset.raw) || 0;
+          if (price !== prev) {
+            dom.priceEl.style.transition = 'color 0.1s';
+            dom.priceEl.style.color = price > prev ? '#10B981' : '#EF4444';
+            setTimeout(() => { if (dom.priceEl) dom.priceEl.style.color = ''; }, 300);
+          }
+          dom.priceEl.dataset.raw  = price;
+          dom.priceEl.textContent  = this.formatPrice(price);
+
+          const pos = changePct >= 0;
+          dom.changeEl.style.color  = pos ? '#10B981' : '#EF4444';
+          dom.changeEl.textContent  = (pos ? '+' : '') + changePct.toFixed(2) + '%';
+        }
+
+        if (ticker.s === this.currentSymbol) {
+          const chartPriceEl  = this.container.querySelector('#chart-price');
+          const chartChangeEl = this.container.querySelector('#chart-change');
+
+          if (chartPriceEl) chartPriceEl.textContent = this.formatPrice(price);
+          if (chartChangeEl) {
             const pos = changePct >= 0;
-            dom.changeEl.style.color  = pos ? '#10B981' : '#EF4444';
-            dom.changeEl.textContent  = (pos ? '+' : '') + changePct.toFixed(2) + '%';
+            chartChangeEl.style.color = pos ? '#10B981' : '#EF4444';
+            chartChangeEl.innerHTML = `<i data-lucide="${pos ? 'trending-up' : 'trending-down'}" style="width:14px;height:14px;"></i> ${pos ? '+' : ''}${changePct.toFixed(2)}%`;
+            createIcons({ icons, nameAttr: 'data-lucide', root: chartChangeEl });
           }
 
-          if (ticker.s === this.currentSymbol) {
-            const chartPriceEl  = this.container.querySelector('#chart-price');
-            const chartChangeEl = this.container.querySelector('#chart-change');
-
-            if (chartPriceEl) chartPriceEl.textContent = this.formatPrice(price);
-            if (chartChangeEl) {
-              const pos = changePct >= 0;
-              chartChangeEl.style.color = pos ? '#10B981' : '#EF4444';
-              chartChangeEl.innerHTML = `<i data-lucide="${pos ? 'trending-up' : 'trending-down'}" style="width:14px;height:14px;"></i> ${pos ? '+' : ''}${changePct.toFixed(2)}%`;
-              createIcons({ icons, nameAttr: 'data-lucide', root: chartChangeEl });
-            }
-
-            if (this.lineSeries) {
-              try { this.lineSeries.update({ time: Math.floor(Date.now() / 1000), value: price }); } catch { }
-            }
-
-            const glow = this.container.querySelector('#chart-glow');
-            if (glow) glow.style.background = changePct >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+          if (this.lineSeries) {
+            try { this.lineSeries.update({ time: Math.floor(Date.now() / 1000), value: price }); } catch { }
           }
+
+          const glow = this.container.querySelector('#chart-glow');
+          if (glow) glow.style.background = changePct >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
         }
       };
 
