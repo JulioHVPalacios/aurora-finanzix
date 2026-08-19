@@ -1,67 +1,41 @@
-﻿# AURORA FINANZIX (VALO OS) - MEMORIA MAESTRA DEL PROYECTO
+# 🚀 VALO OS - Estado Maestro del Proyecto & Handoff
 
-> **Documento de Contexto Universal para el Asistente AI (Antigravity)**
-> Este archivo sirve para que cualquier cuenta o sesión de AI comprenda inmediatamente el estado exacto del proyecto, su arquitectura y los pendientes sin perder continuidad.
-
----
-
-## 📌 1. Información General del Proyecto
-* **Nombre de la App:** Aurora Finanzix (VALO - Control de Gastos y Finanzas)
-* **Marca Desarrolladora:** Vexor Systems
-* **Desarrollador Principal:** Julio Humberto Vera Palacios
-* **Ubicación Local del Proyecto:** `D:\Descargas\Aplicativo para calcular gastos`
-* **Repositorio GitHub:** `https://github.com/JulioHVPalacios/aurora-finanzix`
-* **Producción Web / Vercel:** Conectado a la rama `main` con despliegue automático.
-* **Versión de Service Worker (PWA):** `v39` (en `public/sw.js`).
+> **Documento de Continuidad para Agentes de IA y Sesiones Futuras**  
+> **Última actualización:** 19 de Agosto, 2026 (17:55)  
+> **Marca / Desarrollador:** Vexor Systems (Julio Palacios)  
+> **Package ID:** `com.valo.app` | **Versión en Revisión:** `1.0.1` (Code 2)
 
 ---
 
-## 🏗️ 2. Stack Tecnológico & Arquitectura
-* **Frontend:** Vanilla JavaScript (ES Modules), HTML5, CSS3 Glassmorphic / Design Tokens.
-* **Empaquetador:** Vite v6.
-* **Motor Nativo Android:** Capacitor v6 con Gradle y Java 17.
-* **Streaming de Mercados en Tiempo Real:** 
-  * Criptomonedas: Binance WebSocket Combined Streams (`wss://stream.binance.com:9443/stream?streams=...`) para los Top 100 pares USDT con caché O(1) en el DOM (`rowsMap`) y logos de CoinCap CDN.
-  * Acciones / Globales: TradingView Market Quotes Widget integrado mediante `iframe` con `srcdoc`.
-* **Seguridad y Persistencia:** LocalStorage encriptado/estructurado (`src/services/storage.js`), soporte biométrico con WebAuthn/FaceID/Huella (`src/services/biometrics.js`).
-* **Internacionalización:** Módulo `i18n.js` con soporte multi-moneda (S/, $, €, etc.) y multi-idioma.
+## 📌 1. Estado de Tiendas y Despliegues
+
+| Tienda / Plataforma | Estado Actual | Detalles / Siguiente Acción |
+| :--- | :--- | :--- |
+| **Google Play Store** | 🟡 **En Revisión (Prueba Cerrada)** | 14 cambios enviados. Paquete `app-release.aab` (SDK 35, Versión 2 / 1.0.1) cargado. Esperar aprobación de Google (1-3 días). Luego añadir verificadores a la lista y probar 14 días. |
+| **Microsoft Store** | 🟡 **En Revisión** | Capturas 16:9 y metadatos actualizados en Partner Center. Esperando dictamen. |
+| **Uptodown** | 🟡 **En Revisión** | APK subido para evaluación de catálogo. |
+| **Web / PWA (Vercel)** | 🟢 **100% Activo** | Desplegado en `https://aurora-finanzix.vercel.app/` conectado a GitHub `main`. |
 
 ---
 
-## 🚀 3. Estado de Publicación en Tiendas (Distribution Radar)
-
-### 🟢 Google Play Store (En Proceso Activo)
-* **Cuenta Creada:** Cuenta de desarrollador individual como **Vexor Systems**.
-* **Estado Actual:** Google está verificando el documento de identidad (DNI). Luego se validará el teléfono por SMS para habilitar el botón "Crear app".
-* **Paquete de Producción:** Archivo firmado `.aab` generado y listo en:
-  `D:\Descargas\Aplicativo para calcular gastos\AuroraFinanzix_v1.0.aab`
-* **Keystore de Firma:** `android/app/release.keystore` (Alias: `vexorsystems`, Pass: `vexorsystems`).
-
-### 🟢 Microsoft Store (Windows PC)
-* **Estado:** En fase de **Certificación** en Microsoft Partner Center para la aplicación "VALO OS - Finanzas Personales".
-
-### 🟢 Uptodown
-* **Estado:** Archivo APK subido y en estado **"Pending review"**.
-
-### 🟡 Samsung Galaxy Store & Xiaomi GetApps
-* **Estado:** Piden Ficha RUC con actividad económica comercial / software para validar cuenta comercial. Se decidió priorizar Google Play, Microsoft y Uptodown primero.
+## 🛠️ 2. Arquitectura y Credenciales Clave
+- **Repositorio Git:** `https://github.com/JulioHVPalacios/aurora-finanzix.git` (Rama `main`).
+- **Keystore Android:** `android/app/release.keystore`
+  - Alias: `vexorsystems`
+  - Clave / Pass: `vexorsystems`
+- **SDK Target:** Android API 35 (Android 15) requerido por Google Play.
+- **Ruta del Bundle .aab final:** `android/app/build/outputs/bundle/release/app-release.aab`
+- **Comando para compilar .aab:** `cmd /c npm run build ; npx cap sync android ; cd android ; .\gradlew bundleRelease`
 
 ---
 
-## 🎨 4. Últimos Cambios Visuales y de UX (Sesión Reciente)
-1. **Botón Central Flotante (`+`):** Rediseñado con estilo ultra-premium **Obsidiana Satinada & Titanio** inspirado en Revolut y Apple Wallet, con anillo de porcelana blanca de 4px, reflejo de cúpula de cristal y sombra ambiental índigo.
-2. **Modal de Suscripciones / Pagos Fijos:**
-   * Corregido el solapamiento vertical de las píldoras de categorías ("Streaming & Video", "Servicios Básicos", etc.) dándoles altura fija de 36px y evitando la compresión flex.
-   * Implementado gesto táctil completo **Swipe-to-Dismiss** (deslizar hacia abajo con el dedo para cerrar el modal suavemente).
-3. **Optimización de Caché PWA:** Bump a versión `v39` en `public/sw.js`.
+## 🎯 3. Hoja de Ruta Inmediata (Siguientes Pasos)
+1. **Google Play Store:** 
+   - Esperar correo de aprobación de la prueba cerrada.
+   - Entrar a *Prueba cerrada > Verificadores*, copiar el enlace de invitación y compartirlo con los testers.
+   - Al cumplirse los 14 días con los testers, hacer clic en **"Solicitar acceso a producción"** y responder las preguntas del formulario.
+2. **Nuevos Proyectos:**
+   - La base de código de VALO OS está 100% estable y lista. Si se crea una nueva app, se puede reutilizar la arquitectura de componentes Glassmorphism y Capacitor.
 
 ---
-
-## 🛠️ 5. Guía Rápida para el Asistente AI que lea este archivo
-Si estás leyendo esto en una nueva sesión o cuenta de Antigravity:
-1. Tu entorno de trabajo es `D:\Descargas\Aplicativo para calcular gastos`.
-2. Para compilar cambios web: `npm.cmd run build`.
-3. Para sincronizar con Android: `npx.cmd cap copy android`.
-4. Para generar el paquete firmado de Google Play: `.\gradlew.bat bundleRelease` dentro de la carpeta `android`.
-5. Para publicar en Vercel: `git add . ; git commit -m "..." ; git push origin main`.
-6. Recuerda siempre incrementar `CACHE_VERSION` en `public/sw.js` tras modificar archivos visuales.
+*Para continuar el trabajo en cualquier otra cuenta o ventana de chat, simplemente pide: "Lee PROJECT_STATUS.md y continúa con el siguiente paso".*
