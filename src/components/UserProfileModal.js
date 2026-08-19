@@ -45,7 +45,7 @@ export function showUserProfileModal({ onSave }) {
           <div style="width:34px;height:34px;border-radius:10px;background:#0F172A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.88rem;letter-spacing:0.5px;flex-shrink:0;">
             ${previewInitials}
           </div>
-          <h3 class="sheet-title">Editar Perfil</h3>
+          <h3 class="sheet-title">${t("panel_title")}</h3>
         </div>
         <button type="button" class="sheet-close-btn" id="btn-profile-close">
           <i data-lucide="x" style="width:18px;height:18px;"></i>
@@ -54,25 +54,31 @@ export function showUserProfileModal({ onSave }) {
 
       <form id="form-user-profile" style="display:flex;flex-direction:column;gap:12px;">
         <div class="form-group">
-          <label class="form-label">Primer Nombre</label>
+          <label class="form-label">${t("panel_first")}</label>
           <input type="text" id="prof-first-name" class="input-control" value="${currentFirst}" placeholder="Ej: Julio" />
         </div>
         <div class="form-group">
-          <label class="form-label">Apellidos</label>
+          <label class="form-label">${t("panel_last")}</label>
           <input type="text" id="prof-last-name" class="input-control" value="${currentLast}" placeholder="Ej: Hidalgo Palacios" />
           <span style="font-size:0.67rem;color:var(--ink-40);margin-top:2px;">Inicial 1° nombre + inicial 2° apellido = iniciales del avatar</span>
         </div>
 
-        <!-- Country first so cities update accordingly -->
+        
         <div class="form-group">
-          <label class="form-label">País</label>
+          <label class="form-label">${t("panel_budget")}</label>
+          <input type="number" id="prof-budget" class="input-control" value="${settings.monthlyBudget || 0}" />
+        </div>
+    
+          <!-- Country first so cities update accordingly -->
+        <div class="form-group">
+          <label class="form-label">${t("panel_country")}</label>
           <select id="prof-country" class="input-control" style="-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2394A3B8%27 stroke-width=%272.5%27%3E%3Cpolyline points=%276 9 12 15 18 9%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;">
             ${countryOptions}
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Ciudad</label>
+          <label class="form-label">${t("panel_city")}</label>
           <select id="prof-city" class="input-control" style="-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2394A3B8%27 stroke-width=%272.5%27%3E%3Cpolyline points=%276 9 12 15 18 9%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;">
             ${buildCityOpts(currentCountry, currentCity)}
           </select>
@@ -142,6 +148,7 @@ export function showUserProfileModal({ onSave }) {
     const country = overlay.querySelector('#prof-country').value;
     const city    = overlay.querySelector('#prof-city').value;
     const email   = overlay.querySelector('#prof-email').value.trim();
+      const monthlyBudget = Number(overlay.querySelector('#prof-budget').value) || 0;
 
     const pinEnabled = pinEnableCheckbox?.checked || false;
     const pinCode = overlay.querySelector('#prof-pin-code')?.value.trim();
@@ -155,6 +162,7 @@ export function showUserProfileModal({ onSave }) {
     storage.updateSettings({
       userName: fullName, userFirstName: first, userLastName: last,
       userCity: city, userCountry: country, userEmail: email,
+        monthlyBudget: monthlyBudget,
       securityPinEnabled: pinEnabled,
       securityPin: pinEnabled ? pinCode : null
     });

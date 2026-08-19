@@ -7,6 +7,7 @@ import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { getServicesForCountry, SERVICE_CATEGORIES } from '../services/servicesCatalog.js';
 import { t, formatCurrency, getPaymentMethodName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
+import { t } from '../services/i18n.js';
 
 export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
   const portal = document.getElementById('modal-portal');
@@ -60,8 +61,8 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
               <i data-lucide="${subscriptionToEdit ? 'edit-3' : 'plus-circle'}" style="width: 17px; height: 17px;"></i>
             </div>
             <div>
-              <h3 class="sheet-title" style="margin: 0;">${subscriptionToEdit ? 'Editar Pago Fijo' : 'Añadir Servicio / Pago Fijo'}</h3>
-              <div style="font-size: 0.70rem; color: var(--ink-60);">Catálogo para ${selectedCountry}</div>
+              <h3 class="sheet-title" style="margin: 0;">${subscriptionToEdit ? '${t('sub_edit')}' : '${t('sub_add')}'}</h3>
+              <div style="font-size: 0.70rem; color: var(--ink-60);">${t('sub_catalog')} para ${selectedCountry}</div>
             </div>
           </div>
           <button type="button" class="sheet-close-btn" id="btn-sub-close">
@@ -114,7 +115,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           <div style="margin-bottom: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; margin-top: 2px;">
               <span style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">
-                Empresas & Servicios (${filtered.length})
+                ${t('sub_catalog')} (${filtered.length})
               </span>
               <span style="font-size: 0.68rem; color: var(--ink-40);">Toca para autocompletar</span>
             </div>
@@ -170,13 +171,13 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
         <form id="form-sub-record" style="display: flex; flex-direction: column; gap: 11px;">
           <!-- Service Name -->
           <div class="form-group">
-            <label class="form-label">Nombre del Servicio / Empresa</label>
+            <label class="form-label">${t('sub_name')}</label>
             <input type="text" id="sub-input-name" class="input-control" value="${customName}" placeholder="Ej: Sedapal, Luz del Sur, WIN, Netflix, BCP, SmartFit..." required />
           </div>
 
           <!-- Amount Input -->
           <div class="form-group">
-            <label class="form-label">Costo por Periodo (${symbol})</label>
+            <label class="form-label">${t('sub_cost')} (${symbol})</label>
             <div style="position: relative; display: flex; align-items: center;">
               <span style="position: absolute; left: 14px; font-weight: 800; font-size: 1.15rem; color: #0F172A;">${symbol}</span>
               <input type="number" step="0.01" min="0.01" id="sub-input-amount" class="input-control" value="${customAmount}" style="padding-left: 46px; font-size: 1.25rem; font-weight: 800;" placeholder="0.00" required />
@@ -187,23 +188,23 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           <!-- Billing Period & Renewal Day -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="form-group">
-              <label class="form-label">Frecuencia de Cobro</label>
+              <label class="form-label">${t('sub_freq')}</label>
               <select id="sub-input-period" class="input-control">
-                <option value="monthly" ${customPeriod === 'monthly' ? 'selected' : ''}>Mensual</option>
-                <option value="yearly" ${customPeriod === 'yearly' ? 'selected' : ''}>Anual</option>
-                <option value="weekly" ${customPeriod === 'weekly' ? 'selected' : ''}>Semanal</option>
-                <option value="biweekly" ${customPeriod === 'biweekly' ? 'selected' : ''}>Quincenal</option>
+                <option value="monthly" ${customPeriod === 'monthly' ? 'selected' : ''}>${t('sub_monthly')}</option>
+                <option value="yearly" ${customPeriod === 'yearly' ? 'selected' : ''}>${t('sub_annual')}</option>
+                <option value="weekly" ${customPeriod === 'weekly' ? 'selected' : ''}>${t('sub_weekly')}</option>
+                <option value="biweekly" ${customPeriod === 'biweekly' ? 'selected' : ''}>${t('sub_biweekly')}</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Día de Cobro (1-31)</label>
+              <label class="form-label">${t('sub_day')}</label>
               <input type="number" id="sub-input-day" class="input-control" min="1" max="31" value="${customDay}" required />
             </div>
           </div>
 
           <!-- Payment Method -->
           <div class="form-group">
-            <label class="form-label">Método de Pago Vinculado</label>
+            <label class="form-label">${t('sub_pm')}</label>
             <select id="sub-input-payment" class="input-control">
               ${PAYMENT_METHODS.map(pm => `
                 <option value="${pm.id}" ${pm.id === customPaymentMethod ? 'selected' : ''}>
@@ -214,7 +215,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" style="padding: 13px; font-size: 0.92rem; font-weight: 700; margin-top: 4px; border-radius: 14px;">
-            ${subscriptionToEdit ? 'Guardar Cambios' : '+ Añadir a Pagos Fijos'}
+            ${subscriptionToEdit ? '${t('sub_save')}' : '${t('sub_add_btn')}'}
           </button>
         </form>
       </div>
