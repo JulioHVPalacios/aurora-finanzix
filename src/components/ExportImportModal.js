@@ -99,7 +99,7 @@ export function showExportImportModal({ onDataReload, onShowToast }) {
       return;
     }
 
-    let csvContent = 'data:text/csv;charset=utf-8,';
+    let csvContent = '\uFEFF';
     csvContent += 'Fecha,Tipo,Concepto,Categoria,Monto,Metodo,Fijo,Nota\n';
 
     txs.forEach(t => {
@@ -116,9 +116,10 @@ export function showExportImportModal({ onDataReload, onShowToast }) {
       csvContent += row + '\n';
     });
 
-    const encodedUri = encodeURI(csvContent);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
+    link.setAttribute('href', url);
     link.setAttribute('download', `VALO_Reporte_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();

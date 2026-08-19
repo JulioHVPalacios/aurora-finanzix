@@ -19,7 +19,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   const savingsGoals = storage.getSavingsGoals() || [];
   const activeGoal = savingsGoals[0] || null;
 
-  const monthlyBudget = settings.monthlyBudget || 2500;
+  const monthlyBudget = settings.monthlyBudget || 0;
   const budgetSpentPct = Math.min(100, Math.round(((metrics.totalExpense || 0) / (monthlyBudget || 1)) * 100));
 
   const userName = (!settings.userName || settings.userName === 'Mi Espacio' || settings.userName === 'My Space')

@@ -155,7 +155,7 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s var(--e-out);
+  transition: transform 0.2s var(--e-out), opacity 0.2s var(--e-out), background-color 0.2s var(--e-out); will-change: transform, opacity;
 }
 
 .btn-banner-action:hover {
@@ -329,7 +329,7 @@ html, body {
   font-size: 0.8rem;
   font-weight: 700;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s var(--e-out);
+  transition: transform 0.2s var(--e-out), opacity 0.2s var(--e-out), background-color 0.2s var(--e-out); will-change: transform, opacity;
 }
 
 .chip-glass:active {
@@ -757,7 +757,7 @@ html, body {
   font-family: var(--font-sans);
   outline: none;
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
-  transition: all 0.2s var(--e-out);
+  transition: transform 0.2s var(--e-out), opacity 0.2s var(--e-out), background-color 0.2s var(--e-out); will-change: transform, opacity;
 }
 
 .input-control:focus {
@@ -784,7 +784,7 @@ html, body {
   font-weight: 700;
   color: var(--ink-60);
   cursor: pointer;
-  transition: all 0.2s var(--e-out);
+  transition: transform 0.2s var(--e-out), opacity 0.2s var(--e-out), background-color 0.2s var(--e-out); will-change: transform, opacity;
   text-align: center;
 }
 
@@ -1253,3 +1253,4 @@ body.zen-mode-active .tx-amount:hover {
 body.zen-mode-active #btn-nav-zen i {
   color: #4F46E5 !important;
 }
+

@@ -1,3 +1,4 @@
+import { t } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
 
 let LightweightCharts = null;
@@ -87,7 +88,7 @@ export class MarketsView {
     this.container.innerHTML = `
       <div style="padding:60px 24px; text-align:center; color:var(--ink-40);">
         <i data-lucide="loader" style="width:32px;height:32px;animation:spin 1.2s linear infinite;margin-bottom:12px;"></i>
-        <p style="font-size:0.9rem;font-weight:600;">Cargando Mercados Globales...</p>
+        <p style="font-size:0.9rem;font-weight:600;">${t("market_loading")}</p>
       </div>
     `;
     createIcons({ icons, nameAttr: 'data-lucide', root: this.container });
@@ -134,11 +135,11 @@ export class MarketsView {
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
           <div>
             <div style="display:flex;align-items:baseline;gap:8px;">
-              <h1 style="font-size:1.6rem;font-weight:800;margin:0;color:var(--ink);">Mercados</h1>
+              <h1 style="font-size:1.6rem;font-weight:800;margin:0;color:var(--ink);">${t("nav_markets")}</h1>
             </div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
               <span id="ws-dot" style="display:inline-block;width:8px;height:8px;background:#94A3B8;border-radius:50%;transition:background 0.3s;"></span>
-              <span id="ws-label" style="font-size:0.7rem;color:var(--ink-60);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Conectando...</span>
+              <span id="ws-label" style="font-size:0.7rem;color:var(--ink-60);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${t("market_connecting")}</span>
             </div>
           </div>
         </div>
@@ -171,7 +172,7 @@ export class MarketsView {
         <!-- Crypto Search -->
         <div style="position:relative;margin-bottom:10px;">
           <i data-lucide="search" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--ink-40);pointer-events:none;"></i>
-          <input id="crypto-search" type="text" placeholder="Buscar por nombre o símbolo..."
+          <input id="crypto-search" type="text" placeholder="${t("market_search")}"
                  style="width:100%;padding:10px 12px 10px 36px;border-radius:13px;border:1.5px solid rgba(15,23,42,0.09);font-size:0.84rem;background:#fff;color:var(--ink);outline:none;box-sizing:border-box;">
         </div>
 
