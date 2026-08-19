@@ -7,7 +7,6 @@ import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { getServicesForCountry, SERVICE_CATEGORIES } from '../services/servicesCatalog.js';
 import { t, formatCurrency, getPaymentMethodName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
-import { t } from '../services/i18n.js';
 
 export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
   const portal = document.getElementById('modal-portal');
@@ -61,7 +60,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
               <i data-lucide="${subscriptionToEdit ? 'edit-3' : 'plus-circle'}" style="width: 17px; height: 17px;"></i>
             </div>
             <div>
-              <h3 class="sheet-title" style="margin: 0;">${subscriptionToEdit ? '${t('sub_edit')}' : '${t('sub_add')}'}</h3>
+              <h3 class="sheet-title" style="margin: 0;">${subscriptionToEdit ? t('sub_edit') : t('sub_add')}</h3>
               <div style="font-size: 0.70rem; color: var(--ink-60);">${t('sub_catalog')} para ${selectedCountry}</div>
             </div>
           </div>
@@ -215,7 +214,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" style="padding: 13px; font-size: 0.92rem; font-weight: 700; margin-top: 4px; border-radius: 14px;">
-            ${subscriptionToEdit ? '${t('sub_save')}' : '${t('sub_add_btn')}'}
+            ${subscriptionToEdit ? t('sub_save') : t('sub_add_btn')}
           </button>
         </form>
       </div>
