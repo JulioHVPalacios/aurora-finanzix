@@ -188,8 +188,8 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
             <i data-lucide="user-pen" style="width: 18px; height: 18px;"></i>
           </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.9rem;">Editar Perfil</div>
-            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">Cambiar nombre, ciudad y datos personales</div>
+            <div style="font-size: 0.9rem;">${t("panel_title")}</div>
+            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">${t("panel_edit_desc")}</div>
           </div>
         </button>
 
@@ -199,8 +199,8 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
             <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
           </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.9rem;">Política de Privacidad</div>
-            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">Almacenamiento 100% local y seguro</div>
+            <div style="font-size: 0.9rem;">${t("panel_privacy")}</div>
+            <div style="font-size: 0.72rem; color: var(--ink-60); font-weight: 500;">${t("panel_privacy_desc")}</div>
           </div>
         </a>
 
@@ -210,8 +210,8 @@ function showNavbarMoreModal({ onCheckUpdates, onOpenExportImport, onOpenMobileQ
             <i data-lucide="rotate-ccw" style="width: 18px; height: 18px;"></i>
           </div>
           <div style="text-align: left;">
-            <div style="font-size: 0.9rem; color: #DC2626;">Reiniciar App</div>
-            <div style="font-size: 0.72rem; color: #F87171; font-weight: 500;">Borrar todos los datos y volver al inicio</div>
+            <div style="font-size: 0.9rem; color: #DC2626;">${t("panel_reset")}</div>
+            <div style="font-size: 0.72rem; color: #F87171; font-weight: 500;">${t("panel_reset_desc")}</div>
           </div>
         </button>
       </div>

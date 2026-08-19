@@ -56,6 +56,13 @@ export const DICTIONARIES = {
     panel_budget: "Presupuesto Mensual",
     panel_bio: "Usar Huella / Face ID",
 
+    panel_edit_desc: "Cambiar nombre, ciudad y datos",
+    panel_privacy: "Política de Privacidad",
+    panel_privacy_desc: "Almacenamiento 100% local y seguro",
+    panel_reset: "Reiniciar App",
+    panel_reset_desc: "Borrar todos los datos y empezar de cero",
+
+
     // Markets & Services added
     nav_markets: "Mercados",
     market_loading: "Cargando Mercados...",
@@ -342,6 +349,13 @@ export const DICTIONARIES = {
     panel_email: "Email",
     panel_budget: "Monthly Budget",
     panel_bio: "Use Fingerprint / Face ID",
+
+    panel_edit_desc: "Change name, city and details",
+    panel_privacy: "Privacy Policy",
+    panel_privacy_desc: "100% local and secure storage",
+    panel_reset: "Reset App",
+    panel_reset_desc: "Erase all data and start over",
+
 
 
     // Bottom Navigation
