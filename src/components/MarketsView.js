@@ -166,7 +166,7 @@ export class MarketsView {
 
         <!-- Crypto Section -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <h2 style="font-size:1rem;font-weight:800;margin:0;color:var(--ink);">Criptomonedas <span style="font-size:0.7rem;color:var(--ink-40);font-weight:600;">Top 100</span></h2>
+          <h2 style="font-size:1rem;font-weight:800;margin:0;color:var(--ink);">${t("market_crypto")} <span style="font-size:0.7rem;color:var(--ink-40);font-weight:600;">Top 100</span></h2>
         </div>
 
         <!-- Crypto Search -->
@@ -182,13 +182,13 @@ export class MarketsView {
             <div style="flex:0 0 22px;"></div>
             <div style="width:32px;margin:0 10px;flex-shrink:0;"></div>
             <div class="sort-btn" data-col="name" style="flex:1;cursor:pointer;display:flex;align-items:center;gap:3px;">
-              Activo <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
+              ${t("market_asset")} <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
             </div>
             <div class="sort-btn" data-col="price" style="text-align:right;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-left:8px;min-width:80px;">
-              Precio <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
+              ${t("market_price")} <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
             </div>
             <div class="sort-btn" data-col="change" style="text-align:right;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-left:8px;min-width:64px;">
-              24h % <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
+              ${t("market_24h")} <i data-lucide="chevrons-up-down" style="width:11px;height:11px;"></i>
             </div>
           </div>
           <div id="crypto-list" style="max-height:480px;overflow-y:auto;scrollbar-width:none;padding:4px 0;">
@@ -197,7 +197,7 @@ export class MarketsView {
         </div>
 
         <!-- Stocks Section -->
-        <h2 style="font-size:1rem;font-weight:800;margin:0 0 10px 0;color:var(--ink);">Acciones Globales <span style="font-size:0.7rem;color:var(--ink-40);font-weight:600;">Wall Street</span></h2>
+        <h2 style="font-size:1rem;font-weight:800;margin:0 0 10px 0;color:var(--ink);">${t("market_stocks")} <span style="font-size:0.7rem;color:var(--ink-40);font-weight:600;">Wall Street</span></h2>
         <div style="background:#fff;border:1.5px solid rgba(15,23,42,0.05);border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.03);margin-bottom:16px;min-height:460px;">
           <iframe id="stocks-iframe"
             style="width:100%;height:500px;border:none;display:block;"

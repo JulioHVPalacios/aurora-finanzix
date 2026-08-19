@@ -60,6 +60,7 @@ export const DICTIONARIES = {
     panel_privacy: "Política de Privacidad",
     panel_privacy_desc: "Almacenamiento 100% local y seguro",
     panel_reset: "Reiniciar App",
+sponsored: "Patrocinado",
     panel_reset_desc: "Borrar todos los datos y empezar de cero",
 
 
@@ -354,6 +355,7 @@ export const DICTIONARIES = {
     panel_privacy: "Privacy Policy",
     panel_privacy_desc: "100% local and secure storage",
     panel_reset: "Reset App",
+sponsored: "Sponsored",
     panel_reset_desc: "Erase all data and start over",
 
 

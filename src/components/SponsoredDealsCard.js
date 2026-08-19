@@ -1,3 +1,4 @@
+import { t } from '../services/i18n.js';
 /* ==========================================================================
    VALO OS - SPONSORED DEALS & AFFILIATE OPPORTUNITIES CARD
    High-Converting, Non-Intrusive, Luxury Glassmorphism Affiliate Engine
@@ -76,7 +77,7 @@ export function renderSponsoredDealsCard() {
           <span style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: ${deal.color}15; color: ${deal.color}; padding: 3px 8px; border-radius: 999px;">
             ✦ ${deal.tag}
           </span>
-          <span style="font-size: 0.60rem; color: var(--ink-40); font-weight: 600;">Patrocinado</span>
+          <span style="font-size: 0.60rem; color: var(--ink-40); font-weight: 600;">${t('sponsored') || 'Patrocinado'}</span>
         </div>
         <button type="button" id="btn-dismiss-deal" style="background: none; border: none; color: var(--ink-40); cursor: pointer; padding: 2px;" title="Cerrar">
           <i data-lucide="x" style="width: 13px; height: 13px;"></i>

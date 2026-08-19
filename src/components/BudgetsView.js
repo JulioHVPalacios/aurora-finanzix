@@ -118,7 +118,7 @@ export function renderBudgets(container, { onShowToast }) {
                       <div style="width: 28px; height: 28px; border-radius: 8px; background: #F1F5F9; color: var(--ink); display: flex; align-items: center; justify-content: center;">
                         <i data-lucide="${cat.icon || 'receipt'}" style="width: 15px; height: 15px;"></i>
                       </div>
-                      <span style="font-weight: 700; font-size: 0.88rem; color: var(--ink);">${cat.name}</span>
+                      <span style="font-weight: 700; font-size: 0.88rem; color: var(--ink);">${getCategoryName(cat)}</span>
                     </div>
                     
                     <button type="button" class="btn btn-secondary btn-set-cat-budget" data-id="${cat.id}" data-name="${cat.name}" data-current="${limit}" style="padding: 4px 10px; font-size: 0.72rem;">
