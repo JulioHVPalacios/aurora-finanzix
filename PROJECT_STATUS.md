@@ -22,7 +22,7 @@
 - **Repositorio Git:** `https://github.com/JulioHVPalacios/aurora-finanzix.git` (Rama `main`).
 - **Keystore Android:** `android/app/release.keystore`
   - Alias: `vexorsystems`
-  - Clave / Pass: `vexorsystems`
+  - Clave / Pass: *(Configurada en las variables de compilación local)*
 - **SDK Target:** Android API 35 (Android 15) requerido por Google Play.
 - **Ruta del Bundle .aab final:** `android/app/build/outputs/bundle/release/app-release.aab`
 - **Comando para compilar .aab:** `cmd /c npm run build ; npx cap sync android ; cd android ; .\gradlew bundleRelease`
