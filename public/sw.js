@@ -3,7 +3,7 @@
    Zero-Hang Guarantee: Safe Static Caching & Dynamic Asset Caching
    ========================================================================== */
 
-const CACHE_VERSION = 'valo-os-v38-fab-3d-golden-orange-20260818';
+const CACHE_VERSION = 'valo-os-v39-revolut-fab-design-20260818';
 
 // Only cache essential root assets that exist unconditionally in both dev and production
 const STATIC_ASSETS = [
