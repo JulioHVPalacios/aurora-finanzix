@@ -5,7 +5,7 @@
 
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { getServicesForCountry, SERVICE_CATEGORIES } from '../services/servicesCatalog.js';
-import { t, formatCurrency, getPaymentMethodName } from '../services/i18n.js';
+import { t, formatCurrency, getPaymentMethodName, getServiceCategoryName } from '../services/i18n.js';
 import { enableHorizontalScroll } from '../utils/mouseDragScroll.js';
 import { createIcons, icons } from 'lucide';
 
@@ -106,7 +106,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
                 line-height: 1;
                 transition: all 0.15s;
               ">
-                <span>${cat.name}</span>
+                <span>${getServiceCategoryName(cat)}</span>
               </button>
             `).join('')}
           </div>

@@ -282,6 +282,19 @@ sponsored: "Patrocinado",
     cat_invest: "Inversiones",
     cat_gift: "Regalos / Otros",
 
+    // Service Categories
+    srv_cat_all: "Todos",
+    srv_cat_entertainment: "Streaming & Video",
+    srv_cat_services: "Internet & Móvil",
+    srv_cat_home: "Luz, Agua & Gas",
+    srv_cat_shopping: "Delivery & Compras",
+    srv_cat_health: "Salud & Gimnasios",
+    srv_cat_education: "Educación & Cursos",
+    srv_cat_tech: "Tech, Cloud & IA",
+    srv_cat_finance: "Tarjetas & Bancos",
+    srv_cat_transport: "Peajes & Autos",
+    srv_cat_housing: "Vivienda & Alarmas",
+
     // Payment Methods
     pm_cash: "Efectivo",
     pm_yape: "Yape",
@@ -553,6 +566,19 @@ sponsored: "Sponsored",
     cat_invest: "Investments",
     cat_gift: "Gifts / Others",
 
+    // Service Categories
+    srv_cat_all: "All",
+    srv_cat_entertainment: "Streaming & Video",
+    srv_cat_services: "Internet & Mobile",
+    srv_cat_home: "Utilities & Energy",
+    srv_cat_shopping: "Shopping & Delivery",
+    srv_cat_health: "Health & Fitness",
+    srv_cat_education: "Education & Courses",
+    srv_cat_tech: "Tech, Cloud & AI",
+    srv_cat_finance: "Cards & Banking",
+    srv_cat_transport: "Transport & Tolls",
+    srv_cat_housing: "Housing & Security",
+
     // Payment Methods
     pm_cash: "Cash",
     pm_yape: "Yape",
@@ -601,6 +627,15 @@ export function getCategoryName(cat) {
   if (!cat) return t('cat_other_exp');
   const catId = typeof cat === 'object' ? cat.id : cat;
   const key = `cat_${catId}`;
+  const translated = t(key);
+  if (translated !== key) return translated;
+  return typeof cat === 'object' ? cat.name : catId;
+}
+
+export function getServiceCategoryName(cat) {
+  if (!cat) return t('srv_cat_all');
+  const catId = typeof cat === 'object' ? cat.id : cat;
+  const key = `srv_cat_${catId}`;
   const translated = t(key);
   if (translated !== key) return translated;
   return typeof cat === 'object' ? cat.name : catId;

@@ -3,6 +3,7 @@
    ========================================================================== */
 
 import { storage } from './storage.js';
+import { getCategoryName } from './i18n.js';
 
 export function getFinancialMetrics(transactions = null) {
   const txs = transactions || storage.getTransactions();
@@ -57,7 +58,7 @@ export function getCategoryBreakdown(type = 'expense') {
     const cat = categories.find(c => c.id === catId) || { name: 'Otro', icon: '💸', color: '#94A3B8' };
     return {
       categoryId: catId,
-      name: cat.name,
+      name: getCategoryName(cat),
       icon: cat.icon,
       color: cat.color,
       amount: Number(amount.toFixed(2)),

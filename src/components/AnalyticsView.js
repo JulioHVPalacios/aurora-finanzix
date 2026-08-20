@@ -6,7 +6,7 @@
 import { storage } from '../services/storage.js';
 import { getFinancialMetrics, getCategoryBreakdown } from '../services/analytics.js';
 import { calculateSplitBill, calculateLoanAmortization } from '../services/costCalculator.js';
-import { t, formatCurrency } from '../services/i18n.js';
+import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
 import { createIcons, icons } from 'lucide';
 import confetti from 'canvas-confetti';
 import Chart from 'chart.js/auto';
@@ -306,10 +306,10 @@ function renderBudgetsTab(container) {
                   <div style="width: 26px; height: 26px; border-radius: 8px; background: #F1F5F9; color: var(--ink); display: flex; align-items: center; justify-content: center;">
                     <i data-lucide="${cat.icon || 'receipt'}" style="width: 14px; height: 14px;"></i>
                   </div>
-                  <span style="font-weight: 700; font-size: 0.85rem; color: var(--ink);">${cat.name}</span>
+                  <span style="font-weight: 700; font-size: 0.85rem; color: var(--ink);">${getCategoryName(cat)}</span>
                 </div>
                 
-                <button type="button" class="btn btn-secondary btn-set-cat-budget-sub" data-id="${cat.id}" data-name="${cat.name}" data-current="${limit}" style="padding: 4px 10px; font-size: 0.72rem;">
+                <button type="button" class="btn btn-secondary btn-set-cat-budget-sub" data-id="${cat.id}" data-name="${getCategoryName(cat)}" data-current="${limit}" style="padding: 4px 10px; font-size: 0.72rem;">
                   ${limit > 0 ? formatCurrency(limit) : t('goals_set_limit')}
                 </button>
               </div>
