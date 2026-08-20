@@ -143,106 +143,34 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         </div>
       </div>
 
-      <!-- Real Dynamic Interactive Liquidity Flow Chart (Smooth Spline Wave) -->
-      <div class="chart-card-glass" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04);">
-        <div class="chart-card-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <div class="chart-title-left" style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 28px; height: 28px; border-radius: 8px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;">
-              <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
-            </div>
-            <div>
-              <div style="font-weight: 800; font-size: 0.92rem; color: #0F172A;">${t('dash_liquidity_trend')}</div>
-              <div style="font-size: 0.65rem; color: #64748B; font-family: var(--font-mono);">${hasData ? `${formatCurrency(metrics.netBalance || 0)} ${t('dash_monthly_flow')}` : 'Curva en tiempo real según tus gastos'}</div>
-            </div>
+      <!-- Minimalist Obsidian Liquidity Wave Chart (100% Real Dynamic Spline) -->
+      <div class="chart-card-glass">
+        <div class="chart-card-header">
+          <div class="chart-title-left">
+            <i data-lucide="activity" style="width: 17px; height: 17px; color: #0F172A;"></i>
+            <span>${t('dash_liquidity_trend')}</span>
           </div>
-
-          <div style="
-            background: ${hasData ? (metrics.netBalance >= 0 ? '#ECFDF5' : '#FFF1F2') : '#F1F5F9'};
-            color: ${hasData ? (metrics.netBalance >= 0 ? '#059669' : '#E11D48') : '#64748B'};
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-          ">
-            <i data-lucide="${hasData ? (metrics.netBalance >= 0 ? 'trending-up' : 'trending-down') : 'sparkles'}" style="width: 12px; height: 12px;"></i>
-            <span>${hasData ? (metrics.netBalance >= 0 ? `+${formatCurrency(metrics.netBalance)}` : formatCurrency(metrics.netBalance)) : 'En espera de datos'}</span>
-          </div>
+          <span class="chart-title-sub">${t('dash_monthly_flow')}</span>
         </div>
 
-        <!-- Dynamic Smooth Spline SVG -->
-        <div style="width: 100%; height: 95px; position: relative;" id="interactive-chart-container">
-          <div id="chart-floating-tooltip" style="
-            position: absolute;
-            top: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #090D16;
-            color: #FFFFFF;
-            padding: 5px 12px;
-            border-radius: 999px;
-            font-size: 0.68rem;
-            font-family: var(--font-mono);
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            z-index: 10;
-            white-space: nowrap;
-          "></div>
-
-          <svg viewBox="0 0 400 95" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;">
+        <div style="width: 100%; height: 90px; position: relative;">
+          <svg viewBox="0 0 400 90" preserveAspectRatio="none" style="width: 100%; height: 100%;">
             <defs>
-              <linearGradient id="realFlowGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.18"/>
-                <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.0"/>
+              <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0F172A" stop-opacity="0.10"/>
+                <stop offset="100%" stop-color="#0F172A" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
-            
-            <!-- Shaded Area Under Spline Curve -->
-            <path d="${areaD}" fill="url(#realFlowGradient)" />
-            
-            <!-- Main Dynamic Spline Line -->
-            <path d="${splineD}" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-
-            <!-- Interactive Week Node Dots -->
-            ${points.map(p => `
-              <circle 
-                class="chart-node-dot"
-                cx="${p.x}" 
-                cy="${p.y}" 
-                r="4.5" 
-                fill="#FFFFFF" 
-                stroke="#4F46E5" 
-                stroke-width="2.5"
-                data-week-name="${p.week.label}"
-                data-week-range="días ${p.week.range}"
-                data-income="${formatCurrency(p.week.income)}"
-                data-expense="${formatCurrency(p.week.expense)}"
-                data-net="${p.week.net >= 0 ? `+${formatCurrency(p.week.net)}` : formatCurrency(p.week.net)}"
-                style="cursor: pointer; transition: all 0.2s ease;"
-              />
-            `).join('')}
+            <path d="${areaD}" fill="url(#waveGradient)" />
+            <path d="${splineD}" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" />
           </svg>
         </div>
 
-        <!-- Interactive Legend Row -->
-        <div class="chart-legend-row" style="display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: #64748B;">
-          ${weeks.map((w, idx) => `
-            <div class="chart-legend-chip" data-week-idx="${idx}" style="
-              cursor: pointer;
-              padding: 3px 8px;
-              border-radius: 6px;
-              background: ${idx === currentWeekIdx ? '#EEF2FF' : 'transparent'};
-              color: ${idx === currentWeekIdx ? '#4F46E5' : '#64748B'};
-              transition: all 0.2s ease;
-            ">
-              ${w.label} ${idx === currentWeekIdx ? '(Actual)' : ''}
-            </div>
-          `).join('')}
+        <div class="chart-legend-row">
+          <span>${t('dash_wk1')}</span>
+          <span>${t('dash_wk2')}</span>
+          <span>${t('dash_wk3')}</span>
+          <span class="chart-legend-active">${t('dash_wk4')}</span>
         </div>
       </div>
 
@@ -335,63 +263,9 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#btn-view-all-tx')?.addEventListener('click', () => onNavigate('transactions'));
   container.querySelector('#btn-empty-add-tx')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
+  container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
   container.querySelector('.chart-card-glass')?.addEventListener('click', () => onNavigate('analytics'));
-
-  // Interactive Chart Tooltip & Dot Events
-  const chartTooltip = container.querySelector('#chart-floating-tooltip');
-  const dots = container.querySelectorAll('.chart-node-dot');
-  const chips = container.querySelectorAll('.chart-legend-chip');
-
-  const showTooltipForWeek = (name, range, inc, exp, net) => {
-    if (!chartTooltip) return;
-    chartTooltip.innerHTML = `<strong>${name}</strong> (${range}): <span style="color: #34D399;">+${inc}</span> | <span style="color: #F87171;">-${exp}</span> (${net})`;
-    chartTooltip.style.opacity = '1';
-  };
-
-  dots.forEach(dot => {
-    dot.addEventListener('mouseenter', () => {
-      dot.setAttribute('r', '7');
-      dot.setAttribute('fill', '#4F46E5');
-      showTooltipForWeek(
-        dot.dataset.weekName,
-        dot.dataset.weekRange,
-        dot.dataset.income,
-        dot.dataset.expense,
-        dot.dataset.net
-      );
-    });
-    dot.addEventListener('mouseleave', () => {
-      dot.setAttribute('r', '4.5');
-      dot.setAttribute('fill', '#FFFFFF');
-      if (chartTooltip) chartTooltip.style.opacity = '0';
-    });
-  });
-
-  chips.forEach(chip => {
-    chip.addEventListener('mouseenter', () => {
-      const idx = Number(chip.dataset.weekIdx);
-      const dot = dots[idx];
-      if (dot) {
-        dot.setAttribute('r', '7');
-        dot.setAttribute('fill', '#4F46E5');
-        showTooltipForWeek(
-          dot.dataset.weekName,
-          dot.dataset.weekRange,
-          dot.dataset.income,
-          dot.dataset.expense,
-          dot.dataset.net
-        );
-      }
-    });
-    chip.addEventListener('mouseleave', () => {
-      dots.forEach(d => {
-        d.setAttribute('r', '4.5');
-        d.setAttribute('fill', '#FFFFFF');
-      });
-      if (chartTooltip) chartTooltip.style.opacity = '0';
-    });
-  });
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);
