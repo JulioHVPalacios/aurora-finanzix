@@ -28,12 +28,10 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   container.innerHTML = `
     <div class="view-transition-wrap">
-      <!-- Hero Balance Card (Obsidian Living Video Card) -->
+      <!-- Hero Balance Card (Obsidian Living Aurora Mesh Card) -->
       <div class="hero-balance-card">
-        <video class="hero-bg-video" autoplay muted loop playsinline preload="auto">
-          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4" />
-        </video>
-        <div class="hero-card-overlay"></div>
+        <div class="hero-aurora-glow-1"></div>
+        <div class="hero-aurora-glow-2"></div>
         <div class="hero-card-content">
           <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
           <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
@@ -222,14 +220,6 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);
-
-  // Accelerate hero background video to 1.65x for lively, vibrant motion
-
-  const videoEl = container.querySelector('.hero-bg-video');
-  if (videoEl) {
-    videoEl.playbackRate = 1.65;
-    videoEl.play().catch(() => {});
-  }
 
   createIcons({ icons });
 }
