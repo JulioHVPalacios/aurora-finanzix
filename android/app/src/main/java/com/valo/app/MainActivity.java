@@ -1,4 +1,4 @@
-package com.aurora.finanzix;
+package com.valo.app;
 
 import com.getcapacitor.BridgeActivity;
 
