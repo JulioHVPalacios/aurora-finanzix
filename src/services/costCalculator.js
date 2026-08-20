@@ -71,28 +71,96 @@ export function calculateCostProject(project) {
   };
 }
 
-export function calculateLoanAmortization({ principal, annualRate, months }) {
+export function calculateLoanAmortization({ 
+  principal, 
+  rate, 
+  rateType = 'TEA', // 'TEA' (Efectiva Anual) | 'TEM' (Efectiva Mensual) | 'TNA' (Nominal Anual)
+  term = 12,
+  termUnit = 'months', // 'months' | 'years'
+  system = 'french' // 'french' (Cuota Fija) | 'german' (Cuota Decreciente)
+}) {
   const p = Number(principal) || 0;
-  const r = (Number(annualRate) || 0) / 100 / 12; // Monthly rate
-  const n = Number(months) || 1;
+  const numRate = Number(rate) || 0;
+  const rawTerm = Number(term) || 1;
+  const n = termUnit === 'years' ? Math.max(1, rawTerm * 12) : Math.max(1, rawTerm);
 
-  if (p <= 0 || n <= 0) return { monthlyPayment: 0, totalInterest: 0, totalPaid: 0, schedule: [] };
+  if (p <= 0 || n <= 0) {
+    return {
+      monthlyPayment: 0,
+      firstPayment: 0,
+      lastPayment: 0,
+      totalInterest: 0,
+      totalPaid: 0,
+      effectiveMonthlyRatePct: 0,
+      schedule: []
+    };
+  }
 
+  // Convert rate to Monthly Effective Rate (r = TEM)
+  let r = 0;
+  if (rateType === 'TEM') {
+    r = numRate / 100;
+  } else if (rateType === 'TNA') {
+    r = (numRate / 100) / 12; // Nominal simple division
+  } else {
+    // TEA (Tasa Efectiva Anual - Banking compound formula): TEM = (1 + TEA)^(1/12) - 1
+    r = Math.pow(1 + (numRate / 100), 1 / 12) - 1;
+  }
+
+  const effectiveMonthlyRatePct = Number((r * 100).toFixed(4));
+  const schedule = [];
+  let remaining = p;
+  let totalInterest = 0;
+  let firstPayment = 0;
+  let lastPayment = 0;
+
+  if (system === 'german') {
+    // German System: Constant Principal Amortization (Cuota Decreciente)
+    const constantPrincipal = p / n;
+
+    for (let i = 1; i <= n; i++) {
+      const interest = remaining * r;
+      const payment = constantPrincipal + interest;
+      remaining = Math.max(0, remaining - constantPrincipal);
+      totalInterest += interest;
+
+      if (i === 1) firstPayment = payment;
+      if (i === n) lastPayment = payment;
+
+      schedule.push({
+        month: i,
+        payment: Number(payment.toFixed(2)),
+        principal: Number(constantPrincipal.toFixed(2)),
+        interest: Number(interest.toFixed(2)),
+        remaining: Number(remaining.toFixed(2))
+      });
+    }
+
+    return {
+      system: 'german',
+      isDecreasing: true,
+      monthlyPayment: Number(firstPayment.toFixed(2)),
+      firstPayment: Number(firstPayment.toFixed(2)),
+      lastPayment: Number(lastPayment.toFixed(2)),
+      totalInterest: Number(totalInterest.toFixed(2)),
+      totalPaid: Number((p + totalInterest).toFixed(2)),
+      effectiveMonthlyRatePct,
+      schedule
+    };
+  }
+
+  // French System: Constant Payment (Cuota Fija)
   let monthlyPayment = 0;
   if (r === 0) {
     monthlyPayment = p / n;
   } else {
-    // French Amortization Formula: P * (r * (1+r)^n) / ((1+r)^n - 1)
+    // Formula: P * (r * (1+r)^n) / ((1+r)^n - 1)
     monthlyPayment = (p * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1);
   }
 
-  const schedule = [];
-  let remaining = p;
-  let totalInterest = 0;
-
   for (let i = 1; i <= n; i++) {
     const interest = remaining * r;
-    const principalPaid = monthlyPayment - interest;
+    const principalPaid = Math.min(remaining, monthlyPayment - interest);
     remaining = Math.max(0, remaining - principalPaid);
     totalInterest += interest;
 
@@ -106,9 +174,14 @@ export function calculateLoanAmortization({ principal, annualRate, months }) {
   }
 
   return {
+    system: 'french',
+    isDecreasing: false,
     monthlyPayment: Number(monthlyPayment.toFixed(2)),
+    firstPayment: Number(monthlyPayment.toFixed(2)),
+    lastPayment: Number(monthlyPayment.toFixed(2)),
     totalInterest: Number(totalInterest.toFixed(2)),
     totalPaid: Number((p + totalInterest).toFixed(2)),
+    effectiveMonthlyRatePct,
     schedule
   };
 }

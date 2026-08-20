@@ -133,42 +133,63 @@ function renderSplitBillTool(container, symbol) {
 }
 
 function renderLoanTool(container, symbol) {
-  let state = { principal: 5000, annualRate: 14.5, months: 12 };
+  let state = { principal: 5000, rate: 18, rateType: 'TEA', term: 12, termUnit: 'months', system: 'french' };
 
   function render() {
     const res = calculateLoanAmortization(state);
     container.innerHTML = `
       <div class="glass-card" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); margin-top: 10px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);">
-        <div class="card-header">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <span class="card-title">${t('tools_loan_title')}</span>
+          <span class="edge-live-badge" style="background: #EEF2FF; color: #4F46E5;">
+            Bancario Real
+          </span>
         </div>
 
         <!-- Result Box -->
-        <div style="background: #F8FAFC; border: 1.5px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
-          <div style="font-size: 0.72rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">${t('tools_loan_monthly_payment')}</div>
-          <div style="font-family: var(--font-display); font-size: 2.3rem; font-weight: 800; color: #0F172A; margin: 4px 0;">
-            ${formatCurrency(res.monthlyPayment)}
+        <div style="background: linear-gradient(135deg, #0F172A, #1E293B); color: #FFFFFF; border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
+          <div style="font-size: 0.68rem; color: #94A3B8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">${t('tools_loan_monthly_payment')}</div>
+          <div style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin: 4px 0;">
+            ${res.isDecreasing ? `${formatCurrency(res.firstPayment)} → ${formatCurrency(res.lastPayment)}` : formatCurrency(res.monthlyPayment)}
           </div>
-          <div style="font-size: 0.78rem; color: var(--ink-75); display: flex; justify-content: center; gap: 16px; margin-top: 6px;">
+          <div style="font-size: 0.74rem; color: #CBD5E1; display: flex; justify-content: center; gap: 14px; margin-top: 6px;">
             <span>${t('tools_loan_total_interest')} <strong>${formatCurrency(res.totalInterest)}</strong></span>
-            <span>${t('tools_loan_total_to_pay')} <strong>${formatCurrency(res.totalPayment)}</strong></span>
+            <span>Total: <strong>${formatCurrency(res.totalPaid)}</strong></span>
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
           <div class="form-group">
             <label class="form-label">${t('tools_loan_amount')} (${symbol})</label>
-            <input type="number" id="loan-principal" class="input-control" value="${state.principal}" step="100" />
+            <input type="number" id="loan-principal" class="input-control" value="${state.principal}" step="500" min="100" />
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="form-group">
-              <label class="form-label">${t('tools_loan_interest_rate')}</label>
-              <input type="number" id="loan-rate" class="input-control" value="${state.annualRate}" step="0.1" />
+              <label class="form-label">${t('tools_loan_interest_rate')} (%)</label>
+              <input type="number" id="loan-rate" class="input-control" value="${state.rate}" step="0.5" min="0" />
             </div>
             <div class="form-group">
+              <label class="form-label">Tipo de Tasa</label>
+              <select id="loan-ratetype" class="input-control">
+                <option value="TEA" ${state.rateType === 'TEA' ? 'selected' : ''}>TEA (Efectiva Anual)</option>
+                <option value="TEM" ${state.rateType === 'TEM' ? 'selected' : ''}>TEM (Mensual)</option>
+                <option value="TNA" ${state.rateType === 'TNA' ? 'selected' : ''}>TNA (Nominal)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
               <label class="form-label">${t('tools_loan_months')}</label>
-              <input type="number" id="loan-months" class="input-control" value="${state.months}" min="1" max="120" />
+              <input type="number" id="loan-term" class="input-control" value="${state.term}" min="1" max="360" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sistema</label>
+              <select id="loan-system" class="input-control">
+                <option value="french" ${state.system === 'french' ? 'selected' : ''}>Francés (Fija)</option>
+                <option value="german" ${state.system === 'german' ? 'selected' : ''}>Alemán (Decreciente)</option>
+              </select>
             </div>
           </div>
         </div>
@@ -180,11 +201,19 @@ function renderLoanTool(container, symbol) {
       render();
     });
     container.querySelector('#loan-rate')?.addEventListener('input', (e) => {
-      state.annualRate = Number(e.target.value) || 0;
+      state.rate = Number(e.target.value) || 0;
       render();
     });
-    container.querySelector('#loan-months')?.addEventListener('input', (e) => {
-      state.months = Number(e.target.value) || 1;
+    container.querySelector('#loan-ratetype')?.addEventListener('change', (e) => {
+      state.rateType = e.target.value;
+      render();
+    });
+    container.querySelector('#loan-term')?.addEventListener('input', (e) => {
+      state.term = Number(e.target.value) || 1;
+      render();
+    });
+    container.querySelector('#loan-system')?.addEventListener('change', (e) => {
+      state.system = e.target.value;
       render();
     });
   }

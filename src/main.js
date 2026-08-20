@@ -20,6 +20,7 @@ import { showConnectMobileModal } from './components/ConnectMobileModal.js';
 import { showExportImportModal } from './components/ExportImportModal.js';
 import { isOnboardingDone, showOnboarding } from './components/OnboardingFlow.js';
 import { initSecurityLock } from './components/AppLockScreen.js';
+import { initEdgePanel } from './components/EdgePanel.js';
 class App {
   constructor() {
     this.currentTab = 'dashboard';
@@ -33,6 +34,11 @@ class App {
     this.setupClock();
     this.setupDesktopToggles();
     this.render();
+
+    // Global Floating Edge Utility Panel
+    initEdgePanel({
+      onAddTransaction: (type, opts) => this.openTransactionModal(type, opts)
+    });
 
     window.addEventListener('finanzix:data-changed', () => {
       this.renderCurrentView();
@@ -294,9 +300,10 @@ class App {
     }, 2800);
   }
 
-  openTransactionModal(initialType = 'expense') {
+  openTransactionModal(initialType = 'expense', options = {}) {
     showTransactionModal({
       initialType,
+      initialAmount: options?.initialAmount || null,
       onSave: (tx) => {
         this.showToast(`¡${tx.type === 'income' ? t('modal_tx_income') : t('modal_tx_expense')} de ${formatCurrency(tx.amount)} registrado!`, 'success');
         this.render();

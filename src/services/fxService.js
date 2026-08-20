@@ -64,25 +64,49 @@ class FxService {
   }
 
   async fetchLiveRates() {
+    // 1. Try Primary Open API
     try {
       const res = await fetch('https://open.er-api.com/v6/latest/USD');
-      if (!res.ok) throw new Error('API fetch failed');
-      const data = await res.json();
-      if (data && data.rates) {
-        this.rates = { ...FALLBACK_RATES, ...data.rates };
-        this.lastUpdated = Date.now();
-        this.isLive = true;
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            rates: this.rates,
-            timestamp: this.lastUpdated
-          }));
-        } catch (_) {}
-        window.dispatchEvent(new CustomEvent('valo:fx-updated', { detail: { rates: this.rates } }));
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.rates) {
+          this.rates = { ...FALLBACK_RATES, ...data.rates };
+          this.lastUpdated = Date.now();
+          this.isLive = true;
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              rates: this.rates,
+              timestamp: this.lastUpdated
+            }));
+          } catch (_) {}
+          window.dispatchEvent(new CustomEvent('valo:fx-updated', { detail: { rates: this.rates } }));
+          return;
+        }
       }
-    } catch (e) {
-      this.isLive = false;
-    }
+    } catch (_) {}
+
+    // 2. Try Secondary Backup API
+    try {
+      const backupRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      if (backupRes.ok) {
+        const backupData = await backupRes.json();
+        if (backupData && backupData.rates) {
+          this.rates = { ...FALLBACK_RATES, ...backupData.rates };
+          this.lastUpdated = Date.now();
+          this.isLive = true;
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              rates: this.rates,
+              timestamp: this.lastUpdated
+            }));
+          } catch (_) {}
+          window.dispatchEvent(new CustomEvent('valo:fx-updated', { detail: { rates: this.rates } }));
+          return;
+        }
+      }
+    } catch (_) {}
+
+    this.isLive = false;
   }
 
   convert(amount, fromCode = 'USD', toCode = 'PEN') {

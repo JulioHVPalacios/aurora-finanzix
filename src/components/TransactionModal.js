@@ -8,7 +8,7 @@ import { createIcons, icons } from 'lucide';
 import { t, formatCurrency, getCategoryName, getPaymentMethodName } from '../services/i18n.js';
 import { enableHorizontalScroll } from '../utils/mouseDragScroll.js';
 
-export function showTransactionModal({ initialType = 'expense', onSave, onClose }) {
+export function showTransactionModal({ initialType = 'expense', initialAmount = null, onSave, onClose }) {
   const portal = document.getElementById('modal-portal');
   if (!portal) return;
 
@@ -55,7 +55,7 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
             </label>
             <div style="position: relative; display: flex; align-items: center;">
               <span style="position: absolute; left: 14px; font-weight: 800; font-size: 1.3rem; color: ${currentType === 'income' ? '#059669' : '#DC2626'};">${symbol}</span>
-              <input type="number" step="0.01" min="0.01" required id="tx-amount" class="input-control" style="padding-left: 48px; font-size: 1.4rem; font-weight: 800; color: ${currentType === 'income' ? '#059669' : '#DC2626'};" placeholder="0.00" autofocus />
+              <input type="number" step="0.01" min="0.01" required id="tx-amount" class="input-control" style="padding-left: 48px; font-size: 1.4rem; font-weight: 800; color: ${currentType === 'income' ? '#059669' : '#DC2626'};" placeholder="0.00" value="${initialAmount ? initialAmount : ''}" autofocus />
             </div>
           </div>
 
