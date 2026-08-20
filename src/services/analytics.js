@@ -140,3 +140,67 @@ export function getWeeklyCashflow() {
 
   return weeks;
 }
+
+export function getDailySpendingPace() {
+  const transactions = storage.getTransactions() || [];
+  const settings = storage.getSettings() || {};
+  const subscriptions = storage.getSubscriptions() || [];
+  
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDay = now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const daysRemaining = Math.max(1, daysInMonth - currentDay + 1);
+  const monthProgressPct = Math.round((currentDay / daysInMonth) * 100);
+
+  // 1. Filtrar gastos del mes actual
+  let currentMonthExpenses = 0;
+  transactions.forEach(tx => {
+    const d = new Date(tx.date || tx.timestamp || Date.now());
+    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear && tx.type === 'expense') {
+      currentMonthExpenses += (Number(tx.amount) || 0);
+    }
+  });
+
+  // 2. Calcular compromisos fijos pendientes en lo que queda del mes
+  let pendingFixedBills = 0;
+  subscriptions.forEach(sub => {
+    const renewalDay = sub.renewalDay || 1;
+    if (renewalDay >= currentDay) {
+      pendingFixedBills += (Number(sub.amount) || 0);
+    }
+  });
+
+  // 3. Presupuesto disponible base
+  const monthlyBudget = Number(settings.monthlyBudget) || (currentMonthExpenses > 0 ? currentMonthExpenses * 1.25 : 1500);
+  const discretionaryPool = Math.max(0, monthlyBudget - currentMonthExpenses - pendingFixedBills);
+  const dailySafeToSpend = Number((discretionaryPool / daysRemaining).toFixed(2));
+
+  // 4. Ritmo de gasto (Pace)
+  const idealExpectedSpend = (monthlyBudget * (currentDay / daysInMonth));
+  const paceDelta = Number((idealExpectedSpend - currentMonthExpenses).toFixed(2));
+  const budgetSpentPct = Math.min(100, Math.round((currentMonthExpenses / (monthlyBudget || 1)) * 100));
+
+  let paceStatus = 'on_track'; // 'ahead' | 'on_track' | 'behind'
+  if (paceDelta > (monthlyBudget * 0.04)) {
+    paceStatus = 'ahead';
+  } else if (paceDelta < -(monthlyBudget * 0.04)) {
+    paceStatus = 'behind';
+  }
+
+  return {
+    dailySafeToSpend,
+    discretionaryPool: Number(discretionaryPool.toFixed(2)),
+    daysRemaining,
+    currentDay,
+    daysInMonth,
+    monthProgressPct,
+    budgetSpentPct,
+    currentMonthExpenses: Number(currentMonthExpenses.toFixed(2)),
+    monthlyBudget: Number(monthlyBudget.toFixed(2)),
+    pendingFixedBills: Number(pendingFixedBills.toFixed(2)),
+    paceDelta,
+    paceStatus
+  };
+}

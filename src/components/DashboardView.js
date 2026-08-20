@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
-import { getFinancialMetrics, getWeeklyCashflow } from '../services/analytics.js';
+import { getFinancialMetrics, getWeeklyCashflow, getDailySpendingPace } from '../services/analytics.js';
 import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
 import { renderSponsoredDealsCard, attachSponsoredDealEvents } from './SponsoredDealsCard.js';
 import { createIcons, icons } from 'lucide';
@@ -21,6 +21,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   const monthlyBudget = settings.monthlyBudget || 0;
   const budgetSpentPct = Math.min(100, Math.round(((metrics.totalExpense || 0) / (monthlyBudget || 1)) * 100));
+  const paceData = getDailySpendingPace();
 
   const userName = (!settings.userName || settings.userName === 'Mi Espacio' || settings.userName === 'My Space')
     ? t('nav_my_space')
@@ -102,60 +103,69 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         </div>
       </div>
 
-      <!-- Interactive Weekly Cashflow & Liquidity Visualizer -->
-      <div class="chart-card-glass" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-lg); padding: 18px 20px;">
-        <div class="chart-card-header" style="margin-bottom: 14px;">
-          <div class="chart-title-left">
-            <div style="width: 28px; height: 28px; border-radius: 8px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;">
-              <i data-lucide="bar-chart-3" style="width: 16px; height: 16px;"></i>
+      <!-- Daily Safe-to-Spend & Spending Pace Widget (High-Precision Fintech Engine) -->
+      <div class="safe-spend-widget" id="card-safe-spend" style="
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: var(--radius-lg);
+        padding: 18px 20px;
+        box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04);
+        cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      ">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 28px; height: 28px; border-radius: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: center; color: #0F172A;">
+              <i data-lucide="compass" style="width: 15px; height: 15px;"></i>
             </div>
             <div>
-              <div style="font-weight: 800; font-size: 0.92rem; color: #0F172A;">${t('dash_liquidity_trend')}</div>
-              <div style="font-size: 0.68rem; color: #64748B; font-family: var(--font-mono);">${t('dash_monthly_flow')}</div>
+              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B;">Límite Diario Seguro</span>
+              <div style="font-size: 0.65rem; color: #94A3B8; font-family: var(--font-mono);">${paceData.daysRemaining} días restantes en el mes</div>
             </div>
           </div>
-          <button type="button" id="btn-view-cashflow-analytics" style="background: none; border: none; font-size: 0.72rem; font-weight: 700; color: #4F46E5; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-            <span>Reportes</span>
-            <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
-          </button>
+
+          <div style="
+            background: ${paceData.paceStatus === 'ahead' ? '#ECFDF5' : paceData.paceStatus === 'behind' ? '#FFF1F2' : '#EEF2FF'};
+            color: ${paceData.paceStatus === 'ahead' ? '#059669' : paceData.paceStatus === 'behind' ? '#E11D48' : '#4F46E5'};
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          ">
+            <i data-lucide="${paceData.paceStatus === 'ahead' ? 'trending-down' : paceData.paceStatus === 'behind' ? 'alert-triangle' : 'sparkles'}" style="width: 12px; height: 12px;"></i>
+            <span>${paceData.paceStatus === 'ahead' ? `${symbol}${Math.abs(paceData.paceDelta)} bajo el ritmo` : paceData.paceStatus === 'behind' ? `${symbol}${Math.abs(paceData.paceDelta)} sobre el ritmo` : 'Ritmo óptimo'}</span>
+          </div>
         </div>
 
-        <!-- 4-Column Interactive Weekly Cards -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-          ${(getWeeklyCashflow() || []).map(w => {
-            const isPositive = w.net > 0;
-            const isNegative = w.net < 0;
-            const hasData = w.count > 0;
-            return `
-              <div class="weekly-flow-card" data-week="${w.id}" style="
-                background: ${hasData ? (isPositive ? '#F0FDF4' : isNegative ? '#FFF1F2' : '#F8FAFC') : '#F8FAFC'};
-                border: 1.5px solid ${hasData ? (isPositive ? 'rgba(34, 197, 94, 0.3)' : isNegative ? 'rgba(244, 63, 94, 0.3)' : 'rgba(15, 23, 42, 0.08)') : 'rgba(15, 23, 42, 0.06)'};
-                border-radius: 14px;
-                padding: 12px 10px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                min-height: 85px;
-              " title="Ingresos: +${formatCurrency(w.income)} | Gastos: -${formatCurrency(w.expense)}">
-                <div>
-                  <div style="font-size: 0.74rem; font-weight: 800; color: #0F172A;">${w.label}</div>
-                  <div style="font-size: 0.62rem; color: #94A3B8; font-family: var(--font-mono); margin-top: 1px;">días ${w.range}</div>
-                </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+          <div>
+            <span style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">
+              ${symbol}${paceData.dailySafeToSpend.toFixed(2)}
+            </span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;"> / hoy</span>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.76rem; font-weight: 700; color: #0F172A; font-family: var(--font-mono);">
+              ${symbol}${paceData.discretionaryPool} libre
+            </div>
+            <div style="font-size: 0.62rem; color: #94A3B8;">tras fijos (${symbol}${paceData.pendingFixedBills})</div>
+          </div>
+        </div>
 
-                <div style="margin-top: 8px;">
-                  <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.80rem; color: ${hasData ? (isPositive ? '#15803D' : isNegative ? '#BE123C' : '#0F172A') : '#94A3B8'};">
-                    ${hasData ? (isPositive ? `+${formatCurrency(w.net)}` : formatCurrency(w.net)) : 'S/ 0'}
-                  </div>
-                  <div style="font-size: 0.58rem; font-weight: 700; color: ${hasData ? (isPositive ? '#16A34A' : isNegative ? '#E11D48' : '#64748B') : '#94A3B8'}; margin-top: 2px;">
-                    ${hasData ? (isPositive ? 'Superávit' : isNegative ? 'Déficit' : 'Equilibrio') : 'Sin datos'}
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('')}
+        <!-- Dual Progression Velocity Meter (Time vs Spent) -->
+        <div style="position: relative; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
+          <!-- Reference Indicator: Time elapsed in the month -->
+          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.monthProgressPct}%; background: rgba(15, 23, 42, 0.12); z-index: 1;" title="Avance del mes: ${paceData.monthProgressPct}%"></div>
+          <!-- Actual Spent Bar -->
+          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.budgetSpentPct}%; background: ${paceData.paceStatus === 'behind' ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : 'linear-gradient(90deg, #10B981, #059669)'}; border-radius: 999px; z-index: 2; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.62rem; color: #94A3B8; font-family: var(--font-mono);">
+          <span>Gasto consumido: <strong>${paceData.budgetSpentPct}%</strong></span>
+          <span>Días transcurridos: <strong>${paceData.monthProgressPct}%</strong></span>
         </div>
       </div>
 
@@ -250,10 +260,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
-  container.querySelector('#btn-view-cashflow-analytics')?.addEventListener('click', () => onNavigate('analytics'));
-  container.querySelectorAll('.weekly-flow-card').forEach(card => {
-    card.addEventListener('click', () => onNavigate('analytics'));
-  });
+  container.querySelector('#card-safe-spend')?.addEventListener('click', () => onNavigate('budgets'));
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);
