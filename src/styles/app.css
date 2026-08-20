@@ -547,6 +547,9 @@ html, body {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--ink-60);
+  font-weight: 600;
+}
+
 .safe-spend-widget:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px -4px rgba(15, 23, 42, 0.08);
