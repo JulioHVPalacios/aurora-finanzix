@@ -1344,9 +1344,15 @@ body.zen-mode-active #btn-nav-zen i {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px 10px;
+  padding: max(48px, env(titlebar-area-height, 48px)) 20px 10px;
   background: transparent;
   border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .edge-drawer-header {
+    padding: max(18px, env(safe-area-inset-top, 18px)) 20px 10px;
+  }
 }
 
 .edge-drawer-icon-wrap {
@@ -1363,24 +1369,31 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-close-btn {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(15, 23, 42, 0.04);
-  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #0F172A;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), inset 0 1px 1px #FFFFFF;
 }
 
 .edge-close-btn:hover {
   background: rgba(239, 68, 68, 0.15);
   color: #DC2626;
   border-color: rgba(239, 68, 68, 0.3);
+  transform: scale(1.05);
+}
+
+.edge-close-btn:active {
+  transform: scale(0.92);
 }
 
 .edge-nav-tabs {
