@@ -73,8 +73,8 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
       </button>
 
       <!-- Settings & Tools Dropdown Sheet Button -->
-      <button id="btn-nav-more" class="tool-circle-glass" style="width: 34px; height: 34px;" title="Más opciones">
-        <i data-lucide="more-horizontal" style="width: 16px; height: 16px; color: #0F172A;"></i>
+      <button id="btn-nav-more" class="tool-circle-glass" style="width: 34px; height: 34px;" title="Configuración y Opciones">
+        <i data-lucide="settings-2" style="width: 16px; height: 16px; color: #0F172A;"></i>
       </button>
     </div>
   `;
