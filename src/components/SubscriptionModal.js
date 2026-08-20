@@ -6,6 +6,7 @@
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { getServicesForCountry, SERVICE_CATEGORIES } from '../services/servicesCatalog.js';
 import { t, formatCurrency, getPaymentMethodName } from '../services/i18n.js';
+import { enableHorizontalScroll } from '../utils/mouseDragScroll.js';
 import { createIcons, icons } from 'lucide';
 
 export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
@@ -84,7 +85,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
           </div>
 
           <!-- Category Filter Tabs -->
-          <div style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px 2px; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; box-sizing: border-box;">
+          <div id="sub-cat-chips-row" style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px 2px; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; box-sizing: border-box;">
             ${SERVICE_CATEGORIES.map(cat => `
               <button type="button" class="btn-cat-chip ${selectedCategory === cat.id ? 'active' : ''}" data-cat="${cat.id}" style="
                 flex-shrink: 0;
@@ -232,6 +233,11 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
         renderModal();
       });
     });
+
+    const subCatRow = overlay.querySelector('#sub-cat-chips-row');
+    if (subCatRow) {
+      enableHorizontalScroll(subCatRow);
+    }
 
     // Search Input
     const searchInput = overlay.querySelector('#sub-search-input');

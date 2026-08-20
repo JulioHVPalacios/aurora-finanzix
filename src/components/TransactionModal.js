@@ -6,6 +6,7 @@
 import { storage, PAYMENT_METHODS } from '../services/storage.js';
 import { createIcons, icons } from 'lucide';
 import { t, formatCurrency, getCategoryName, getPaymentMethodName } from '../services/i18n.js';
+import { enableHorizontalScroll } from '../utils/mouseDragScroll.js';
 
 export function showTransactionModal({ initialType = 'expense', onSave, onClose }) {
   const portal = document.getElementById('modal-portal');
@@ -190,6 +191,11 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
         item.style.borderColor = '#0F172A';
       });
     });
+
+    const catPickerEl = overlay.querySelector('#cat-picker-container');
+    if (catPickerEl) {
+      enableHorizontalScroll(catPickerEl);
+    }
 
     const photoBtn = overlay.querySelector('#btn-attach-photo');
     const photoInput = overlay.querySelector('#tx-photo-input');
