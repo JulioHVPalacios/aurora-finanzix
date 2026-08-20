@@ -7,6 +7,7 @@ import { storage } from '../services/storage.js';
 import { getFinancialMetrics, getWeeklyCashflow, getDailySpendingPace } from '../services/analytics.js';
 import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
 import { renderSponsoredDealsCard, attachSponsoredDealEvents } from './SponsoredDealsCard.js';
+import { showBudgetLimitModal } from './BudgetLimitModal.js';
 import { createIcons, icons } from 'lucide';
 
 
@@ -262,13 +263,17 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#btn-quick-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#btn-quick-income')?.addEventListener('click', () => onAddTransaction('income'));
   container.querySelector('#btn-quick-cost')?.addEventListener('click', () => onNavigate('tools'));
-  container.querySelector('#btn-quick-budget')?.addEventListener('click', () => onNavigate('budgets'));
+  container.querySelector('#btn-quick-budget')?.addEventListener('click', () => showBudgetLimitModal({
+    onSave: (val) => onShowToast?.(val > 0 ? `Presupuesto fijado en ${formatCurrency(val)}` : 'Límite eliminado', 'success')
+  }));
   container.querySelector('#btn-view-all-tx')?.addEventListener('click', () => onNavigate('transactions'));
   container.querySelector('#btn-empty-add-tx')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
-  container.querySelector('#card-monthly-budget')?.addEventListener('click', () => onNavigate('budgets'));
+  container.querySelector('#card-monthly-budget')?.addEventListener('click', () => showBudgetLimitModal({
+    onSave: (val) => onShowToast?.(val > 0 ? `Presupuesto fijado en ${formatCurrency(val)}` : 'Límite eliminado', 'success')
+  }));
   container.querySelector('.chart-card-glass')?.addEventListener('click', () => onNavigate('analytics'));
 
   // Attach sponsored deals dismiss handler

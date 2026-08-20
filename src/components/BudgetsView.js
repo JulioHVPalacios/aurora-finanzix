@@ -5,7 +5,8 @@
 
 import { storage } from '../services/storage.js';
 import { getFinancialMetrics } from '../services/analytics.js';
-import { t, formatCurrency } from '../services/i18n.js';
+import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
+import { showBudgetLimitModal } from './BudgetLimitModal.js';
 import { createIcons, icons } from 'lucide';
 import confetti from 'canvas-confetti';
 
@@ -21,27 +22,63 @@ export function renderBudgets(container, { onShowToast }) {
   const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   
   const spentPerCategory = {};
+  let totalExpenseThisMonth = 0;
   transactions.forEach(tx => {
     if (tx.type === 'expense' && tx.date && tx.date.startsWith(currentMonthKey)) {
       const catId = tx.category || tx.categoryId;
-      spentPerCategory[catId] = (spentPerCategory[catId] || 0) + Number(tx.amount || 0);
+      const amt = Number(tx.amount || 0);
+      spentPerCategory[catId] = (spentPerCategory[catId] || 0) + amt;
+      totalExpenseThisMonth += amt;
     }
   });
 
   function updateView() {
+    const currentSettings = storage.getSettings() || {};
+    const monthlyBudget = currentSettings.monthlyBudget || 0;
+    const budgetSpentPct = monthlyBudget > 0 ? Math.min(100, Math.round((totalExpenseThisMonth / monthlyBudget) * 100)) : 0;
+
     container.innerHTML = `
       <div class="view-transition-wrap">
         <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <div>
-            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink);">
+            <h2 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink); margin: 0 0 2px;">
               ${t('goals_title')}
             </h2>
-            <p style="font-size: 0.74rem; color: var(--ink-60);">${t('goals_sub')}</p>
+            <p style="font-size: 0.74rem; color: var(--ink-60); margin: 0;">${t('goals_sub')}</p>
           </div>
           <button id="btn-add-goal" class="btn btn-primary" style="padding: 8px 14px; font-size: 0.8rem;">
             ${t('goals_new_btn')}
           </button>
+        </div>
+
+        <!-- Section 0: Presupuesto Mensual Global -->
+        <div class="glass-card" id="card-global-budget-box" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03); margin-bottom: 16px; padding: 16px; border-radius: var(--radius-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div>
+              <span style="font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: #0F172A;">Presupuesto Mensual Global</span>
+              <div style="font-size: 0.72rem; color: var(--ink-60);">Tope de gastos general del mes</div>
+            </div>
+            <button type="button" id="btn-edit-global-budget" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.76rem; font-weight: 800; color: #4F46E5;">
+              ${monthlyBudget > 0 ? `${symbol}${monthlyBudget.toLocaleString()}` : 'Fijar Límite'}
+            </button>
+          </div>
+
+          ${monthlyBudget > 0 ? `
+            <div class="budget-progress-track" style="margin-top: 10px; margin-bottom: 8px;">
+              <div class="budget-progress-bar" style="width: ${budgetSpentPct}%; background: ${budgetSpentPct > 100 ? '#DC2626' : budgetSpentPct > 80 ? '#D97706' : '#0F172A'};"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--ink-60);">
+              <span>Gastado: <strong>${symbol}${totalExpenseThisMonth.toFixed(0)}</strong> (${budgetSpentPct}%)</span>
+              <span style="color: ${monthlyBudget - totalExpenseThisMonth >= 0 ? '#059669' : '#DC2626'}; font-weight: 700;">
+                ${monthlyBudget - totalExpenseThisMonth >= 0 ? `Disponible: ${symbol}${(monthlyBudget - totalExpenseThisMonth).toFixed(0)}` : `Excedido: ${symbol}${Math.abs(monthlyBudget - totalExpenseThisMonth).toFixed(0)}`}
+              </span>
+            </div>
+          ` : `
+            <div style="padding: 8px 0 2px; font-size: 0.78rem; color: #64748B;">
+              No has definido un tope mensual. Toca <strong style="color: #4F46E5; cursor: pointer;">Fijar Límite</strong> para activar el control y cálculo de ritmo diario.
+            </div>
+          `}
         </div>
 
         <!-- Section 1: Savings Goals (Huchas de Ahorro) -->
@@ -144,6 +181,16 @@ export function renderBudgets(container, { onShowToast }) {
         </div>
       </div>
     `;
+
+    // Bind Global Budget Modal
+    container.querySelector('#btn-edit-global-budget')?.addEventListener('click', () => {
+      showBudgetLimitModal({
+        onSave: (val) => {
+          onShowToast?.(val > 0 ? `Presupuesto mensual fijado en ${formatCurrency(val)}` : 'Límite eliminado', 'success');
+          updateView();
+        }
+      });
+    });
 
     // Bind Goal events
     container.querySelector('#btn-add-goal')?.addEventListener('click', () => {
