@@ -53,7 +53,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
     const filtered = filterServices();
 
     overlay.innerHTML = `
-      <div class="bottom-sheet" style="max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+      <div class="bottom-sheet" style="max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 32px;">
         <div class="sheet-handle"></div>
         <div class="sheet-header" style="margin-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -120,7 +120,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
               <span style="font-size: 0.68rem; color: var(--ink-40);">Toca para autocompletar</span>
             </div>
 
-            <div id="sub-presets-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; max-height: 160px; overflow-y: auto; padding: 8px; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 14px; background: #FAFBFD; -webkit-overflow-scrolling: touch;">
+            <div id="sub-presets-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; max-height: 135px; overflow-y: auto; padding: 8px; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 14px; background: #FAFBFD; -webkit-overflow-scrolling: touch;">
               ${filtered.length === 0 ? `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 18px; color: var(--ink-40); font-size: 0.78rem;">
                   No se encontraron servicios para "${searchQuery}".<br/>Puedes escribir el nombre personalizado abajo.
@@ -143,7 +143,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
                     cursor: pointer;
                     transition: all 0.15s ease;
                     box-shadow: ${isSelected ? '0 4px 10px rgba(15, 23, 42, 0.2)' : '0 1px 3px rgba(0,0,0,0.02)'};
-                    min-height: 68px;
+                    min-height: 64px;
                   ">
                     <div style="width: 28px; height: 28px; border-radius: 8px; background: ${isSelected ? 'rgba(255,255,255,0.15)' : item.color + '15'}; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid ${isSelected ? 'rgba(255,255,255,0.25)' : item.color + '30'};">
                       ${item.hasOfficialLogo ? `
@@ -168,7 +168,7 @@ export function showSubscriptionModal({ onSave, subscriptionToEdit = null }) {
         ` : ''}
 
         <!-- Manual Edit Form -->
-        <form id="form-sub-record" style="display: flex; flex-direction: column; gap: 11px;">
+        <form id="form-sub-record" style="display: flex; flex-direction: column; gap: 11px; padding-bottom: 24px;">
           <!-- Service Name -->
           <div class="form-group">
             <label class="form-label">${t('sub_name')}</label>
