@@ -27,6 +27,46 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
     ? t('nav_my_space')
     : settings.userName;
 
+  // Calculate Real Dynamic Spline Curve Coordinates for Liquidity Chart
+  const weeks = getWeeklyCashflow() || [];
+  const currentDay = new Date().getDate();
+  const currentWeekIdx = currentDay <= 7 ? 0 : currentDay <= 14 ? 1 : currentDay <= 21 ? 2 : 3;
+
+  const values = weeks.map(w => w.net);
+  const hasData = weeks.some(w => w.count > 0);
+
+  const maxVal = Math.max(...values, 100);
+  const minVal = Math.min(...values, -50);
+  const range = (maxVal - minVal) || 1;
+
+  const xCoords = [25, 140, 260, 375];
+  const points = weeks.map((w, idx) => {
+    const x = xCoords[idx];
+    let y = 50;
+    if (hasData) {
+      const normalized = (w.net - minVal) / range;
+      y = 65 - (normalized * 45); // between 20 (high) and 65 (low)
+    }
+    return { x, y: Number(y.toFixed(1)), week: w, idx };
+  });
+
+  let splineD = `M ${points[0].x},${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i === 0 ? 0 : i - 1];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+    splineD += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+  }
+
+  const areaD = `${splineD} L ${points[points.length - 1].x},90 L ${points[0].x},90 Z`;
+
   container.innerHTML = `
     <div class="view-transition-wrap">
       <!-- Desktop Split Top Section (Hero Card + Stats Grid) -->
@@ -103,30 +143,22 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         </div>
       </div>
 
-      <!-- Daily Safe-to-Spend & Spending Pace Widget (High-Precision Fintech Engine) -->
-      <div class="safe-spend-widget" id="card-safe-spend" style="
-        background: #FFFFFF;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-        border-radius: var(--radius-lg);
-        padding: 18px 20px;
-        box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04);
-        cursor: pointer;
-        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-      ">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
+      <!-- Real Dynamic Interactive Liquidity Flow Chart (Smooth Spline Wave) -->
+      <div class="chart-card-glass" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04);">
+        <div class="chart-card-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <div class="chart-title-left" style="display: flex; align-items: center; gap: 8px;">
             <div style="width: 28px; height: 28px; border-radius: 8px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;">
-              <i data-lucide="compass" style="width: 15px; height: 15px;"></i>
+              <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
             </div>
             <div>
-              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B;">Disponible para Gastar Hoy</span>
-              <div style="font-size: 0.65rem; color: #94A3B8; font-family: var(--font-mono);">${paceData.daysRemaining} días restantes en el mes</div>
+              <div style="font-weight: 800; font-size: 0.92rem; color: #0F172A;">${t('dash_liquidity_trend')}</div>
+              <div style="font-size: 0.65rem; color: #64748B; font-family: var(--font-mono);">${hasData ? `${formatCurrency(metrics.netBalance || 0)} ${t('dash_monthly_flow')}` : 'Curva en tiempo real según tus gastos'}</div>
             </div>
           </div>
 
           <div style="
-            background: ${!paceData.hasBudget ? '#F1F5F9' : paceData.paceStatus === 'ahead' ? '#ECFDF5' : paceData.paceStatus === 'behind' ? '#FFF1F2' : '#EEF2FF'};
-            color: ${!paceData.hasBudget ? '#64748B' : paceData.paceStatus === 'ahead' ? '#059669' : paceData.paceStatus === 'behind' ? '#E11D48' : '#4F46E5'};
+            background: ${hasData ? (metrics.netBalance >= 0 ? '#ECFDF5' : '#FFF1F2') : '#F1F5F9'};
+            color: ${hasData ? (metrics.netBalance >= 0 ? '#059669' : '#E11D48') : '#64748B'};
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.68rem;
@@ -135,39 +167,82 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
             align-items: center;
             gap: 4px;
           ">
-            <i data-lucide="${!paceData.hasBudget ? 'target' : paceData.paceStatus === 'ahead' ? 'trending-down' : paceData.paceStatus === 'behind' ? 'alert-triangle' : 'sparkles'}" style="width: 12px; height: 12px;"></i>
-            <span>${!paceData.hasBudget ? 'Definir Presupuesto' : paceData.paceStatus === 'ahead' ? 'Excelente ritmo de ahorro' : paceData.paceStatus === 'behind' ? 'Gasto acelerado este mes' : 'Ritmo óptimo'}</span>
+            <i data-lucide="${hasData ? (metrics.netBalance >= 0 ? 'trending-up' : 'trending-down') : 'sparkles'}" style="width: 12px; height: 12px;"></i>
+            <span>${hasData ? (metrics.netBalance >= 0 ? `+${formatCurrency(metrics.netBalance)}` : formatCurrency(metrics.netBalance)) : 'En espera de datos'}</span>
           </div>
         </div>
 
-        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
-          <div>
-            <span style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">
-              ${formatCurrency(paceData.dailySafeToSpend)}
-            </span>
-            <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;"> / por día</span>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-size: 0.78rem; font-weight: 700; color: #0F172A; font-family: var(--font-mono);">
-              ${paceData.hasBudget ? `${formatCurrency(paceData.discretionaryPool)} libre` : 'S/ 0.00 asignado'}
+        <!-- Dynamic Smooth Spline SVG -->
+        <div style="width: 100%; height: 95px; position: relative;" id="interactive-chart-container">
+          <div id="chart-floating-tooltip" style="
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #090D16;
+            color: #FFFFFF;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 10;
+            white-space: nowrap;
+          "></div>
+
+          <svg viewBox="0 0 400 95" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible;">
+            <defs>
+              <linearGradient id="realFlowGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            
+            <!-- Shaded Area Under Spline Curve -->
+            <path d="${areaD}" fill="url(#realFlowGradient)" />
+            
+            <!-- Main Dynamic Spline Line -->
+            <path d="${splineD}" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- Interactive Week Node Dots -->
+            ${points.map(p => `
+              <circle 
+                class="chart-node-dot"
+                cx="${p.x}" 
+                cy="${p.y}" 
+                r="4.5" 
+                fill="#FFFFFF" 
+                stroke="#4F46E5" 
+                stroke-width="2.5"
+                data-week-name="${p.week.label}"
+                data-week-range="días ${p.week.range}"
+                data-income="${formatCurrency(p.week.income)}"
+                data-expense="${formatCurrency(p.week.expense)}"
+                data-net="${p.week.net >= 0 ? `+${formatCurrency(p.week.net)}` : formatCurrency(p.week.net)}"
+                style="cursor: pointer; transition: all 0.2s ease;"
+              />
+            `).join('')}
+          </svg>
+        </div>
+
+        <!-- Interactive Legend Row -->
+        <div class="chart-legend-row" style="display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: #64748B;">
+          ${weeks.map((w, idx) => `
+            <div class="chart-legend-chip" data-week-idx="${idx}" style="
+              cursor: pointer;
+              padding: 3px 8px;
+              border-radius: 6px;
+              background: ${idx === currentWeekIdx ? '#EEF2FF' : 'transparent'};
+              color: ${idx === currentWeekIdx ? '#4F46E5' : '#64748B'};
+              transition: all 0.2s ease;
+            ">
+              ${w.label} ${idx === currentWeekIdx ? '(Actual)' : ''}
             </div>
-            <div style="font-size: 0.62rem; color: #94A3B8;">
-              ${paceData.hasBudget ? (paceData.pendingFixedBills > 0 ? `tras fijos (${formatCurrency(paceData.pendingFixedBills)})` : 'para todo el mes') : 'Toca para fijar meta'}
-            </div>
-          </div>
-        </div>
-
-        <!-- Dual Progression Velocity Meter (Time vs Spent) -->
-        <div style="position: relative; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
-          <!-- Reference Indicator: Time elapsed in the month -->
-          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.monthProgressPct}%; background: rgba(15, 23, 42, 0.12); z-index: 1;" title="Días del mes transcurridos: ${paceData.monthProgressPct}%"></div>
-          <!-- Actual Spent Bar -->
-          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.budgetSpentPct}%; background: ${paceData.paceStatus === 'behind' ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : 'linear-gradient(90deg, #10B981, #059669)'}; border-radius: 999px; z-index: 2; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.62rem; color: #94A3B8; font-family: var(--font-mono);">
-          <span>Presupuesto gastado: <strong>${paceData.budgetSpentPct}%</strong></span>
-          <span>Días transcurridos: <strong>${paceData.monthProgressPct}% (${paceData.currentDay}/${paceData.daysInMonth})</strong></span>
+          `).join('')}
         </div>
       </div>
 
@@ -260,9 +335,63 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#btn-view-all-tx')?.addEventListener('click', () => onNavigate('transactions'));
   container.querySelector('#btn-empty-add-tx')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
-  container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
-  container.querySelector('#card-safe-spend')?.addEventListener('click', () => onNavigate('budgets'));
+  container.querySelector('.chart-card-glass')?.addEventListener('click', () => onNavigate('analytics'));
+
+  // Interactive Chart Tooltip & Dot Events
+  const chartTooltip = container.querySelector('#chart-floating-tooltip');
+  const dots = container.querySelectorAll('.chart-node-dot');
+  const chips = container.querySelectorAll('.chart-legend-chip');
+
+  const showTooltipForWeek = (name, range, inc, exp, net) => {
+    if (!chartTooltip) return;
+    chartTooltip.innerHTML = `<strong>${name}</strong> (${range}): <span style="color: #34D399;">+${inc}</span> | <span style="color: #F87171;">-${exp}</span> (${net})`;
+    chartTooltip.style.opacity = '1';
+  };
+
+  dots.forEach(dot => {
+    dot.addEventListener('mouseenter', () => {
+      dot.setAttribute('r', '7');
+      dot.setAttribute('fill', '#4F46E5');
+      showTooltipForWeek(
+        dot.dataset.weekName,
+        dot.dataset.weekRange,
+        dot.dataset.income,
+        dot.dataset.expense,
+        dot.dataset.net
+      );
+    });
+    dot.addEventListener('mouseleave', () => {
+      dot.setAttribute('r', '4.5');
+      dot.setAttribute('fill', '#FFFFFF');
+      if (chartTooltip) chartTooltip.style.opacity = '0';
+    });
+  });
+
+  chips.forEach(chip => {
+    chip.addEventListener('mouseenter', () => {
+      const idx = Number(chip.dataset.weekIdx);
+      const dot = dots[idx];
+      if (dot) {
+        dot.setAttribute('r', '7');
+        dot.setAttribute('fill', '#4F46E5');
+        showTooltipForWeek(
+          dot.dataset.weekName,
+          dot.dataset.weekRange,
+          dot.dataset.income,
+          dot.dataset.expense,
+          dot.dataset.net
+        );
+      }
+    });
+    chip.addEventListener('mouseleave', () => {
+      dots.forEach(d => {
+        d.setAttribute('r', '4.5');
+        d.setAttribute('fill', '#FFFFFF');
+      });
+      if (chartTooltip) chartTooltip.style.opacity = '0';
+    });
+  });
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);
