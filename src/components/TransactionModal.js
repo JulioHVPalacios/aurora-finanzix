@@ -93,7 +93,6 @@ export function showTransactionModal({ initialType = 'expense', onSave, onClose 
               margin: 0 -20px;
               padding-left: 20px;
               padding-right: 20px;
-              scroll-snap-type: x mandatory;
               -webkit-overflow-scrolling: touch;
             ">
               ${filteredCategories.map(cat => `
