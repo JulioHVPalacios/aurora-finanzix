@@ -27,7 +27,15 @@ yarn-error.log*
 
 # Secrets & Environment Variables
 .env
+.env.*
 *.env
 *.keystore
+*.jks
 release.keystore
+android/app/release.keystore
+android/keystore.properties
+keystore.properties
+*.pem
+*.key
+
 
