@@ -274,14 +274,13 @@ html, body {
 /* --------------------------------------------------------------------------
    VIBRANT LIQUID GLASS & OBSIDIAN CARDS (Ultra-Premium Fintech Aesthetic)
    -------------------------------------------------------------------------- */
-/* Hero Balance Card - Obsidian Aurora Living Mesh Card */
+/* Hero Balance Card - Obsidian Living Video Card */
 .hero-balance-card,
 .card-hero-glass {
-  background: radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.45) 0%, transparent 50%),
-              radial-gradient(circle at 15% 85%, rgba(6, 182, 212, 0.35) 0%, transparent 45%),
-              linear-gradient(135deg, #0B1120 0%, #060911 100%);
+  background: #090D16;
   border-radius: var(--radius-lg);
   padding: 24px 22px;
+  min-height: 165px;
   color: #FFFFFF;
   position: relative;
   overflow: hidden;
@@ -297,40 +296,25 @@ html, body {
   transform: scale(0.985);
 }
 
-.hero-aurora-glow-1 {
+.hero-bg-video {
   position: absolute;
-  top: -50px;
-  right: -30px;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.5) 0%, rgba(79, 70, 229, 0.25) 50%, transparent 70%);
-  filter: blur(40px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
-  animation: floatAurora1 10s ease-in-out infinite alternate;
-  z-index: 1;
+  z-index: 0;
+  opacity: 0.92;
+  filter: contrast(1.15) brightness(0.95);
 }
 
-.hero-aurora-glow-2 {
+.hero-card-overlay {
   position: absolute;
-  bottom: -50px;
-  left: -30px;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(16, 185, 129, 0.2) 50%, transparent 70%);
-  filter: blur(40px);
+  inset: 0;
+  background: linear-gradient(135deg, rgba(9, 13, 22, 0.35) 0%, rgba(17, 24, 39, 0.18) 100%);
   pointer-events: none;
-  animation: floatAurora2 12s ease-in-out infinite alternate;
   z-index: 1;
-}
-
-@keyframes floatAurora1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-40px, 30px) scale(1.2); }
-}
-
-@keyframes floatAurora2 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(45px, -25px) scale(1.25); }
 }
 
 .hero-card-content {

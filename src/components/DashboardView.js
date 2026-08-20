@@ -28,10 +28,12 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   container.innerHTML = `
     <div class="view-transition-wrap">
-      <!-- Hero Balance Card (Obsidian Living Aurora Mesh Card) -->
+      <!-- Hero Balance Card (Obsidian Living Video Card) -->
       <div class="hero-balance-card">
-        <div class="hero-aurora-glow-1"></div>
-        <div class="hero-aurora-glow-2"></div>
+        <video class="hero-bg-video" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture disableremoteplayback preload="auto">
+          <source src="/hero-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-card-overlay"></div>
         <div class="hero-card-content">
           <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
           <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
@@ -220,6 +222,14 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);
+
+  // Play local background video smoothly with muted setting
+  const videoEl = container.querySelector('.hero-bg-video');
+  if (videoEl) {
+    videoEl.muted = true;
+    videoEl.defaultMuted = true;
+    videoEl.play().catch(() => {});
+  }
 
   createIcons({ icons });
 }
