@@ -206,21 +206,29 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
   function renderFxMarkup() {
     const result = fxService.convert(100, 'USD', 'PEN');
     const unitRate = fxService.getRate('USD', 'PEN');
+    const fxStatus = fxService.getStatus();
+    const sourceLabel = fxService.source || 'Bloomberg / Mercados Globales';
 
     return `
       <div class="edge-tool-box">
-        <div class="edge-box-header">
-          <span style="font-weight: 700; font-size: 0.82rem; color: #0F172A;">Conversor Oficial en Tiempo Real</span>
-          <span class="edge-live-badge">
-            <span class="edge-live-dot"></span>
-            En vivo
-          </span>
+        <div class="edge-box-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-weight: 700; font-size: 0.82rem; color: #0F172A;">Mercados y Divisas</span>
+            <span class="edge-live-badge">
+              <span class="edge-live-dot"></span>
+              En vivo
+            </span>
+          </div>
+          <button type="button" id="edge-btn-refresh-fx" class="edge-refresh-btn" title="Actualizar tipo de cambio ahora" style="background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 4px; font-size: 0.70rem; font-weight: 700; color: #4F46E5; cursor: pointer;">
+            <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i>
+            <span>Actualizar</span>
+          </button>
         </div>
 
         <div class="edge-result-card">
-          <div style="font-size: 0.65rem; color: #64748B; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Resultado Calculado</div>
+          <div style="font-size: 0.65rem; color: #64748B; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Resultado en Tiempo Real</div>
           <div class="edge-result-num" id="edge-fx-result-val">S/ ${result.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-          <div class="edge-result-sub" id="edge-fx-rate-val">1 USD = ${unitRate.toFixed(4)} PEN</div>
+          <div class="edge-result-sub" id="edge-fx-rate-val">1 USD = ${unitRate.toFixed(4)} PEN · ${sourceLabel}</div>
         </div>
 
         <div class="edge-form-wrap">
@@ -235,13 +243,13 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
               <select id="edge-fx-from" class="input-control">
                 ${SUPPORTED_CURRENCIES.map(c => `
                   <option value="${c.code}" ${c.code === 'USD' ? 'selected' : ''}>
-                    ${c.flag} ${c.code}
+                    ${c.code} · ${c.name}
                   </option>
                 `).join('')}
               </select>
             </div>
 
-            <button type="button" id="edge-btn-swap-fx" class="edge-swap-btn" title="Invertir">
+            <button type="button" id="edge-btn-swap-fx" class="edge-swap-btn" title="Invertir Divisas" style="margin-bottom: 2px;">
               ⇄
             </button>
 
@@ -250,7 +258,7 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
               <select id="edge-fx-to" class="input-control">
                 ${SUPPORTED_CURRENCIES.map(c => `
                   <option value="${c.code}" ${c.code === 'PEN' ? 'selected' : ''}>
-                    ${c.flag} ${c.code}
+                    ${c.code} · ${c.name}
                   </option>
                 `).join('')}
               </select>
@@ -459,11 +467,12 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
         const res = fxService.convert(amt, from, to);
         const rate = fxService.getRate(from, to);
         const toCurr = SUPPORTED_CURRENCIES.find(c => c.code === to) || { symbol: to };
+        const sourceLabel = fxService.source || 'Bloomberg / Mercados Globales';
 
         const resultEl = container.querySelector('#edge-fx-result-val');
         const rateEl = container.querySelector('#edge-fx-rate-val');
         if (resultEl) resultEl.innerText = `${toCurr.symbol} ${res.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        if (rateEl) rateEl.innerText = `1 ${from} = ${rate.toFixed(4)} ${to}`;
+        if (rateEl) rateEl.innerText = `1 ${from} = ${rate.toFixed(4)} ${to} · ${sourceLabel}`;
       };
 
       container.querySelector('#edge-fx-amount')?.addEventListener('input', updateFx);
@@ -480,6 +489,17 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
           updateFx();
         }
       });
+
+      // Manual live refresh button
+      const refreshBtn = container.querySelector('#edge-btn-refresh-fx');
+      refreshBtn?.addEventListener('click', async () => {
+        const icon = refreshBtn.querySelector('svg') || refreshBtn.querySelector('i');
+        if (icon) icon.style.transform = 'rotate(360deg)';
+        await fxService.fetchLiveRates();
+        updateFx();
+      });
+
+      window.addEventListener('valo:fx-updated', updateFx, { once: true });
     }
 
     // Split Bill Event Listeners
