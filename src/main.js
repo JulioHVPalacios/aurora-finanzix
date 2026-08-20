@@ -23,7 +23,7 @@ import { initSecurityLock } from './components/AppLockScreen.js';
 class App {
   constructor() {
     this.currentTab = 'dashboard';
-    this.isExpanded = false;
+    this.isExpanded = true;
     this.swRegistration = null;
     this.init();
   }
@@ -269,7 +269,7 @@ class App {
       this.isExpanded = !this.isExpanded;
       phoneContainer?.classList.toggle('mode-expanded', this.isExpanded);
       if (toggleText) {
-        toggleText.textContent = this.isExpanded ? 'Vista Celular' : 'Vista Expandida';
+        toggleText.textContent = this.isExpanded ? 'Vista Compacta' : 'Vista Expandida';
       }
     });
   }

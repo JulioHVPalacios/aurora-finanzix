@@ -200,23 +200,9 @@ html, body {
   border-radius: 28px;
 }
 
-/* Simulated Status Bar (Desktop Only) */
+/* Simulated Status Bar (Removed on All Devices for Clean Look) */
 .phone-status-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 22px 6px;
-  font-size: 0.78rem;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--ink-60);
-  background: transparent;
-  user-select: none;
-  z-index: 50;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  display: none !important;
 }
 
 .status-notch {
@@ -258,7 +244,7 @@ html, body {
    App Navbar Header
    -------------------------------------------------------------------------- */
 .app-navbar {
-  padding: 40px 18px 12px;
+  padding: 16px 20px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
