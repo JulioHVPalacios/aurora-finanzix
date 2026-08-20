@@ -7,6 +7,7 @@ import { storage } from '../services/storage.js';
 import { getFinancialMetrics, getCategoryBreakdown } from '../services/analytics.js';
 import { calculateSplitBill, calculateLoanAmortization } from '../services/costCalculator.js';
 import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
+import { fxService, SUPPORTED_CURRENCIES } from '../services/fxService.js';
 import { createIcons, icons } from 'lucide';
 import confetti from 'canvas-confetti';
 import Chart from 'chart.js/auto';
@@ -578,47 +579,66 @@ function renderInnerLoan(container, symbol) {
   render();
 }
 
-function renderInnerFx(container, symbol) {
-  let state = { amount: 100, from: 'USD', to: 'PEN', rate: 3.75 };
+function renderInnerFx(container, defaultSymbol) {
+  let state = { amount: 100, from: 'USD', to: 'PEN' };
 
   function render() {
-    const result = state.from === 'USD' ? state.amount * state.rate : state.amount / state.rate;
+    const result = fxService.convert(state.amount, state.from, state.to);
+    const unitRate = fxService.getRate(state.from, state.to);
+    const fxStatus = fxService.getStatus();
+    const toCurr = SUPPORTED_CURRENCIES.find(c => c.code === state.to) || { symbol: state.to };
+
     container.innerHTML = `
       <div class="glass-card" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);">
-        <div class="card-header">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <span class="card-title">${t('tools_fx_title')}</span>
+          <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700; color: #059669; background: #ECFDF5; padding: 3px 8px; border-radius: 999px;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+            En vivo (Interbancario)
+          </span>
         </div>
 
         <!-- Result Box -->
-        <div style="background: #F8FAFC; border: 1.5px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-md); padding: 16px; text-align: center; margin-bottom: 14px;">
+        <div style="background: #F8FAFC; border: 1.5px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-md); padding: 18px; text-align: center; margin-bottom: 14px;">
           <div style="font-size: 0.70rem; color: var(--ink-60); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">${t('tools_fx_result')}</div>
           <div style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: #0F172A; margin: 4px 0;">
-            ${state.to === 'PEN' ? 'S/' : '$'}${result.toFixed(2)}
+            ${toCurr.symbol} ${result.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <div style="font-size: 0.74rem; color: var(--ink-60); margin-top: 4px;">
-            1 USD = 3.75 PEN
+          <div style="font-size: 0.76rem; color: #64748B; font-family: var(--font-mono); margin-top: 4px;">
+            1 ${state.from} = ${unitRate.toFixed(4)} ${state.to}
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
           <div class="form-group">
             <label class="form-label">${t('tools_fx_amount')}</label>
-            <input type="number" id="fx-amount" class="input-control" value="${state.amount}" step="5" />
+            <input type="number" id="fx-amount" class="input-control" value="${state.amount}" step="10" min="0" />
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="form-group">
+          <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: flex-end;">
+            <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label">${t('tools_fx_from')}</label>
               <select id="fx-from" class="input-control">
-                <option value="USD" ${state.from === 'USD' ? 'selected' : ''}>USD ($ Dólar)</option>
-                <option value="PEN" ${state.from === 'PEN' ? 'selected' : ''}>PEN (S/ Sol)</option>
+                ${SUPPORTED_CURRENCIES.map(c => `
+                  <option value="${c.code}" ${state.from === c.code ? 'selected' : ''}>
+                    ${c.flag} ${c.code} (${c.name})
+                  </option>
+                `).join('')}
               </select>
             </div>
-            <div class="form-group">
+
+            <button type="button" id="btn-swap-fx" style="width: 38px; height: 38px; border-radius: 10px; border: 1.5px solid rgba(15, 23, 42, 0.1); background: #FFFFFF; color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; margin-bottom: 2px;" title="Invertir monedas">
+              ⇄
+            </button>
+
+            <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label">${t('tools_fx_to')}</label>
               <select id="fx-to" class="input-control">
-                <option value="PEN" ${state.to === 'PEN' ? 'selected' : ''}>PEN (S/ Sol)</option>
-                <option value="USD" ${state.to === 'USD' ? 'selected' : ''}>USD ($ Dólar)</option>
+                ${SUPPORTED_CURRENCIES.map(c => `
+                  <option value="${c.code}" ${state.to === c.code ? 'selected' : ''}>
+                    ${c.flag} ${c.code} (${c.name})
+                  </option>
+                `).join('')}
               </select>
             </div>
           </div>
@@ -632,15 +652,29 @@ function renderInnerFx(container, symbol) {
     });
     container.querySelector('#fx-from')?.addEventListener('change', (e) => {
       state.from = e.target.value;
-      state.to = state.from === 'USD' ? 'PEN' : 'USD';
+      if (state.from === state.to) {
+        state.to = state.from === 'USD' ? 'PEN' : 'USD';
+      }
       render();
     });
     container.querySelector('#fx-to')?.addEventListener('change', (e) => {
       state.to = e.target.value;
-      state.from = state.to === 'USD' ? 'PEN' : 'USD';
+      if (state.to === state.from) {
+        state.from = state.to === 'USD' ? 'PEN' : 'USD';
+      }
+      render();
+    });
+    container.querySelector('#btn-swap-fx')?.addEventListener('click', () => {
+      const temp = state.from;
+      state.from = state.to;
+      state.to = temp;
       render();
     });
   }
+
+  window.addEventListener('valo:fx-updated', () => {
+    render();
+  }, { once: true });
 
   render();
 }
