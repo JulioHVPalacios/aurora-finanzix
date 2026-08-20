@@ -1245,10 +1245,10 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-handle-pill {
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  color: #0F172A;
   border-top-left-radius: 14px;
   border-bottom-left-radius: 14px;
   padding: 10px 10px 10px 12px;
@@ -1256,10 +1256,10 @@ body.zen-mode-active #btn-nav-zen i {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  border-left: 1.5px solid rgba(255, 255, 255, 0.2);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
-  box-shadow: -4px 6px 20px rgba(15, 23, 42, 0.25);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: -4px 6px 24px rgba(15, 23, 42, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1270,15 +1270,20 @@ body.zen-mode-active #btn-nav-zen i {
   font-size: 0.58rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: #E2E8F0;
+  color: #0F172A;
   font-family: var(--font-mono);
 }
 
 .edge-panel-handle:hover .edge-handle-pill {
-  background: #0F172A;
+  background: rgba(255, 255, 255, 0.75);
   padding-left: 15px;
-  box-shadow: -6px 8px 25px rgba(79, 70, 229, 0.3);
-  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: -6px 8px 30px rgba(79, 70, 229, 0.15), inset 0 1px 2px rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 1);
+  color: #4F46E5;
+}
+
+.edge-panel-handle:hover .edge-handle-label {
+  color: #4F46E5;
 }
 
 .edge-panel-handle:active .edge-handle-pill {
@@ -1288,9 +1293,9 @@ body.zen-mode-active #btn-nav-zen i {
 .edge-panel-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1309,11 +1314,11 @@ body.zen-mode-active #btn-nav-zen i {
   bottom: 0;
   width: 400px;
   max-width: 92vw;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(32px) saturate(190%);
-  -webkit-backdrop-filter: blur(32px) saturate(190%);
-  border-left: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: -15px 0 50px rgba(15, 23, 42, 0.15);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(36px) saturate(210%);
+  -webkit-backdrop-filter: blur(36px) saturate(210%);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: -15px 0 50px rgba(15, 23, 42, 0.10), inset 1px 0 2px rgba(255, 255, 255, 0.95);
   transform: translateX(100%);
   transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 9998;
@@ -1331,27 +1336,28 @@ body.zen-mode-active #btn-nav-zen i {
   align-items: center;
   justify-content: space-between;
   padding: 18px 20px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
-  background: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .edge-drawer-icon-wrap {
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: #EEF2FF;
+  background: rgba(238, 242, 255, 0.8);
   color: #4F46E5;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .edge-close-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.6);
   color: var(--ink-60);
   display: flex;
   align-items: center;
@@ -1361,7 +1367,7 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-close-btn:hover {
-  background: #F1F5F9;
+  background: rgba(255, 255, 255, 0.95);
   color: var(--ink);
 }
 
@@ -1370,8 +1376,8 @@ body.zen-mode-active #btn-nav-zen i {
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   padding: 8px 16px;
-  background: #F8FAFC;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  background: rgba(255, 255, 255, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .edge-tab-btn {
@@ -1391,14 +1397,15 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-tab-btn:hover {
-  background: #EEF2FF;
+  background: rgba(238, 242, 255, 0.8);
   color: #4F46E5;
 }
 
 .edge-tab-btn.active {
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.85);
   color: #4F46E5;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.95);
 }
 
 .edge-drawer-body {
@@ -1416,7 +1423,10 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-calc-screen {
-  background: #0F172A;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 16px 18px;
   color: #FFFFFF;
@@ -1454,8 +1464,9 @@ body.zen-mode-active #btn-nav-zen i {
   gap: 5px;
   padding: 5px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
   color: #334155;
   font-size: 0.72rem;
   font-weight: 700;
@@ -1464,7 +1475,7 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-quick-btn:hover {
-  background: #F1F5F9;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .edge-quick-primary {
@@ -1486,14 +1497,16 @@ body.zen-mode-active #btn-nav-zen i {
 .calc-key {
   height: 52px;
   border-radius: 14px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #0F172A;
   font-size: 1.15rem;
   font-weight: 700;
   font-family: var(--font-display);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
   transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
@@ -1501,7 +1514,7 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .calc-key:hover {
-  background: #F8FAFC;
+  background: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
 }
@@ -1511,13 +1524,13 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .calc-op {
-  background: #F1F5F9;
+  background: rgba(241, 245, 249, 0.7);
   color: #475569;
   font-size: 0.95rem;
 }
 
 .calc-accent {
-  background: #EEF2FF;
+  background: rgba(238, 242, 255, 0.8);
   color: #4F46E5;
   font-size: 1.25rem;
 }
@@ -1568,11 +1581,14 @@ body.zen-mode-active #btn-nav-zen i {
 }
 
 .edge-result-card {
-  background: #F8FAFC;
-  border: 1.5px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
   border-radius: 16px;
   padding: 16px;
   text-align: center;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04), inset 0 1px 1px rgba(255, 255, 255, 1);
 }
 
 .edge-result-num {
@@ -1599,8 +1615,9 @@ body.zen-mode-active #btn-nav-zen i {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  border: 1.5px solid rgba(15, 23, 42, 0.1);
-  background: #FFFFFF;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
   color: var(--ink);
   display: flex;
   align-items: center;
@@ -1608,14 +1625,22 @@ body.zen-mode-active #btn-nav-zen i {
   cursor: pointer;
   transition: all 0.15s;
   margin-bottom: 2px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.edge-swap-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #4F46E5;
 }
 
 .edge-schedule-table-wrap {
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   margin-top: 6px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
 }
 
 .edge-table {
