@@ -167,60 +167,162 @@ export function showOnboarding({ onComplete }) {
     const style = document.createElement('style');
     style.id = 'onboarding-style';
     style.textContent = `
-      @keyframes onbIn  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-      @keyframes onbOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-20px)} }
+      @keyframes onbSlideIn {
+        from {
+          opacity: 0;
+          transform: translateX(28px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+      }
+      @keyframes appReveal {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
       #onboarding-overlay {
-        position:fixed;inset:0;z-index:99999;
-        background:#FFFFFF;
-        display:flex;flex-direction:column;
-        align-items:center;justify-content:center;
-        padding:28px 20px;
-        animation:onbIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px 20px;
+        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       }
-      #onboarding-overlay.leaving{animation:onbOut 0.3s cubic-bezier(0.4,0,1,1) both;pointer-events:none;}
-      .onb-inner{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;}
-      .onb-step{display:none;flex-direction:column;align-items:center;width:100%;}
-      .onb-step.active{display:flex;animation:onbIn 0.25s ease both;}
-      .onb-input,.onb-select{
-        width:100%;padding:13px 16px;
-        font-size:0.97rem;font-weight:600;
-        border:2px solid rgba(15,23,42,0.10);
-        border-radius:14px;outline:none;
-        background:#F8FAFC;color:#0F172A;
-        transition:border-color 0.18s;
-        box-sizing:border-box;font-family:inherit;
-        -webkit-appearance:none;appearance:none;
+      #onboarding-overlay.leaving {
+        opacity: 0 !important;
+        transform: scale(1.04) !important;
+        pointer-events: none !important;
       }
-      .onb-select{
-        cursor:pointer;
-        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat:no-repeat;background-position:right 14px center;padding-right:42px;
+      .onb-inner {
+        width: 100%;
+        max-width: 360px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      .onb-input:focus,.onb-select:focus{border-color:#0F172A;background:#FFF;}
-      .onb-btn-primary{
-        width:100%;padding:14px;font-size:0.98rem;font-weight:800;
-        background:#0F172A;color:#FFFFFF;border:none;border-radius:14px;
-        cursor:pointer;transition:opacity 0.18s,transform 0.12s;
-        font-family:inherit;letter-spacing:-0.2px;
+      .onb-step {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
       }
-      .onb-btn-primary:active{transform:scale(0.98);opacity:0.9;}
-      .onb-btn-skip{
-        background:none;border:none;font-family:inherit;
-        color:#94A3B8;font-size:0.8rem;cursor:pointer;
-        padding:10px 16px;text-decoration:underline;text-underline-offset:3px;
+      .onb-step.active {
+        display: flex;
+        animation: onbSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
-      .onb-btn-skip:hover{color:#64748B;}
-      .onb-lang-bar{display:flex;gap:8px;margin-bottom:18px;}
-      .onb-lang-chip{
-        padding:5px 16px;border-radius:999px;font-weight:800;font-size:0.82rem;
-        font-family:inherit;cursor:pointer;border:2px solid transparent;
-        transition:all 0.18s;letter-spacing:0.04em;
+      .onb-input, .onb-select {
+        width: 100%;
+        padding: 13px 16px;
+        font-size: 0.97rem;
+        font-weight: 600;
+        border: 2px solid rgba(15, 23, 42, 0.10);
+        border-radius: 14px;
+        outline: none;
+        background: #F8FAFC;
+        color: #0F172A;
+        transition: border-color 0.18s;
+        box-sizing: border-box;
+        font-family: inherit;
+        -webkit-appearance: none;
+        appearance: none;
       }
-      .onb-lang-chip.active{background:#0F172A;color:#FFFFFF;border-color:#0F172A;}
-      .onb-lang-chip:not(.active){background:#F1F5F9;color:#64748B;border-color:#E2E8F0;}
-      .onb-dots{display:flex;gap:6px;margin-bottom:22px;}
-      .onb-dot{width:6px;height:6px;border-radius:50%;background:#E2E8F0;transition:background 0.2s,width 0.2s;}
-      .onb-dot.active{background:#0F172A;width:18px;border-radius:3px;}
+      .onb-select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 42px;
+      }
+      .onb-input:focus, .onb-select:focus {
+        border-color: #0F172A;
+        background: #FFF;
+      }
+      .onb-btn-primary {
+        width: 100%;
+        padding: 14px;
+        font-size: 0.98rem;
+        font-weight: 800;
+        background: #0F172A;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: opacity 0.18s, transform 0.12s;
+        font-family: inherit;
+        letter-spacing: -0.2px;
+      }
+      .onb-btn-primary:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+      }
+      .onb-btn-skip {
+        background: none;
+        border: none;
+        font-family: inherit;
+        color: #94A3B8;
+        font-size: 0.8rem;
+        cursor: pointer;
+        padding: 10px 16px;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .onb-btn-skip:hover {
+        color: #64748B;
+      }
+      .onb-lang-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .onb-lang-chip {
+        padding: 5px 16px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        font-family: inherit;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.18s;
+        letter-spacing: 0.04em;
+      }
+      .onb-lang-chip.active {
+        background: #0F172A;
+        color: #FFFFFF;
+        border-color: #0F172A;
+      }
+      .onb-lang-chip:not(.active) {
+        background: #F1F5F9;
+        color: #64748B;
+        border-color: #E2E8F0;
+      }
+      .onb-dots {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 24px;
+      }
+      .onb-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #E2E8F0;
+        transition: background 0.25s, width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .onb-dot.active {
+        background: #0F172A;
+        width: 18px;
+        border-radius: 3px;
+      }
       .onb-icon-badge {
         width: 58px;
         height: 58px;
@@ -239,20 +341,6 @@ export function showOnboarding({ onComplete }) {
         color: #059669;
         box-shadow: 0 8px 24px rgba(16, 185, 129, 0.14), inset 0 1px 2px #FFFFFF;
       }
-      .onb-geo-badge{
-        display:flex;align-items:center;gap:6px;
-        font-size:0.72rem;color:#64748B;font-weight:600;
-        background:#F1F5F9;border-radius:999px;padding:4px 12px;
-        margin-bottom:16px;min-height:26px;
-        transition:all 0.3s;
-      }
-      .onb-geo-dot{
-        width:6px;height:6px;border-radius:50%;background:#94A3B8;
-        animation:geoPulse 1.2s ease-in-out infinite;
-        flex-shrink:0;
-      }
-      .onb-geo-dot.found{background:#10B981;animation:none;}
-      @keyframes geoPulse{0%,100%{opacity:0.4}50%{opacity:1}}
     `;
     document.head.appendChild(style);
   }
@@ -302,26 +390,17 @@ export function showOnboarding({ onComplete }) {
           <button class="onb-lang-chip${currentLang==='en'?' active':''}" id="onb-lang-en">EN</button>
         </div>
 
-        <div style="margin-bottom:20px;text-align:center;">
-          <img src="/icon.svg" style="width:50px;height:50px;margin-bottom:7px;display:block;margin-left:auto;margin-right:auto;" alt="VALO OS"/>
-          <div style="font-weight:800;font-size:1.25rem;letter-spacing:-0.5px;color:#0F172A;">VALO OS</div>
-          <div style="font-size:0.68rem;color:#94A3B8;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">${T('logo_sub')}</div>
-        </div>
-
-        <!-- Geo detection badge -->
-        <div class="onb-geo-badge" id="onb-geo-badge">
-          <span class="onb-geo-dot${geoResolved?' found':''}" id="geo-dot"></span>
-          <i data-lucide="map-pin" style="width: 12px; height: 12px; color: #64748B;"></i>
-          <span id="geo-label">${geoResolved
-            ? (selectedCountry ? `${T('detected')} ${selectedCity ? selectedCity + ', ' : ''}${selectedCountry}` : (currentLang==='es'?'Ubicación no disponible':'Location unavailable'))
-            : T('detecting')
-          }</span>
+        <div style="margin-bottom:24px;text-align:center;">
+          <img src="/icon.svg" style="width:52px;height:52px;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;" alt="VALO OS"/>
+          <div style="font-weight:800;font-size:1.3rem;letter-spacing:-0.5px;color:#0F172A;">VALO OS</div>
+          <div style="font-size:0.70rem;color:#94A3B8;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">${T('logo_sub')}</div>
         </div>
 
         <div class="onb-dots">
           <div class="onb-dot${currentStep===1?' active':''}"></div>
           <div class="onb-dot${currentStep===2?' active':''}"></div>
           <div class="onb-dot${currentStep===3?' active':''}"></div>
+          <div class="onb-dot${currentStep===4?' active':''}"></div>
         </div>
 
         <!-- Step 1 -->
@@ -552,7 +631,17 @@ export function showOnboarding({ onComplete }) {
     }
     markOnboardingDone();
     overlay.classList.add('leaving');
-    overlay.addEventListener('animationend', () => { overlay.remove(); onComplete?.(); }, { once: true });
+
+    const appRoot = document.getElementById('app-root');
+    if (appRoot) {
+      appRoot.style.visibility = 'visible';
+      appRoot.style.animation = 'appReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both';
+    }
+
+    setTimeout(() => {
+      overlay.remove();
+      onComplete?.();
+    }, 380);
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────
