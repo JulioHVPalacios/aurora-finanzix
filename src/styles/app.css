@@ -1237,17 +1237,67 @@ body.zen-mode-active #btn-nav-zen i {
 .edge-panel-handle.samsung-style {
   position: fixed;
   right: 0;
-  top: 48%;
-  transform: translateY(-50%);
+  top: 50%;
+  transform: translateY(-50%) translate3d(0, 0, 0);
   z-index: 9990;
-  border: none;
   background: transparent;
+  border: none;
   padding: 0;
   cursor: pointer;
   outline: none;
-  display: flex;
-  align-items: center;
   user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.edge-panel-handle.samsung-style.hide {
+  transform: translateY(-50%) translate3d(30px, 0, 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.edge-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+  z-index: 9995;
+}
+
+.edge-panel-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.edge-panel-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 92vw;
+  background: linear-gradient(180deg, #FFFFFF 0px, #FFFFFF 38px, rgba(255, 255, 255, 0.88) 55px, rgba(255, 255, 255, 0.55) 100%);
+  backdrop-filter: blur(32px) saturate(210%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: -15px 0 50px rgba(15, 23, 42, 0.08), inset 1px 0 1px rgba(255, 255, 255, 0.9);
+  transform: translate3d(100%, 0, 0);
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.edge-panel-drawer.open {
+  transform: translate3d(0, 0, 0);
 }
 
 .samsung-edge-bar {
@@ -1303,47 +1353,6 @@ body.zen-mode-active #btn-nav-zen i {
 
 .edge-panel-handle.samsung-style:active .samsung-edge-bar {
   transform: scale(0.94);
-}
-
-.edge-panel-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.20);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 9995;
-}
-
-.edge-panel-backdrop.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.edge-panel-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 400px;
-  max-width: 92vw;
-  background: linear-gradient(180deg, #FFFFFF 0px, #FFFFFF 38px, rgba(255, 255, 255, 0.88) 55px, rgba(255, 255, 255, 0.55) 100%);
-  backdrop-filter: blur(32px) saturate(210%);
-  -webkit-backdrop-filter: blur(32px) saturate(210%);
-  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
-  box-shadow: -15px 0 50px rgba(15, 23, 42, 0.07), inset 1px 0 1px rgba(255, 255, 255, 0.9);
-  transform: translateX(100%);
-  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 9998;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.edge-panel-drawer.open {
-  transform: translateX(0);
 }
 
 .edge-drawer-header {

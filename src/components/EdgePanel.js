@@ -28,10 +28,46 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
     document.body.appendChild(container);
   }
 
-  function render() {
+  function getSymbol() {
     const settings = storage.getSettings() || {};
-    const symbol = settings.currencySymbol || 'S/';
+    return settings.currencySymbol || 'S/';
+  }
 
+  function openPanel() {
+    isEdgePanelOpen = true;
+    const drawer = container.querySelector('#edge-panel-drawer');
+    const backdrop = container.querySelector('#edge-panel-backdrop');
+    const handle = container.querySelector('#edge-panel-handle');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
+    if (handle) handle.classList.add('hide');
+  }
+
+  function closePanel() {
+    isEdgePanelOpen = false;
+    const drawer = container.querySelector('#edge-panel-drawer');
+    const backdrop = container.querySelector('#edge-panel-backdrop');
+    const handle = container.querySelector('#edge-panel-handle');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+    if (handle) handle.classList.remove('hide');
+  }
+
+  function switchTab(newTab) {
+    activeEdgeTab = newTab;
+    container.querySelectorAll('.edge-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === activeEdgeTab);
+    });
+    const body = container.querySelector('.edge-drawer-body');
+    if (body) {
+      body.innerHTML = renderTabContent(getSymbol(), onAddTransaction);
+      attachTabSpecificEvents(getSymbol(), onAddTransaction);
+      createIcons({ icons });
+    }
+  }
+
+  function buildShell() {
+    const symbol = getSymbol();
     container.innerHTML = `
       <!-- Samsung One UI Liquid Glass Edge Handle -->
       <button id="edge-panel-handle" class="edge-panel-handle samsung-style" title="Panel Edge (Calculadora y Utilidades)" aria-label="Abrir Panel Edge">
@@ -89,7 +125,19 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
       </aside>
     `;
 
-    attachEvents(symbol, onAddTransaction);
+    // Static event handlers (attached once)
+    container.querySelector('#edge-panel-handle')?.addEventListener('click', openPanel);
+    container.querySelector('#btn-close-edge-panel')?.addEventListener('click', closePanel);
+    container.querySelector('#edge-panel-backdrop')?.addEventListener('click', closePanel);
+
+    // Tab Switchers
+    container.querySelectorAll('.edge-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.dataset.tab);
+      });
+    });
+
+    attachTabSpecificEvents(symbol, onAddTransaction);
     createIcons({ icons });
   }
 
@@ -368,31 +416,7 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
     `;
   }
 
-  function attachEvents(symbol, onAddTransaction) {
-    // Open Edge Handle Click
-    container.querySelector('#edge-panel-handle')?.addEventListener('click', () => {
-      isEdgePanelOpen = true;
-      render();
-    });
-
-    // Close Button & Backdrop Click
-    container.querySelector('#btn-close-edge-panel')?.addEventListener('click', () => {
-      isEdgePanelOpen = false;
-      render();
-    });
-    container.querySelector('#edge-panel-backdrop')?.addEventListener('click', () => {
-      isEdgePanelOpen = false;
-      render();
-    });
-
-    // Tab Switchers
-    container.querySelectorAll('.edge-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeEdgeTab = btn.dataset.tab;
-        render();
-      });
-    });
-
+  function attachTabSpecificEvents(symbol, onAddTransaction) {
     // Calculator Keypad Logic
     if (activeEdgeTab === 'calc') {
       container.querySelectorAll('.calc-key').forEach(btn => {
@@ -419,8 +443,7 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
       // Send to expense modal
       container.querySelector('#btn-calc-to-expense')?.addEventListener('click', () => {
         const val = parseFloat(calcDisplay) || 0;
-        isEdgePanelOpen = false;
-        render();
+        closePanel();
         if (onAddTransaction && val > 0) {
           onAddTransaction('expense', { initialAmount: val });
         }
@@ -617,5 +640,5 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
     return Number(Math.round(res * 100000000) / 100000000);
   }
 
-  render();
+  buildShell();
 }
