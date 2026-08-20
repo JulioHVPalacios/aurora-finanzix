@@ -4,7 +4,7 @@
    ========================================================================== */
 
 import { storage } from '../services/storage.js';
-import { getFinancialMetrics } from '../services/analytics.js';
+import { getFinancialMetrics, getWeeklyCashflow } from '../services/analytics.js';
 import { t, formatCurrency, getCategoryName } from '../services/i18n.js';
 import { renderSponsoredDealsCard, attachSponsoredDealEvents } from './SponsoredDealsCard.js';
 import { createIcons, icons } from 'lucide';
@@ -102,34 +102,60 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
         </div>
       </div>
 
-      <!-- Liquidity Wave Chart -->
-      <div class="chart-card-glass">
-        <div class="chart-card-header">
+      <!-- Interactive Weekly Cashflow & Liquidity Visualizer -->
+      <div class="chart-card-glass" style="background: #FFFFFF; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: var(--radius-lg); padding: 18px 20px;">
+        <div class="chart-card-header" style="margin-bottom: 14px;">
           <div class="chart-title-left">
-            <i data-lucide="activity" style="width: 17px; height: 17px; color: #0F172A;"></i>
-            <span>${t('dash_liquidity_trend')}</span>
+            <div style="width: 28px; height: 28px; border-radius: 8px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="bar-chart-3" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.92rem; color: #0F172A;">${t('dash_liquidity_trend')}</div>
+              <div style="font-size: 0.68rem; color: #64748B; font-family: var(--font-mono);">${t('dash_monthly_flow')}</div>
+            </div>
           </div>
-          <span class="chart-title-sub">${t('dash_monthly_flow')}</span>
+          <button type="button" id="btn-view-cashflow-analytics" style="background: none; border: none; font-size: 0.72rem; font-weight: 700; color: #4F46E5; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <span>Reportes</span>
+            <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+          </button>
         </div>
 
-        <div style="width: 100%; height: 90px; position: relative;">
-          <svg viewBox="0 0 400 90" preserveAspectRatio="none" style="width: 100%; height: 100%;">
-            <defs>
-              <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#0F172A" stop-opacity="0.12"/>
-                <stop offset="100%" stop-color="#0F172A" stop-opacity="0.0"/>
-              </linearGradient>
-            </defs>
-            <path d="M0,65 Q60,25 120,45 T240,30 T320,60 T400,15 L400,90 L0,90 Z" fill="url(#waveGradient)" />
-            <path d="M0,65 Q60,25 120,45 T240,30 T320,60 T400,15" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" />
-          </svg>
-        </div>
+        <!-- 4-Column Interactive Weekly Cards -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+          ${(getWeeklyCashflow() || []).map(w => {
+            const isPositive = w.net > 0;
+            const isNegative = w.net < 0;
+            const hasData = w.count > 0;
+            return `
+              <div class="weekly-flow-card" data-week="${w.id}" style="
+                background: ${hasData ? (isPositive ? '#F0FDF4' : isNegative ? '#FFF1F2' : '#F8FAFC') : '#F8FAFC'};
+                border: 1.5px solid ${hasData ? (isPositive ? 'rgba(34, 197, 94, 0.3)' : isNegative ? 'rgba(244, 63, 94, 0.3)' : 'rgba(15, 23, 42, 0.08)') : 'rgba(15, 23, 42, 0.06)'};
+                border-radius: 14px;
+                padding: 12px 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 85px;
+              " title="Ingresos: +${formatCurrency(w.income)} | Gastos: -${formatCurrency(w.expense)}">
+                <div>
+                  <div style="font-size: 0.74rem; font-weight: 800; color: #0F172A;">${w.label}</div>
+                  <div style="font-size: 0.62rem; color: #94A3B8; font-family: var(--font-mono); margin-top: 1px;">días ${w.range}</div>
+                </div>
 
-        <div class="chart-legend-row">
-          <span>${t('dash_wk1')}</span>
-          <span>${t('dash_wk2')}</span>
-          <span>${t('dash_wk3')}</span>
-          <span class="chart-legend-active">${t('dash_wk4')}</span>
+                <div style="margin-top: 8px;">
+                  <div style="font-family: var(--font-mono); font-weight: 800; font-size: 0.80rem; color: ${hasData ? (isPositive ? '#15803D' : isNegative ? '#BE123C' : '#0F172A') : '#94A3B8'};">
+                    ${hasData ? (isPositive ? `+${formatCurrency(w.net)}` : formatCurrency(w.net)) : 'S/ 0'}
+                  </div>
+                  <div style="font-size: 0.58rem; font-weight: 700; color: ${hasData ? (isPositive ? '#16A34A' : isNegative ? '#E11D48' : '#64748B') : '#94A3B8'}; margin-top: 2px;">
+                    ${hasData ? (isPositive ? 'Superávit' : isNegative ? 'Déficit' : 'Equilibrio') : 'Sin datos'}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
       </div>
 
@@ -224,6 +250,10 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
+  container.querySelector('#btn-view-cashflow-analytics')?.addEventListener('click', () => onNavigate('analytics'));
+  container.querySelectorAll('.weekly-flow-card').forEach(card => {
+    card.addEventListener('click', () => onNavigate('analytics'));
+  });
 
   // Attach sponsored deals dismiss handler
   attachSponsoredDealEvents(container);

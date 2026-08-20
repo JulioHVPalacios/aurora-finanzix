@@ -100,3 +100,43 @@ export function getMonthlyHistory(monthCount = 6) {
 
   return Object.values(monthsMap);
 }
+
+export function getWeeklyCashflow() {
+  const txs = storage.getTransactions() || [];
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const weeks = [
+    { id: 1, label: 'Sem 1', range: '1 - 7', income: 0, expense: 0, net: 0, count: 0 },
+    { id: 2, label: 'Sem 2', range: '8 - 14', income: 0, expense: 0, net: 0, count: 0 },
+    { id: 3, label: 'Sem 3', range: '15 - 21', income: 0, expense: 0, net: 0, count: 0 },
+    { id: 4, label: 'Sem 4', range: '22 - fin', income: 0, expense: 0, net: 0, count: 0 },
+  ];
+
+  txs.forEach(t => {
+    const d = new Date(t.date || t.timestamp || Date.now());
+    if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+      const day = d.getDate();
+      let idx = 0;
+      if (day <= 7) idx = 0;
+      else if (day <= 14) idx = 1;
+      else if (day <= 21) idx = 2;
+      else idx = 3;
+
+      const amt = Number(t.amount) || 0;
+      if (t.type === 'income') {
+        weeks[idx].income += amt;
+      } else {
+        weeks[idx].expense += amt;
+      }
+      weeks[idx].count += 1;
+    }
+  });
+
+  weeks.forEach(w => {
+    w.net = w.income - w.expense;
+  });
+
+  return weeks;
+}
