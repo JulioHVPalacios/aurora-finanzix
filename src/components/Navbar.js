@@ -40,7 +40,7 @@ export function renderNavbar(container, { onOpenMobileQR, onOpenExportImport, on
 
   container.innerHTML = `
     <div class="navbar-user" id="btn-navbar-profile" style="max-width: 48%; overflow: hidden; cursor: pointer;" title="${t('nav_edit_profile') || 'Editar Perfil'}">
-      <div class="user-avatar-glass" style="background: #090D16; border: 1.5px solid rgba(255,255,255,0.85); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0; font-size: ${initials.length > 0 ? '0.85rem' : '1rem'}; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center;">
+      <div class="user-avatar-glass" style="background: #090D16; border-radius: 50%; border: 1.5px solid rgba(15, 23, 42, 0.12); color: #FFFFFF; font-weight: 800; width: 36px; height: 36px; flex-shrink: 0; font-size: ${initials.length > 0 ? '0.85rem' : '1rem'}; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; box-shadow: none;">
         ${initials.length > 0
           ? initials
           : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
