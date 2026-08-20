@@ -33,12 +33,11 @@ export function initEdgePanel({ onAddTransaction = null } = {}) {
     const symbol = settings.currencySymbol || 'S/';
 
     container.innerHTML = `
-      <!-- Edge Floating Trigger Handle -->
-      <button id="edge-panel-handle" class="edge-panel-handle" title="Utilidades y Calculadora" aria-label="Abrir Panel Edge">
-        <div class="edge-handle-glow"></div>
-        <div class="edge-handle-pill">
-          <i data-lucide="calculator" style="width: 17px; height: 17px;"></i>
-          <span class="edge-handle-label">UTILIDADES</span>
+      <!-- Samsung One UI Liquid Glass Edge Handle -->
+      <button id="edge-panel-handle" class="edge-panel-handle samsung-style" title="Panel Edge (Calculadora y Utilidades)" aria-label="Abrir Panel Edge">
+        <div class="samsung-edge-bar">
+          <div class="samsung-edge-grip"></div>
+          <i data-lucide="calculator" class="samsung-edge-icon"></i>
         </div>
       </button>
 
