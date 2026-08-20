@@ -76,131 +76,36 @@ html, body {
   z-index: 2;
 }
 
-/* Desktop Top Header Bar */
+/* Desktop Top Header Bar (Hidden for True Native Desktop App Look) */
 .desktop-banner {
-  width: 100%;
-  max-width: 1200px;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.desktop-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-circle-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #0F172A;
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-}
-
-.brand-name {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: -0.02em;
-  color: #0F172A;
-}
-
-.brand-name span {
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 3px 8px;
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
-  color: #FFFFFF;
-  border-radius: 6px;
-  margin-left: 6px;
-  vertical-align: middle;
-}
-
-.desktop-banner-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-banner-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  color: #0F172A;
-  border-radius: 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s var(--e-out), opacity 0.2s var(--e-out), background-color 0.2s var(--e-out); will-change: transform, opacity;
-}
-
-.btn-banner-action:hover {
-  background: #FFFFFF;
-  border-color: rgba(15, 23, 42, 0.2);
-  transform: translateY(-1px);
-}
-
-.btn-banner-accent {
-  background: #0F172A;
-  color: #FFFFFF;
-  border: none;
-  font-weight: 700;
+  display: none !important;
 }
 
 /* --------------------------------------------------------------------------
-   Phone Chassis (Pearl White Liquid Glass Frame)
+   Native App Chassis (Adaptive Full-Window on Desktop, Native on Mobile)
    -------------------------------------------------------------------------- */
 .phone-container {
   width: 100%;
-  max-width: 420px;
-  min-height: 844px;
-  height: 92vh;
-  margin: 14px auto 24px;
-  background: rgba(255, 255, 255, 0.85);
+  max-width: 1020px;
+  min-height: 100vh;
+  height: 100vh;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: var(--radius-phone);
-  box-shadow: 
-    0 30px 80px -15px rgba(15, 23, 42, 0.15),
-    0 0 0 1px rgba(15, 23, 42, 0.06);
+  border-left: 1px solid rgba(15, 23, 42, 0.07);
+  border-right: 1px solid rgba(15, 23, 42, 0.07);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: 0 0 40px rgba(15, 23, 42, 0.03);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transition: max-width 0.3s var(--e-out);
 }
 
-.phone-container.mode-expanded {
-  max-width: 960px;
-  border-radius: 28px;
-}
-
-/* Simulated Status Bar (Removed on All Devices for Clean Look) */
+/* Simulated Status Bar (Removed for Clean Native App Look) */
 .phone-status-bar {
   display: none !important;
 }
