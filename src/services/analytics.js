@@ -173,23 +173,29 @@ export function getDailySpendingPace() {
   });
 
   // 3. Presupuesto disponible base
-  const monthlyBudget = Number(settings.monthlyBudget) || (currentMonthExpenses > 0 ? currentMonthExpenses * 1.25 : 1500);
-  const discretionaryPool = Math.max(0, monthlyBudget - currentMonthExpenses - pendingFixedBills);
-  const dailySafeToSpend = Number((discretionaryPool / daysRemaining).toFixed(2));
+  const hasBudget = Number(settings.monthlyBudget) > 0;
+  const monthlyBudget = hasBudget ? Number(settings.monthlyBudget) : 0;
+  const discretionaryPool = hasBudget ? Math.max(0, monthlyBudget - currentMonthExpenses - pendingFixedBills) : 0;
+  const dailySafeToSpend = hasBudget ? Number((discretionaryPool / daysRemaining).toFixed(2)) : 0;
 
   // 4. Ritmo de gasto (Pace)
-  const idealExpectedSpend = (monthlyBudget * (currentDay / daysInMonth));
-  const paceDelta = Number((idealExpectedSpend - currentMonthExpenses).toFixed(2));
-  const budgetSpentPct = Math.min(100, Math.round((currentMonthExpenses / (monthlyBudget || 1)) * 100));
+  const idealExpectedSpend = hasBudget ? (monthlyBudget * (currentDay / daysInMonth)) : 0;
+  const paceDelta = hasBudget ? Number((idealExpectedSpend - currentMonthExpenses).toFixed(2)) : 0;
+  const budgetSpentPct = hasBudget ? Math.min(100, Math.round((currentMonthExpenses / monthlyBudget) * 100)) : 0;
 
-  let paceStatus = 'on_track'; // 'ahead' | 'on_track' | 'behind'
-  if (paceDelta > (monthlyBudget * 0.04)) {
+  let paceStatus = 'no_budget'; // 'ahead' | 'on_track' | 'behind' | 'no_budget'
+  if (!hasBudget) {
+    paceStatus = 'no_budget';
+  } else if (paceDelta > (monthlyBudget * 0.03)) {
     paceStatus = 'ahead';
-  } else if (paceDelta < -(monthlyBudget * 0.04)) {
+  } else if (paceDelta < -(monthlyBudget * 0.03)) {
     paceStatus = 'behind';
+  } else {
+    paceStatus = 'on_track';
   }
 
   return {
+    hasBudget,
     dailySafeToSpend,
     discretionaryPool: Number(discretionaryPool.toFixed(2)),
     daysRemaining,

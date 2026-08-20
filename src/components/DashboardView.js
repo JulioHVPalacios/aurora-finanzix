@@ -115,18 +115,18 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
       ">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 28px; height: 28px; border-radius: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: center; color: #0F172A;">
+            <div style="width: 28px; height: 28px; border-radius: 8px; background: #EEF2FF; color: #4F46E5; display: flex; align-items: center; justify-content: center;">
               <i data-lucide="compass" style="width: 15px; height: 15px;"></i>
             </div>
             <div>
-              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B;">Límite Diario Seguro</span>
+              <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B;">Disponible para Gastar Hoy</span>
               <div style="font-size: 0.65rem; color: #94A3B8; font-family: var(--font-mono);">${paceData.daysRemaining} días restantes en el mes</div>
             </div>
           </div>
 
           <div style="
-            background: ${paceData.paceStatus === 'ahead' ? '#ECFDF5' : paceData.paceStatus === 'behind' ? '#FFF1F2' : '#EEF2FF'};
-            color: ${paceData.paceStatus === 'ahead' ? '#059669' : paceData.paceStatus === 'behind' ? '#E11D48' : '#4F46E5'};
+            background: ${!paceData.hasBudget ? '#F1F5F9' : paceData.paceStatus === 'ahead' ? '#ECFDF5' : paceData.paceStatus === 'behind' ? '#FFF1F2' : '#EEF2FF'};
+            color: ${!paceData.hasBudget ? '#64748B' : paceData.paceStatus === 'ahead' ? '#059669' : paceData.paceStatus === 'behind' ? '#E11D48' : '#4F46E5'};
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.68rem;
@@ -135,37 +135,39 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
             align-items: center;
             gap: 4px;
           ">
-            <i data-lucide="${paceData.paceStatus === 'ahead' ? 'trending-down' : paceData.paceStatus === 'behind' ? 'alert-triangle' : 'sparkles'}" style="width: 12px; height: 12px;"></i>
-            <span>${paceData.paceStatus === 'ahead' ? `${symbol}${Math.abs(paceData.paceDelta)} bajo el ritmo` : paceData.paceStatus === 'behind' ? `${symbol}${Math.abs(paceData.paceDelta)} sobre el ritmo` : 'Ritmo óptimo'}</span>
+            <i data-lucide="${!paceData.hasBudget ? 'target' : paceData.paceStatus === 'ahead' ? 'trending-down' : paceData.paceStatus === 'behind' ? 'alert-triangle' : 'sparkles'}" style="width: 12px; height: 12px;"></i>
+            <span>${!paceData.hasBudget ? 'Definir Presupuesto' : paceData.paceStatus === 'ahead' ? 'Excelente ritmo de ahorro' : paceData.paceStatus === 'behind' ? 'Gasto acelerado este mes' : 'Ritmo óptimo'}</span>
           </div>
         </div>
 
         <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
           <div>
             <span style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">
-              ${symbol}${paceData.dailySafeToSpend.toFixed(2)}
+              ${formatCurrency(paceData.dailySafeToSpend)}
             </span>
-            <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;"> / hoy</span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;"> / por día</span>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 0.76rem; font-weight: 700; color: #0F172A; font-family: var(--font-mono);">
-              ${symbol}${paceData.discretionaryPool} libre
+            <div style="font-size: 0.78rem; font-weight: 700; color: #0F172A; font-family: var(--font-mono);">
+              ${paceData.hasBudget ? `${formatCurrency(paceData.discretionaryPool)} libre` : 'S/ 0.00 asignado'}
             </div>
-            <div style="font-size: 0.62rem; color: #94A3B8;">tras fijos (${symbol}${paceData.pendingFixedBills})</div>
+            <div style="font-size: 0.62rem; color: #94A3B8;">
+              ${paceData.hasBudget ? (paceData.pendingFixedBills > 0 ? `tras fijos (${formatCurrency(paceData.pendingFixedBills)})` : 'para todo el mes') : 'Toca para fijar meta'}
+            </div>
           </div>
         </div>
 
         <!-- Dual Progression Velocity Meter (Time vs Spent) -->
         <div style="position: relative; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden;">
           <!-- Reference Indicator: Time elapsed in the month -->
-          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.monthProgressPct}%; background: rgba(15, 23, 42, 0.12); z-index: 1;" title="Avance del mes: ${paceData.monthProgressPct}%"></div>
+          <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.monthProgressPct}%; background: rgba(15, 23, 42, 0.12); z-index: 1;" title="Días del mes transcurridos: ${paceData.monthProgressPct}%"></div>
           <!-- Actual Spent Bar -->
           <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${paceData.budgetSpentPct}%; background: ${paceData.paceStatus === 'behind' ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : 'linear-gradient(90deg, #10B981, #059669)'}; border-radius: 999px; z-index: 2; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.62rem; color: #94A3B8; font-family: var(--font-mono);">
-          <span>Gasto consumido: <strong>${paceData.budgetSpentPct}%</strong></span>
-          <span>Días transcurridos: <strong>${paceData.monthProgressPct}%</strong></span>
+          <span>Presupuesto gastado: <strong>${paceData.budgetSpentPct}%</strong></span>
+          <span>Días transcurridos: <strong>${paceData.monthProgressPct}% (${paceData.currentDay}/${paceData.daysInMonth})</strong></span>
         </div>
       </div>
 
