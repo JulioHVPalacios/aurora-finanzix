@@ -175,15 +175,18 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
       </div>
 
       <!-- Monthly Budget Progress Card -->
-      <div class="budget-card-glass">
+      <div class="budget-card-glass" id="card-monthly-budget" style="cursor: pointer;">
         <div class="budget-header-row">
           <div class="budget-title">${t('dash_monthly_budget')}</div>
           <div class="budget-values">
-            ${symbol}${(metrics.totalExpense || 0).toFixed(0)} / ${symbol}${monthlyBudget} <span style="color: #0F172A; font-weight: 800;">(${budgetSpentPct}%)</span>
+            ${monthlyBudget > 0 
+              ? `${symbol}${(metrics.totalExpense || 0).toFixed(0)} / ${symbol}${monthlyBudget} <span style="color: #0F172A; font-weight: 800;">(${budgetSpentPct}%)</span>` 
+              : `${symbol}${(metrics.totalExpense || 0).toFixed(0)} gastados · <span style="color: #4F46E5; font-weight: 700;">Fijar límite</span>`
+            }
           </div>
         </div>
         <div class="budget-progress-track">
-          <div class="budget-progress-bar" style="width: ${budgetSpentPct}%;"></div>
+          <div class="budget-progress-bar" style="width: ${monthlyBudget > 0 ? budgetSpentPct : 0}%;"></div>
         </div>
       </div>
 
@@ -265,6 +268,7 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
   container.querySelector('#card-stat-income')?.addEventListener('click', () => onAddTransaction('income'));
   container.querySelector('#card-stat-expense')?.addEventListener('click', () => onAddTransaction('expense'));
   container.querySelector('#card-stat-savings')?.addEventListener('click', () => onNavigate('budgets'));
+  container.querySelector('#card-monthly-budget')?.addEventListener('click', () => onNavigate('budgets'));
   container.querySelector('.chart-card-glass')?.addEventListener('click', () => onNavigate('analytics'));
 
   // Attach sponsored deals dismiss handler
