@@ -271,6 +271,34 @@ html, body {
   animation: fadeInUp 0.35s var(--e-out) both;
 }
 
+.dashboard-top-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-top-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 801px) {
+  .dashboard-top-section {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .dashboard-top-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
 /* --------------------------------------------------------------------------
    VIBRANT LIQUID GLASS & OBSIDIAN CARDS (Ultra-Premium Fintech Aesthetic)
    -------------------------------------------------------------------------- */
@@ -280,7 +308,7 @@ html, body {
   background: #090D16;
   border-radius: var(--radius-lg);
   padding: 24px 22px;
-  min-height: 165px;
+  min-height: 175px;
   color: #FFFFFF;
   position: relative;
   overflow: hidden;

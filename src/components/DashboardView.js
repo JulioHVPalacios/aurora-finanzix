@@ -28,73 +28,78 @@ export function renderDashboard(container, { onNavigate, onAddTransaction, onSho
 
   container.innerHTML = `
     <div class="view-transition-wrap">
-      <!-- Hero Balance Card (Obsidian Living Video Card) -->
-      <div class="hero-balance-card">
-        <video class="hero-bg-video" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture disableremoteplayback preload="auto">
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
-        <div class="hero-card-overlay"></div>
-        <div class="hero-card-content">
-          <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
-          <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
-          
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div class="hero-savings-chip">
-              <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #34D399;"></i>
-              <span>${metrics.savingsRate || 0}% ${t('dash_savings_rate')}</span>
+      <!-- Desktop Split Top Section (Hero Card + Stats Grid) -->
+      <div class="dashboard-top-section">
+        <!-- Hero Balance Card (Obsidian Living Video Card) -->
+        <div class="hero-balance-card">
+          <video class="hero-bg-video" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture disableremoteplayback preload="auto">
+            <source src="/hero-bg.mp4" type="video/mp4" />
+          </video>
+          <div class="hero-card-overlay"></div>
+          <div class="hero-card-content">
+            <div class="hero-user-name">${t('dash_greeting')}, ${userName}</div>
+            <div class="hero-balance-amount">${formatCurrency(metrics.netBalance || 0)}</div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <div class="hero-savings-chip">
+                <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #34D399;"></i>
+                <span>${metrics.savingsRate || 0}% ${t('dash_savings_rate')}</span>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.9);">
+                ${t('dash_budget')}: <strong>${symbol}${monthlyBudget}</strong>
+              </div>
             </div>
-            <div style="font-family: var(--font-mono); font-size: 0.76rem; color: rgba(255, 255, 255, 0.9);">
-              ${t('dash_budget')}: <strong>${symbol}${monthlyBudget}</strong>
+          </div>
+        </div>
+
+        <div class="dashboard-top-right">
+          <!-- 3-Column Pure White Stat Box Grid (Non-AI, Crisp High-End Finish) -->
+          <div class="stats-grid">
+            <div class="stat-box-card stat-box-income" id="card-stat-income">
+              <div class="stat-amount">+${formatCurrency(metrics.totalIncome || 0)}</div>
+              <div class="stat-label">${t('dash_income')}</div>
+            </div>
+            <div class="stat-box-card stat-box-expense" id="card-stat-expense">
+              <div class="stat-amount">-${formatCurrency(metrics.totalExpense || 0)}</div>
+              <div class="stat-label">${t('dash_expense')}</div>
+            </div>
+            <div class="stat-box-card stat-box-savings" id="card-stat-savings">
+              <div class="stat-amount">${metrics.savingsRate || 0}%</div>
+              <div class="stat-label">${t('dash_savings')}</div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- 3-Column Pure White Stat Box Grid (Non-AI, Crisp High-End Finish) -->
-      <div class="stats-grid">
-        <div class="stat-box-card stat-box-income" id="card-stat-income">
-          <div class="stat-amount">+${formatCurrency(metrics.totalIncome || 0)}</div>
-          <div class="stat-label">${t('dash_income')}</div>
-        </div>
-        <div class="stat-box-card stat-box-expense" id="card-stat-expense">
-          <div class="stat-amount">-${formatCurrency(metrics.totalExpense || 0)}</div>
-          <div class="stat-label">${t('dash_expense')}</div>
-        </div>
-        <div class="stat-box-card stat-box-savings" id="card-stat-savings">
-          <div class="stat-amount">${metrics.savingsRate || 0}%</div>
-          <div class="stat-label">${t('dash_savings')}</div>
-        </div>
-      </div>
+          <!-- Quick Action Pill Buttons (Minimalist SVG Icons) -->
+          <div class="quick-actions-row">
+            <button type="button" class="action-pill-btn" id="btn-quick-expense">
+              <div class="action-icon-circle action-icon-expense">
+                <i data-lucide="arrow-up-right" style="width: 17px; height: 17px;"></i>
+              </div>
+              <span>${t('qa_expense')}</span>
+            </button>
 
-      <!-- Quick Action Pill Buttons (Minimalist SVG Icons) -->
-      <div class="quick-actions-row">
-        <button type="button" class="action-pill-btn" id="btn-quick-expense">
-          <div class="action-icon-circle action-icon-expense">
-            <i data-lucide="arrow-up-right" style="width: 17px; height: 17px;"></i>
+            <button type="button" class="action-pill-btn" id="btn-quick-income">
+              <div class="action-icon-circle action-icon-income">
+                <i data-lucide="arrow-down-left" style="width: 17px; height: 17px;"></i>
+              </div>
+              <span>${t('qa_income')}</span>
+            </button>
+
+            <button type="button" class="action-pill-btn" id="btn-quick-cost">
+              <div class="action-icon-circle action-icon-cost">
+                <i data-lucide="calculator" style="width: 17px; height: 17px;"></i>
+              </div>
+              <span>${t('qa_costs')}</span>
+            </button>
+
+            <button type="button" class="action-pill-btn" id="btn-quick-budget">
+              <div class="action-icon-circle action-icon-goals">
+                <i data-lucide="target" style="width: 17px; height: 17px;"></i>
+              </div>
+              <span>${t('qa_goals')}</span>
+            </button>
           </div>
-          <span>${t('qa_expense')}</span>
-        </button>
-
-        <button type="button" class="action-pill-btn" id="btn-quick-income">
-          <div class="action-icon-circle action-icon-income">
-            <i data-lucide="arrow-down-left" style="width: 17px; height: 17px;"></i>
-          </div>
-          <span>${t('qa_income')}</span>
-        </button>
-
-        <button type="button" class="action-pill-btn" id="btn-quick-cost">
-          <div class="action-icon-circle action-icon-cost">
-            <i data-lucide="calculator" style="width: 17px; height: 17px;"></i>
-          </div>
-          <span>${t('qa_costs')}</span>
-        </button>
-
-        <button type="button" class="action-pill-btn" id="btn-quick-budget">
-          <div class="action-icon-circle action-icon-goals">
-            <i data-lucide="target" style="width: 17px; height: 17px;"></i>
-          </div>
-          <span>${t('qa_goals')}</span>
-        </button>
+        </div>
       </div>
 
       <!-- Liquidity Wave Chart -->
