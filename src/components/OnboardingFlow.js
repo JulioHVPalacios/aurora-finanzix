@@ -10,6 +10,7 @@ import { storage } from '../services/storage.js';
 import { setLanguage } from '../services/i18n.js';
 import { ALL_COUNTRIES, getCitiesForCountry } from '../services/citiesData.js';
 import { biometrics } from '../services/biometrics.js';
+import { createIcons, icons } from 'lucide';
 
 const ONBOARDING_KEY = 'valo_onboarding_done_v1';
 
@@ -75,31 +76,31 @@ const ONBOARDING_TX = {
   es: {
     logo_sub: 'Tu espacio financiero personal',
     detecting: 'Detectando tu ubicación…',
-    detected: '📍 Detectado:',
-    step1_emoji: '👋', step1_title: '¿Cómo te llamas?',
+    detected: 'Detectado:',
+    step1_title: '¿Cómo te llamas?',
     step1_ph1: 'Primer nombre  (ej: Julio)',
     step1_ph2: 'Apellidos  (ej: Hidalgo Palacios)',
     step1_btn: 'Continuar →', step1_skip: 'Saltar',
-    step2_emoji: '📍', step2_title: '¿Dónde estás?',
+    step2_title: '¿Dónde estás?',
     step2_city_lbl: 'Ciudad', step2_country_lbl: 'País',
     step2_btn: 'Continuar →', step2_skip: 'Saltar',
-    step3_emoji: '✨', step3_base: '¡Todo listo',
-    step3_end: '!', step3_sub: 'Tu espacio financiero está listo.',
+    step3_base: '¡Todo listo',
+    step3_end: '!', step3_sub: 'Tu espacio financiero está configurado y listo para usar.',
     step3_btn: 'Entrar a VALO OS →',
   },
   en: {
     logo_sub: 'Your personal financial space',
     detecting: 'Detecting your location…',
-    detected: '📍 Detected:',
-    step1_emoji: '👋', step1_title: "What's your name?",
+    detected: 'Detected:',
+    step1_title: "What's your name?",
     step1_ph1: 'First name  (e.g. John)',
     step1_ph2: 'Last name  (e.g. Smith)',
     step1_btn: 'Continue →', step1_skip: 'Skip',
-    step2_emoji: '📍', step2_title: 'Where are you located?',
+    step2_title: 'Where are you located?',
     step2_city_lbl: 'City', step2_country_lbl: 'Country',
     step2_btn: 'Continue →', step2_skip: 'Skip',
-    step3_emoji: '✨', step3_base: "You're all set",
-    step3_end: '!', step3_sub: 'Your financial space is ready.',
+    step3_base: "You're all set",
+    step3_end: '!', step3_sub: 'Your financial space is configured and ready to use.',
     step3_btn: 'Enter VALO OS →',
   }
 };
@@ -220,11 +221,29 @@ export function showOnboarding({ onComplete }) {
       .onb-dots{display:flex;gap:6px;margin-bottom:22px;}
       .onb-dot{width:6px;height:6px;border-radius:50%;background:#E2E8F0;transition:background 0.2s,width 0.2s;}
       .onb-dot.active{background:#0F172A;width:18px;border-radius:3px;}
+      .onb-icon-badge {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+        border: 1.5px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12), inset 0 1px 2px #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        color: #4F46E5;
+      }
+      .onb-icon-badge.success {
+        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+        color: #059669;
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.14), inset 0 1px 2px #FFFFFF;
+      }
       .onb-geo-badge{
-        display:flex;align-items:center;gap:5px;
-        font-size:0.7rem;color:#64748B;font-weight:600;
-        background:#F1F5F9;border-radius:999px;padding:4px 10px;
-        margin-bottom:16px;min-height:24px;
+        display:flex;align-items:center;gap:6px;
+        font-size:0.72rem;color:#64748B;font-weight:600;
+        background:#F1F5F9;border-radius:999px;padding:4px 12px;
+        margin-bottom:16px;min-height:26px;
         transition:all 0.3s;
       }
       .onb-geo-dot{
@@ -292,6 +311,7 @@ export function showOnboarding({ onComplete }) {
         <!-- Geo detection badge -->
         <div class="onb-geo-badge" id="onb-geo-badge">
           <span class="onb-geo-dot${geoResolved?' found':''}" id="geo-dot"></span>
+          <i data-lucide="map-pin" style="width: 12px; height: 12px; color: #64748B;"></i>
           <span id="geo-label">${geoResolved
             ? (selectedCountry ? `${T('detected')} ${selectedCity ? selectedCity + ', ' : ''}${selectedCountry}` : (currentLang==='es'?'Ubicación no disponible':'Location unavailable'))
             : T('detecting')
@@ -307,8 +327,8 @@ export function showOnboarding({ onComplete }) {
         <!-- Step 1 -->
         <div class="onb-step${currentStep===1?' active':''}" id="onb-step-1">
           <div style="text-align:center;margin-bottom:18px;">
-            <div style="font-size:1.9rem;margin-bottom:6px;">${T('step1_emoji')}</div>
-            <h2 style="font-size:1.18rem;font-weight:800;color:#0F172A;margin:0;">${T('step1_title')}</h2>
+            <div class="onb-icon-badge"><i data-lucide="user" style="width: 26px; height: 26px;"></i></div>
+            <h2 style="font-size:1.22rem;font-weight:800;color:#0F172A;margin:0;letter-spacing:-0.02em;">${T('step1_title')}</h2>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
             <input class="onb-input" id="onb-first-name" type="text" value="${savedFirstName}" placeholder="${T('step1_ph1')}" autocomplete="given-name"/>
@@ -323,8 +343,8 @@ export function showOnboarding({ onComplete }) {
         <!-- Step 2 -->
         <div class="onb-step${currentStep===2?' active':''}" id="onb-step-2">
           <div style="text-align:center;margin-bottom:18px;">
-            <div style="font-size:1.9rem;margin-bottom:6px;">${T('step2_emoji')}</div>
-            <h2 style="font-size:1.18rem;font-weight:800;color:#0F172A;margin:0;">${T('step2_title')}</h2>
+            <div class="onb-icon-badge"><i data-lucide="globe" style="width: 26px; height: 26px;"></i></div>
+            <h2 style="font-size:1.22rem;font-weight:800;color:#0F172A;margin:0;letter-spacing:-0.02em;">${T('step2_title')}</h2>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
             <div>
@@ -345,9 +365,9 @@ export function showOnboarding({ onComplete }) {
         <!-- Step 3 (Security) -->
         <div class="onb-step${currentStep===3?' active':''}" id="onb-step-3">
           <div style="text-align:center;margin-bottom:18px;">
-            <div style="font-size:1.9rem;margin-bottom:6px;">🔒</div>
-            <h2 style="font-size:1.18rem;font-weight:800;color:#0F172A;margin:0;">${currentLang === 'es' ? 'Seguridad de tu App' : 'App Security'}</h2>
-            <p style="font-size:0.75rem;color:#64748B;margin-top:6px;">${currentLang === 'es' ? 'Ingresa un PIN de 4 dígitos para proteger tu información.' : 'Enter a 4-digit PIN to secure your data.'}</p>
+            <div class="onb-icon-badge"><i data-lucide="shield-check" style="width: 26px; height: 26px;"></i></div>
+            <h2 style="font-size:1.22rem;font-weight:800;color:#0F172A;margin:0;letter-spacing:-0.02em;">${currentLang === 'es' ? 'Seguridad de tu App' : 'App Security'}</h2>
+            <p style="font-size:0.78rem;color:#64748B;margin-top:6px;">${currentLang === 'es' ? 'Ingresa un PIN de 4 dígitos para proteger tu información.' : 'Enter a 4-digit PIN to secure your data.'}</p>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
             <input class="onb-input" id="onb-pin-code" type="password" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="1234" style="letter-spacing:6px; font-weight:800; text-align:center; font-size:1.4rem;" autocomplete="off" />
@@ -361,15 +381,16 @@ export function showOnboarding({ onComplete }) {
         <!-- Step 4 -->
         <div class="onb-step${currentStep===4?' active':''}" id="onb-step-4">
           <div style="text-align:center;margin-bottom:24px;">
-            <div style="font-size:2.8rem;margin-bottom:10px;">${T('step3_emoji')}</div>
-            <h2 style="font-size:1.25rem;font-weight:800;color:#0F172A;margin:0 0 8px;" id="onb-welcome-name">${T('step3_base')}${T('step3_end')}</h2>
-            <p style="font-size:0.82rem;color:#64748B;margin:0;line-height:1.5;">${T('step3_sub')}</p>
+            <div class="onb-icon-badge success"><i data-lucide="check-circle-2" style="width: 32px; height: 32px; stroke-width: 2.5;"></i></div>
+            <h2 style="font-size:1.3rem;font-weight:800;color:#0F172A;margin:0 0 8px;letter-spacing:-0.02em;" id="onb-welcome-name">${T('step3_base')}${T('step3_end')}</h2>
+            <p style="font-size:0.84rem;color:#64748B;margin:0;line-height:1.5;">${T('step3_sub')}</p>
           </div>
           <button class="onb-btn-primary" id="onb-btn-4">${T('step3_btn')}</button>
         </div>
       </div>
     `;
     bindEvents();
+    createIcons({ icons });
   }
 
   // ── Helper for Validation ──────────────────────────────────────────────
